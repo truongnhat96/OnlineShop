@@ -1,0 +1,175 @@
+﻿/* Page Content */
+
+.page-content {
+    display: flex;
+    flex-direction: column; /* Sắp xếp nội dung theo cột */
+    justify-content: center; /* Căn giữa theo chiều dọc */
+    align-items: center; /* Căn giữa theo chiều ngang */
+    min-height: 60vh; /* Đặt chiều cao tối thiểu để nội dung luôn ở giữa */
+    text-align: center; /* Căn giữa nội dung văn bản */
+    padding: 50px; /* Khoảng cách padding cho nội dung */
+}
+
+    .page-content h1 {
+        position: relative; /* Đặt relative để sử dụng pseudo-elements */
+        font-family: 'Poppins', sans-serif;
+        font-size: 48px;
+        font-weight: bold;
+        color: #000;
+        margin: 10px 0; /* Khoảng cách trên và dưới */
+        text-align: center;
+    }
+
+        .page-content h1::before,
+        .page-content h1::after {
+            content: ''; /* Nội dung là rỗng */
+            position: absolute;
+            width: 120px; /* Chiều dài tổng của đường ngang */
+            height: 3px; /* Độ dày của đường ngang */
+            background: repeating-linear-gradient( 90deg, #2DD100, #2DD100 20px, transparent 20px, transparent 40px ); /* Tạo hiệu ứng nét đứt */
+            left: 50%; /* Căn giữa theo chiều ngang */
+            transform: translateX(-50%); /* Đẩy về giữa */
+        }
+
+        .page-content h1::before {
+            top: -20px; /* Đặt thanh ngang ở trên */
+        }
+
+        .page-content h1::after {
+            bottom: -20px; /* Đặt thanh ngang ở dưới */
+        }
+
+
+    .page-content p {
+        font-family: 'Poppins', sans-serif;
+        font-size: 18px; /* Kích thước chữ mô tả */
+        line-height: 1.6; /* Khoảng cách giữa các dòng */
+        color: #333; /* Màu chữ nhẹ hơn */
+        max-width: 800px; /* Đặt chiều rộng tối đa cho đoạn mô tả */
+        margin: 0; /* Xóa khoảng cách mặc định */
+    }
+
+.container {
+    margin-top: 50px;
+}
+
+.feature-box {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+    .feature-box:hover {
+        transform: translateY(-15px);
+    }
+
+.icon {
+    margin-bottom: 10px;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 17px;
+    color: #666;
+    font-family: Verdana
+}
+
+/*Q&A*/
+
+body {
+    color: #333;
+    background: #fcfcfc;
+    font-family: 'Raleway', sans-serif;
+    overflow-x: hidden;
+    flex-direction: column;
+}
+
+.faq-header {
+    font-size: 36px;
+    border-bottom: 1px dotted #ccc;
+    padding: 17px;
+    text-align: center;
+}
+
+.faq-content {
+    margin: 0 auto;
+    padding-bottom: 250px;
+}
+
+.faq-question {
+    padding: 20px 0;
+    border-bottom: 1px dotted #ccc;
+}
+
+.panel-title {
+    font-size: 24px;
+    width: 100%;
+    position: relative;
+    margin: 0;
+    padding: 10px 10px 0 48px;
+    display: block;
+    cursor: pointer;
+}
+
+.panel-content {
+    font-size: 20px;
+    padding: 0px 14px;
+    margin: 0 40px;
+    height: 0;
+    overflow: hidden;
+    z-index: -1;
+    position: relative;
+    opacity: 0;
+    -webkit-transition: .4s ease;
+    -moz-transition: .4s ease;
+    -o-transition: .4s ease;
+    transition: .4s ease;
+}
+
+.panel:checked ~ .panel-content {
+    height: auto;
+    opacity: 1;
+    padding: 14px;
+}
+
+.plus {
+    position: absolute;
+    margin-left: 20px;
+    margin-top: 4px;
+    z-index: 5;
+    font-size: 42px;
+    line-height: 100%;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-transition: .2s ease;
+    -moz-transition: .2s ease;
+    -o-transition: .2s ease;
+    transition: .2s ease;
+}
+
+.panel:checked ~ .plus {
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.panel {
+    display: none;
+}
+

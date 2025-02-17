@@ -1,0 +1,169 @@
+﻿@model ProductModel
+@{
+    int pb = 150 + (Model.ProductList.Count * 20);
+    Random rdPrice = new Random();
+    var ReturnUrl = Url.Action("Category");
+    if(!string.IsNullOrEmpty(ReturnUrl) && ReturnUrl.Contains("page"))
+    {
+        ReturnUrl = ReturnUrl.Replace($"/page/{Model.currentPage}", "");
+    }
+    int totalProduct = 0;
+    if (TempData["totalProduct"] != null && TempData["totalProduct"] is int)
+    {
+        totalProduct = (int)TempData["totalProduct"]!;
+    }
+}
+
+<form action="@Url.RouteUrl("category")" method="get">
+    <div class="main-feature">
+        <div class="search-container">
+            <input type="search" name="keyword" placeholder="Tìm sản phẩm..." class="search-input">
+            <button type="submit" class="search-button">&#x1F50E;&#xFE0E;</button>
+        </div>
+        @if(Model.totalPage > 1) {
+            <span class="result-count">Hiển thị @((Model.currentPage - 1) * 6 + 1) - @(Model.currentPage * 6 < totalProduct ? Model.currentPage * 6 : totalProduct) của @totalProduct kết quả</span>
+        }
+        else {
+            <span class="result-count">Hiển thị tất cả @Model.ProductList.Count kết quả</span>
+        }
+        <select id="Select" class="sort-dropdown">
+            <option value="Default">Thứ tự mặc định</option>
+            <option value="Popularity">Theo mức độ phổ biến</option>
+            <option value="Rating">Theo điểm đánh giá</option>
+            <option value="Date">Mới nhất</option>
+            <option value="AscendingPrice">Giá thấp đến cao</option>
+            <option value="DescendingPrice">Giá cao đến thấp</option>
+        </select>
+    </div>
+</form>
+
+
+<div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <form action="@Url.RouteUrl("category")" method="get">
+            <div class="price-filter">
+                <h3>Lọc theo giá</h3>
+                <div class="slider-container">
+                    <div class="slider-track" id="slider-track"></div>
+                    <input name="min_price" type="range" id="minSlider" class="slider" min="25000" max="9000000" step="1000" value="25000">
+                    <input name="max_price" type="range" id="maxSlider" class="slider" min="25000" max="9000000" step="1000" value="9000000">
+                </div>
+                <div class="price-values">
+                    <span id="minPriceLabel">25.000₫</span> —
+                    <span id="maxPriceLabel">9.000.000₫</span>
+                </div>
+                <button class="filter-button">LỌC</button>
+            </div>
+        </form>
+
+        <h3>Sản Phẩm Mua Nhiều</h3>
+        <ul>
+            <li><img src="/uploads/products/chatgpt-plus-3.jpg" alt="ChatGPT Plus"> ChatGPT Plus <span class="price">129.000₫</span></li>
+            <li><img src="/uploads/products/tai-khoan-office-365-gia-re-ban-chinh-hang.jpg" alt="Office 365">Office 365 Chính Hãng <span class="price">290.000₫</span></li>
+        </ul>
+    </aside>
+
+    <!-- Danh sách sản phẩm -->
+    <section class="products">
+        @for(int i = 0; i<Model.ProductList.Count; i++){
+            <div class="product">
+                <span class="discount">GIẢM GIÁ!</span>
+                @{
+                    int expo = rdPrice.Next(2, 4);
+                }
+                <img src="/uploads/products/@Model.ProductList[i].ImageUrl">
+                <a href="/Product/@Model.ProductList[i].Id/@(Model.ProductList[i].Price * expo)" class="product-name">@Model.ProductList[i].Name</a>
+                @for (int j = 0; j < Model.ProductListReview[i]; j++)
+                {
+                    <span class="star">⭐</span>
+                }
+                <p class="old-price">@((Model.ProductList[i].Price * expo).ToString("c0", new CultureInfo("vi-VN")))</p>
+                <p class="new-price">@(Model.ProductList[i].Price.ToString("c0", new CultureInfo("vi-VN")))</p>
+                <a href="#" role="button" class="btn-cart">THÊM VÀO GIỎ HÀNG</a>
+            </div>
+        }
+    </section>
+</div>
+<div class="pagination" style="padding-bottom: @(pb)px">
+    @if(Model.totalPage > 1) {
+        @if (Model.currentPage > 1)
+        {
+            <a class="page-btn" href="@(Url.Action("Category", new { id = Model.CategoryId, page = Model.currentPage - 1 }) + Url.ActionContext.HttpContext.Request.QueryString.ToString())">◀</a>
+        }
+
+        @for (int i = 1; i <= Model.totalPage; i++)
+        {
+            <a href="@(Url.Action("Category", new { id = Model.CategoryId, page = i }) + Url.ActionContext.HttpContext.Request.QueryString.ToString())" class="page-btn @(i == Model.currentPage ? "active" : "")">@i</a>
+        }
+
+        @if (Model.currentPage < Model.totalPage)
+        {
+            <a class="page-btn" href="@(Url.Action("Category", new { id = Model.CategoryId, page = Model.currentPage + 1 }) + Url.ActionContext.HttpContext.Request.QueryString.ToString())">▶</a>
+        }
+    }
+</div>
+
+
+<script>
+    const minSlider = document.getElementById("minSlider");
+     const maxSlider = document.getElementById("maxSlider");
+     const minPriceLabel = document.getElementById("minPriceLabel");
+     const maxPriceLabel = document.getElementById("maxPriceLabel");
+     const sliderTrack = document.getElementById("slider-track");
+
+     const rangeMin = parseInt(minSlider.min);
+     const rangeMax = parseInt(maxSlider.max);
+
+     function updatePrices() {
+       let minVal = parseInt(minSlider.value);
+       let maxVal = parseInt(maxSlider.value);
+
+       if (minVal >= maxVal) {
+         minSlider.value = maxVal - 1000;
+         minVal = parseInt(minSlider.value);
+       }
+
+       minPriceLabel.innerText = minVal.toLocaleString("vi-VN") + "₫";
+       maxPriceLabel.innerText = maxVal.toLocaleString("vi-VN") + "₫";
+
+       // Tính toán vị trí của thanh được chọn theo phần trăm
+       let minPercent = ((minVal - rangeMin) / (rangeMax - rangeMin)) * 100;
+       let maxPercent = ((maxVal - rangeMin) / (rangeMax - rangeMin)) * 100;
+
+       sliderTrack.style.left = minPercent + "%";
+       sliderTrack.style.width = (maxPercent - minPercent) + "%";
+
+       // Khi kéo ra xa nhau => hiển thị màu gradient
+       // Khi kéo gần lại => chuyển thành màu xám
+       if (maxVal - minVal < (rangeMax - rangeMin) * 0.01) {
+         sliderTrack.style.background = "#808080";
+       } else {
+         sliderTrack.style.background = "linear-gradient(to right, #ff007f, red)";
+       }
+     }
+
+     minSlider.addEventListener("input", updatePrices);
+     maxSlider.addEventListener("input", updatePrices);
+
+     updatePrices();
+
+     document.getElementById("Select").addEventListener("change", function () {
+        var selectedValue = this.value;
+        if (selectedValue) {
+            // Chuyển hướng đến action kèm theo tham số nếu cần
+            window.location.href = '@ReturnUrl' + '?orderby=' + selectedValue;
+        }
+    });
+
+     window.addEventListener('DOMContentLoaded', function () {
+        // Lấy các tham số từ URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedId = urlParams.get('orderby');
+        if (selectedId) {
+            // Đặt giá trị cho thẻ <select> dựa trên tham số
+            document.getElementById('Select').value = selectedId;
+        }
+    });
+
+</script>

@@ -1,0 +1,106 @@
+﻿@{
+    ViewBag.Title = "Quản lý Sản phẩm";
+}
+
+<h2>Quản lý Sản phẩm</h2>
+
+<!-- Các nút thao tác -->
+<div>
+    <button id="btnAdd" type="button" class="btn btn-success">Thêm Sản phẩm</button>
+    <button id="btnDelete" type="button" class="btn btn-danger">Xóa Sản phẩm</button>
+    <a href="/Update" type="button" class="btn btn-primary">Xem sản phẩm đã lưu</a>
+</div>
+
+<hr />
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info" role="alert">
+        @TempData["Message"]
+    </div>
+}
+<!-- Form Thêm Sản phẩm -->
+<div id="addProductForm" style="padding-bottom:200px; display:none; margin-top:20px;">
+    @using (Html.BeginForm("Add", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <h3>Thêm Sản phẩm</h3>
+
+        <div class="form-group">
+            @Html.Label("ID Danh mục sản phẩm")
+            @Html.TextBox("CategoryId", null, new { @class = "form-control", placeholder = "Nhập ID Danh mục" })
+            <p>Xem ID Danh mục <a style="text-decoration:none" href="/IDView">tại đây</a></p>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Tên sản phẩm")
+            @Html.TextBox("Name", null, new { @class = "form-control", placeholder = "Nhập tên sản phẩm" })
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Thương hiệu")
+            @Html.TextBox("Brand", null, new { @class = "form-control", placeholder = "Nhập thương hiệu" })
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Số lượng")
+            @Html.TextBox("Quantity", null, new { @class = "form-control", type = "number", placeholder = "Nhập số lượng" })
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Ngày nhập")
+            @Html.TextBox("Date_Import", DateTime.Now.ToString("yyyy-MM-dd"), new { @class = "form-control", type = "date" })
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Giá")
+            @Html.TextBox("Price", null, new { @class = "form-control", type = "number", step = "0.01", placeholder = "Nhập giá" })
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Mã giảm giá")
+            @Html.TextBox("Coupon", null, new { @class = "form-control", placeholder = "Nhập mã giảm giá (nếu có)" })
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Mô tả (Giới hạn 5 triệu ký tự)")
+            @Html.TextArea("Description", null, new { @class = "form-control", rows = "4", placeholder = "Nhập mô tả sản phẩm" })
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Ảnh sản phẩm")
+            <input type="file" name="ImageUrl" class="form-control" accept="image/*" />
+        </div>
+        <br />
+        <button href="/Add" type="submit" class="btn btn-primary">Lưu sản phẩm</button>
+    }
+</div>
+
+<!-- Form Xóa Sản phẩm -->
+<div id="deleteProductForm" style="padding-bottom:200px; display:none; margin-top:20px;">
+    @using (Html.BeginForm("Delete", "Product", FormMethod.Post))
+    {
+        <h3>Xóa Sản phẩm</h3>
+        <div class="form-group">
+            @Html.Label("Nhập ID sản phẩm cần xóa")
+            @Html.TextBox("id", null, new { @class = "form-control", placeholder = "Nhập ID sản phẩm" })
+        </div>
+        <br />
+        <button href="/Delete" type="submit" class="btn btn-danger">Xóa sản phẩm</button>
+    }
+</div>
+
+
+<!-- Script jQuery để hiển thị ẩn form theo nút bấm -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#btnAdd").click(function () {
+            $("#deleteProductForm").hide(); // Ẩn form xóa nếu đang hiển thị
+            $("#addProductForm").toggle();   // Toggle form thêm
+        });
+        $("#btnDelete").click(function () {
+            $("#addProductForm").hide();      // Ẩn form thêm nếu đang hiển thị
+            $("#deleteProductForm").toggle(); // Toggle form xóa
+        });
+    });
+</script>

@@ -1,0 +1,150 @@
+﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+a {
+    color: #0077cc;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+li {
+    font-size: 20px;
+}
+
+/*Dropdown menu*/
+
+@keyframes fadeSlideUp {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    15% {
+        opacity: 0.5;
+        transform: translateY(3px);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes fadeSlideDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    15% {
+        opacity: 0.5;
+        transform: translateY(3px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.nav-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+    .nav-menu li {
+        position: relative;
+        padding: 10px;
+    }
+
+    .nav-menu .dropdown-menu {
+        list-style: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: white;
+        padding: 10px 0;
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+        display: none;
+        min-width: 150px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: visibility 0.6s ease-out;
+    }
+
+        .nav-menu .dropdown-menu li {
+            padding: 8px 15px;
+            white-space: nowrap;
+        }
+
+            .nav-menu .dropdown-menu li:hover {
+                background-color: #f1f1f1;
+            }
+
+    .nav-menu .dropdown:hover .dropdown-menu {
+        display: block;
+        visibility: visible;
+        animation: fadeSlideDown 0.6s ease-out forwards;
+    }
+
+    .nav-menu .dropdown:not(:hover) .dropdown-menu {
+        display: block; 
+        animation: fadeSlideUp 0.6s ease-out forwards;
+        visibility: hidden;
+    }
+
+/*Name limit*/
+.name-container {
+    max-width: 23ch; /* Giới hạn tối đa 14 ký tự */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/*Cart*/
+.icon {
+    color: black;
+    top: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .icon svg {
+        width: 34px;
+        height: 34px;
+    }

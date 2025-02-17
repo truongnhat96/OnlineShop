@@ -1,0 +1,50 @@
+﻿@{
+}
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.0/classic/ckeditor.js"></script>
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="form-container">
+                <h1 class="custom-header">Đăng bài viết mới</h1>
+                <form id="blogForm" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Tiêu đề:</label>
+                        <input type="text" id="title" name="title" class="form-control" placeholder="Nhập tiêu đề bài viết..." required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Nội dung:</label>
+                        <textarea id="content" name="content" class="form-control" placeholder="Nhập nội dung bài viết..." rows="6" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="images" class="form-label">Chọn ảnh (có thể chọn nhiều ảnh):</label>
+                        <input type="file" id="images" name="images" class="form-control" multiple accept="image/*">
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Đăng bài</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#content').summernote({
+                placeholder: 'Nhập nội dung tại đây...',
+                height: 200,
+                toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['fontname', ['fontname']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview', 'help']],
+                ]
+            });
+        });
+    </script>
+}

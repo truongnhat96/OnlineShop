@@ -1,0 +1,47 @@
+﻿@model LoginModel
+@{
+    ViewData["Title"] = "Đăng nhập";
+}
+<br />
+<br />
+<div class="d-flex border-5 justify-content-center align-items-center vh-100 pb-4">
+    <form asp-action="Login" method="post" class="form">
+        <p class="form-title">Đăng nhập để tiếp tục</p>
+        @if(Html.ViewContext.ModelState["LoginError"]?.Errors.Count > 0)
+        {
+            <div class="alert alert-danger" role="alert">
+                @Html.ViewContext.ModelState["LoginError"]?.Errors.FirstOrDefault()?.ErrorMessage
+            </div>
+        }
+        <div class="input-container">
+            <input name="Username" type="text" placeholder="Tên tài khoản" required>
+            <span>
+            </span>
+        </div>
+        <div class="input-container">
+            <input name="Password" type="password" id="password" placeholder="Mật khẩu" required>
+            <i class="fa-solid fa-eye toggle-password" id="togglePassword"></i>
+        </div>
+        <div class="justify-content-end">
+            <p class="forgetpass-link">
+                <a href="/ForgotPassword">Quên mật khẩu?</a>
+            </p>
+        </div>
+        <button class="pushable">
+            <span class="shadow"></span>
+            <span class="edge"></span>
+            <span class="front"> Đăng Nhập </span>
+        </button>
+
+        <div class="form-text" style="padding-bottom: 300px">
+            <p class="signup-link">
+                Chưa có tài khoản?
+                <a href="/Signup">Đăng ký</a>
+            </p>
+        </div>
+    </form>
+</div>
+
+
+
+

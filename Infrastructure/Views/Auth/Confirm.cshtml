@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Xác nhận";
+}
+@model string
+
+
+<div class="confirmation-container">
+    <div class="confirmation-card">
+        <div class="icon-container">
+            <img src="~/images/success.png" width="100" height="100" />
+        </div>
+        <h2>Thank You!</h2>
+        <p>Chúng tôi vừa gửi thông tin mật khẩu đến địa chỉ email: <strong>@Model</strong>.</p>
+        <p>Vui lòng kiểm tra hòm thư để lấy lại mật khẩu</p>
+        <a href="/Login" class="back-button">Back to Login</a>
+    </div>
+</div>

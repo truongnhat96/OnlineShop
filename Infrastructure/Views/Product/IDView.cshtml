@@ -1,0 +1,16 @@
+﻿@model CategoryModel
+@{
+}
+
+<div class="form">
+    <h2>Thông tin danh mục</h2>
+    <ul class="align-content-center">
+        @foreach(var item in Model.CategoryList)
+        {
+            <li>@item.Id - @item.Name</li>
+        }
+    </ul>
+    <div style="padding-bottom: 200px;">
+        <a href="/Manage" class="btn btn-primary">← Quay lại</a>
+    </div>
+</div>

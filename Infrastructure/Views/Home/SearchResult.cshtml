@@ -1,0 +1,59 @@
+﻿@model SearchResultModel
+@{
+    var rd = new Random();
+}
+
+<div class="search-title">Kết quả tìm kiếm cho: <strong>@Model.Keyword</strong></div>
+@foreach(var product in Model.Products)
+{
+    <div class="product-list">
+        <div class="product-item">
+            <div class="image-container">
+                @{
+                    var rdPrice = rd.Next(2, 4) * product.Price;
+                }
+                <a href="/product/@product.Id/@rdPrice">
+                    <img src="/uploads/products/@product.ImageUrl" alt="Sản phẩm 1">
+                </a>
+            </div>
+            <a href="/product/@product.Id/@rdPrice" class="product-name">@product.Name</a>
+            <div class="product-description">Thương Hiệu: @product.Brand</div>
+            <a href="/product/@product.Id/@rdPrice" class="read-more">READ MORE</a>
+        </div>
+    </div>
+}
+@foreach(var post in Model.Posts)
+{
+    <div class="product-list">
+        <div class="product-item">
+            <div class="image-container">
+                <a href="#">
+                    <img src="/uploads/posts/@post.Image" alt="">
+                </a>
+            </div>
+            <a href="#" class="product-name">@post.Title</a>
+            <div class="product-description">@(post.Content.Substring(0, 60))...</div>
+            <a href="#" class="read-more">READ MORE</a>
+        </div>
+    </div>
+}
+
+<div class="pagination">
+    @if (Model.totalPage > 1)
+    {
+        @if (Model.currentPage > 1)
+        {
+            <a class="page-btn" href="@(Url.Action("Search", new { page = Model.currentPage - 1 }) + Url.ActionContext.HttpContext.Request.QueryString.ToString())">❮</a>
+        }
+
+        @for (int i = 1; i <= Model.totalPage; i++)
+        {
+            <a href="@(Url.Action("Search", new { page = i }) + Url.ActionContext.HttpContext.Request.QueryString.ToString())" class="page-btn @(i == Model.currentPage ? "active" : "")">@i</a>
+        }
+
+        @if (Model.currentPage < Model.totalPage)
+        {
+            <a class="page-btn" href="@(Url.Action("Search", new { page = Model.currentPage + 1 }) + Url.ActionContext.HttpContext.Request.QueryString.ToString())">❯</a>
+        }
+    }
+</div>

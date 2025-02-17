@@ -1,0 +1,16 @@
+﻿body {
+    background: #f8f9fa;
+}
+
+.form-container {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(20, 60, 90, 0.4);
+}
+
+.custom-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #333;
+}

@@ -1,0 +1,50 @@
+﻿@model SignupModel
+@{
+    ViewData["Title"] = "Đăng ký";
+}
+
+<form method="post" style="padding-bottom:250px; border:1px solid #ccc">
+    <div class="container">
+        <h1>Đăng ký</h1>
+        <p>Vui lòng điền vào biểu mẫu để tạo tài khoản mới.</p>
+        <hr>
+
+        <label for="Username"><b>Tên người dùng</b></label>
+        <input class="@(Html.ViewContext.ModelState["Username"]?.Errors.Count > 0 ? "error" : "")" type="text" placeholder="Tên người dùng" name="Username" required>
+        <span class="notify-error">
+            @Html.ViewContext.ModelState["Username"]?.Errors.FirstOrDefault()?.ErrorMessage
+            <br />
+        </span>
+
+        <label for="DisplayName"><b>Tên hiển thị</b></label>
+        <input type="text" placeholder="Tên hiển thị" name="DisplayName" required>
+
+        <label for="Email"><b>Email</b></label>
+        <input class="@(Html.ViewContext.ModelState["Email"]?.Errors.Count > 0 ? "error" : "")" type="email" placeholder="Địa chỉ email" name="Email" required>
+        <span class="notify-error">
+            @Html.ViewContext.ModelState["Email"]?.Errors.FirstOrDefault()?.ErrorMessage
+            <br />
+        </span>
+
+        <label for="Password"><b>Mật khẩu</b></label>
+        <input class="@(Html.ViewContext.ModelState["Password"]?.Errors.Count > 0 ? "error" : "")" type="password" placeholder="Mật khẩu" name="Password" required>
+        <span class="notify-error">
+            @Html.ViewContext.ModelState["Password"]?.Errors.FirstOrDefault()?.ErrorMessage
+            <br />
+        </span>
+
+        <label for="ConfirmPassword"><b>Xác nhận mật khẩu</b></label>
+        <input class="@(Html.ViewContext.ModelState["ConfirmPassword"]?.Errors.Count > 0 ? "error" : "")" type="password" placeholder="Xác nhận mật khẩu" name="ConfirmPassword" required>
+        <span class="notify-error">
+            @Html.ViewContext.ModelState["ConfirmPassword"]?.Errors.FirstOrDefault()?.ErrorMessage
+        </span>
+
+        <p>Khi đăng ký, bạn đã đồng ý với <a href="/home/privacy" style="color:dodgerblue">Điều khoản dịch vụ và chính sách Quyền riêng tư</a>.</p>
+
+        <div class="clearfix">
+            <button type="submit" class="signupbtn">ĐĂNG KÝ</button>
+            <button type="button" class="cancelbtn" onclick="location.href='/'">THOÁT</button>
+        </div>
+    </div>
+</form>
+

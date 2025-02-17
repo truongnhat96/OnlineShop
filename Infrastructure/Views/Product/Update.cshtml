@@ -1,0 +1,45 @@
+﻿@model ProductModel
+@{
+    ViewData["Title"] = "Cập nhật";
+    int padding = 300 + (Model.ProductList.Count * 20);
+}
+
+<div class="main-container" style="padding-bottom: @(padding)px">
+    @if (Model.ProductList.Count == 0)
+    {
+        <div class="justify-content-center">
+            <h3>Không có sản phẩm nào được lưu</h3>
+        </div>
+    }
+    else
+    {
+        @using (Html.BeginForm("Update", "Product"))
+        {
+            <h3>Các sản phẩm đã lưu</h3>
+            <div class="justify-content-around">
+                <div class="row">
+                    @foreach (var product in Model.ProductList)
+                    {
+                        <div class="col-md-4 col-sm-7 d-flex justify-content-center">
+                            <div class="form-container">
+                                <div class="form-card">
+                                    <img src="/uploads/products/@product.ImageUrl" alt="Ảnh sản phẩm" class="product-img" />
+                                    <h4>ID: @product.Id</h4>
+                                    <h5 class="product-name" title="@product.Name">@product.Name</h5>
+                                    <p>Thương hiệu: @product.Brand</p>
+                                    <p>Giá: @product.Price.ToString("c0", new CultureInfo("vi-VN"))</p>
+                                    <p>Ngày nhập: @product.Date_Import.ToShortDateString()</p>
+                                    <a href="/Edit/@product.Id" class="btn btn-primary mt-auto">Sửa thông tin</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <br />
+            <br />
+            <a href="/Manage" class="btn btn-primary">← Quay lại</a>
+        }
+        <hr />
+    }
+</div>

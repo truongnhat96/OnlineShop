@@ -1,0 +1,161 @@
+﻿@model ProductModel
+@{
+    Random rdImage = new Random();
+    TempData["oldPrice"] = Model.oldPrice.ToString();
+    TempData["productId"] = Model.Id;
+}
+
+<div class="product-container">
+    <div class="product-image">
+        <img src="/uploads/products/@Model.Image">
+    </div>
+    <div class="product-info">
+        <h1>@Model.Name</h1>
+        @for (int i = 0; i < Model.Rating; i++)
+        {
+            <span class="star">⭐</span>
+        }
+        <p class="price">
+            <span class="old-price">@Model.oldPrice.ToString("c0", new CultureInfo("vi-VN"))</span>
+            <span class="new-price">@Model.Price.ToString("c0", new CultureInfo("vi-VN"))</span>
+        </p>
+        <div class="product-details">
+            <p><strong>Thương hiệu:</strong> @Model.Brand</p>
+            <p><strong>Tình trạng:</strong> @(Model.Quantity > 0 ? "Còn hàng" : "Hết hàng")</p>
+            <p><strong>Giao hàng:</strong> Sản phẩm và Hướng dẫn sẽ được gửi qua email/Zalo/Facebook</p>
+            <p><strong>Thời hạn giấy phép:</strong> Trọn đời</p>
+        </div>
+        <br />
+        <hr />
+        <div class="category-container">
+            <p><strong>Danh mục:</strong> <a href="/category/@Model.CategoryId" class="category-name">@Model.CategoryName</a></p>
+        </div>
+        <hr />
+        <!-- Container chứa ô số lượng và nút Thêm vào giỏ hàng cùng hàng -->
+        <div class="purchase-container">
+            <input type="number" id="quantity" value="1" inputmode="numeric" class="quantity-input" min="1">
+            <a href="#" class="add-to-cart" role="button"><span class="text">THÊM VÀO GIỎ HÀNG <svg class="cartIcon" viewBox="0 0 576 512"><path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"></path></svg></span></a>
+        </div>
+    </div>
+</div>
+
+<div class="description-container">
+    <button class="tab-btn @(TempData["active"] == null ? "active" : "")" onclick="showTab('description', this)">MÔ TẢ</button>
+    <button class="tab-btn @TempData["active"]" onclick="showTab('reviews', this)">ĐÁNH GIÁ (@Model.Reviews.Count)</button>
+
+    <div id="description" class="tab-content @(TempData["active"] == null ? "active" : "")">
+        <div class="product-description">
+            @Model.Description
+        </div>
+    </div>
+
+    <div id="reviews" class="tab-content @TempData["active"]">
+        <div class="reviews-container">
+            <!-- Danh sách các bình luận và rating -->
+            @if(Model.Reviews.Count > 0)
+            {
+                for(int i = 0; i < Model.Reviews.Count; i++)
+                {
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="review-user">
+                                <!-- Ảnh đại diện nếu có, hoặc icon user -->
+                                <img src="/images/@(rdImage.Next(1,5)).png" alt="User Avatar" class="user-avatar" />
+                                <span class="user-name">@Model.ReviewerName[i]</span>
+                            </div>
+                            <div class="review-date">@Model.Reviews[i].CreatedAt.Day Tháng @Model.Reviews[i].CreatedAt.Month, @Model.Reviews[i].CreatedAt.Year</div>
+                        </div>
+                        <div class="review-body">
+                            <p>@Model.Reviews[i].Comment</p>
+                            <!-- Hiển thị rating bằng các icon sao -->
+                            <div class="review-rating">
+                                @for (int j = 0; j < Model.Reviews[i].Rating; j++)
+                                {
+                                    <span class="star">★</span>
+                                }
+                                @if (Model.Reviews[i].Rating < 5)
+                                {
+                                    for (int k = 5 - Model.Reviews[i].Rating; k > 0; k--)
+                                    {
+                                        <span class="star-empty">★</span>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="empty-comment">Chưa có đánh giá nào cho sản phẩm này</p>
+                <span class="first-cmt">Hãy là người đầu tiên đánh giá "@Model.Name"</span>
+            }
+
+            <!-- ... Các đánh giá khác ... -->
+            <!-- Form cho người dùng thêm đánh giá -->
+            @if(User.Identity?.IsAuthenticated == true)
+            {
+                <form asp-action="Comment" asp-controller="User" method="post" class="review-form">
+                    <h3 style="margin-top: 15px;">Để lại đánh giá của bạn</h3>
+                    <textarea name="comment"
+                              class="review-textarea"
+                              rows="4"
+                              placeholder="Viết bình luận của bạn..."></textarea>
+
+                    <div class="review-star-input">
+                        <span>Đánh giá:</span>
+                        <!-- 5 sao, dùng input radio -->
+                        <input type="radio" id="star5" name="rating" value="5" checked />
+                        <label for="star5" title="5 sao">★</label>
+                        <input type="radio" id="star4" name="rating" value="4" />
+                        <label for="star4" title="4 sao">★</label>
+                        <input type="radio" id="star3" name="rating" value="3" />
+                        <label for="star3" title="3 sao">★</label>
+                        <input type="radio" id="star2" name="rating" value="2" />
+                        <label for="star2" title="2 sao">★</label>
+                        <input type="radio" id="star1" name="rating" value="1" />
+                        <label for="star1" title="1 sao">★</label>
+                    </div>
+
+                    <button class="review-submit-btn">
+                        Gửi đánh giá
+                        <div class="icon">
+                            <svg height="24"
+                                 width="24"
+                                 viewBox="0 0 24 24"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
+                                      fill="currentColor"></path>
+                            </svg>
+                        </div>
+                    </button>
+
+                </form>
+            }
+            else
+            {
+                <p class="empty-comment">Bạn phải <a href="/Login" class="must-login">đăng nhập</a> để đánh giá sản phẩm</p>
+            }
+        </div>
+
+    </div>
+</div>
+
+<script>
+        function showTab(tabName, element) {
+        // Ẩn tất cả nội dung tab
+        document.querySelectorAll('.tab-content').forEach(function(tab) {
+            tab.classList.remove('active');
+        });
+        // Hiển thị nội dung của tab được chọn
+        document.getElementById(tabName).classList.add('active');
+
+        // Bỏ trạng thái active của tất cả các nút tab
+        document.querySelectorAll('.tab-btn').forEach(function(btn) {
+            btn.classList.remove('active');
+        });
+        // Đánh dấu nút được chọn
+        element.classList.add('active');
+    }
+</script>

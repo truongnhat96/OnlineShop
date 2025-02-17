@@ -1,0 +1,45 @@
+﻿.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+}
+
+.form-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(20, 60, 90, 0.4);
+    padding: 15px;
+    width: 300px; /* Chiều rộng cố định */
+    height: 520px; /* Chiều cao cố định */
+    text-align: center;
+    font-family: 'Arial', sans-serif; /* Hoặc phông chữ bạn mong muốn */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Ẩn nội dung tràn ra ngoài */
+}
+
+.main-container {
+    display: flex;
+    margin-top: 50px;
+}
+
+.product-img {
+    width: 180px;
+    height: 180px;
+    display: block;
+    margin-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.product-name {
+    display: -webkit-box; /* Sử dụng flexbox của webkit */
+    -webkit-box-orient: vertical; /* Sắp xếp theo chiều dọc */
+    -webkit-line-clamp: 2; /* Giới hạn tối đa 2 dòng */
+    overflow: hidden; /* Ẩn phần vượt */
+    text-overflow: ellipsis;
+    font-weight: bold;
+}
+
