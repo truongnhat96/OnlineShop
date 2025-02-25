@@ -1,0 +1,61 @@
+﻿@model PostModel
+@{
+    int pb = 120 + (10 * Model.Posts.Count);
+}
+
+<div class="main-box" style="padding-bottom: @(pb)px;">
+    <section class="content">
+        <div class="posts">
+            @if (Model.Posts.Count == 0)
+            {
+                <h2 class="empty-comment">Không tìm thấy bài viết nào</h2>
+            }
+            @foreach(var post in Model.Posts)
+            {
+                <div class="post">
+                    <a href="/Post/@post.Id" class="post-link">
+                        <div class="post-image-container">
+                            <div class="category-label">THỦ THUẬT MÁY TÍNH</div> <!-- Dòng chữ Thủ Thuật Máy Tính -->
+                            <img src="/uploads/posts/@post.ImageUrl" alt="@post.Title" class="post-image">
+                            <div class="overlay"></div>
+                        </div>
+                    </a>
+                    <a href="/Post/@post.Id" class="post-title">@post.Title</a>
+                    <div class="post-meta">
+                        <hr />
+                        <span class="date-created">@post.CreatedAt.Day Tháng @post.CreatedAt.Month, @post.CreatedAt.Year</span>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+
+    <aside class="sidebar">
+       <form asp-action="PostView" method="get">
+            <div class="search-bars">
+                <input name="keyword" type="text" placeholder="Search..." class="search-inp">
+                <button class="search-button"><i class="fa fa-search"></i></button>
+            </div>
+       </form>
+
+        <div class="advertisement">
+            <a href="#" class="ad-link">
+                <h3 class="ad-title">Bán Quyền Windows 11 Pro Key Global</h3>
+                <img src="/images/windows-11-pro-banner.jpg" alt="Windows 11 Pro" class="advertisement-image">
+            </a>
+            <p class="advertisement-price">160.000 VND</p>
+        </div>
+
+        <div class="advertisement">
+            <h3 class="ad-title">Bán Quyền Office 365 - Trọn đời 5 thiết bị</h3>
+            <img src="/images/office-365-mua-ngay-tron-doi.jpg" alt="Office 365" class="advertisement-image">
+            <p class="advertisement-price">Giá chỉ 290K</p>
+        </div>
+
+        <div class="advertisement">
+            <h3 class="ad-title">Netflix Premium 4K</h3>
+            <img src="/images/netflix-banner.jpg" alt="Netflix" class="advertisement-image">
+            <p class="advertisement-price">79K/ Tháng</p>
+        </div>
+    </aside>
+</div>

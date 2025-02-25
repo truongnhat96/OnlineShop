@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.SqlServer
 {
@@ -14,14 +13,20 @@ namespace Infrastructure.SqlServer
             _mapper = mapper;
         }
 
-        public Task<Entities.Post> AddPostAsync(Entities.Post post)
+        public async Task<Entities.Post> AddPostAsync(Entities.Post post)
         {
-            throw new NotImplementedException();
+            var postDb = _mapper.Map<DataContext.Post>(post);
+            await _context.Posts.AddAsync(postDb);
+            await _context.SaveChangesAsync();
+            return post;
         }
 
-        public Task<Entities.Post> DeletePostAsync(Guid id)
+        public async Task<Entities.Post> DeletePostAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var postDb = await _context.Posts.FindAsync(id) ?? throw new("This Post is Not Exist");
+            _context.Posts.Remove(postDb);
+            await _context.SaveChangesAsync();
+            return _mapper.Map<Entities.Post>(postDb);
         }
 
         public async Task<IEnumerable<Entities.Post>> FindPostsAsync(string keyword)
@@ -30,19 +35,25 @@ namespace Infrastructure.SqlServer
             return _mapper.Map<IEnumerable<Entities.Post>>(posts);
         }
 
-        public Task<IEnumerable<Entities.Post>> GetPostsAsync()
+        public async Task<Entities.Post> GetPostAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var postDb = await _context.Posts.FindAsync(id);
+            return _mapper.Map<Entities.Post>(postDb);
         }
 
-        public Task<IEnumerable<Entities.Post>> GetPostsAsync(string categoryId)
+        public async Task<IEnumerable<Entities.Post>> GetPostsAsync()
         {
-            throw new NotImplementedException();
+            var postDb = await _context.Posts.ToListAsync();
+            return _mapper.Map<IEnumerable<Entities.Post>>(postDb);
         }
 
-        public Task<Entities.Post> UpdatePostAsync(Entities.Post post)
+
+        public async Task<Entities.Post> UpdatePostAsync(Entities.Post post)
         {
-            throw new NotImplementedException();
+            var postDb = _mapper.Map<Entities.Post, Post>(post);
+            _context.Posts.Update(postDb);
+            await _context.SaveChangesAsync();
+            return post;
         }
     }
 }

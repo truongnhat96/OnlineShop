@@ -1,0 +1,221 @@
+﻿/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+
+.logo-title {
+    margin: 0;
+    color: #4caf50; /* Đổi màu chữ thành xanh */
+}
+
+.main-box {
+    display: flex;
+    margin: 20px;
+    padding-top: 20px;
+}
+
+.content {
+    flex: 3;
+    margin-right: 20px;
+}
+
+.posts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.post {
+    background-color: #fff;
+    width: 48%;
+    margin-bottom: 20px;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0, 5, 10, 0.3);
+    border-radius: 8px;
+    overflow: hidden;
+    padding-bottom: 30px;
+}
+
+/* Dòng chữ "Thủ Thuật Máy Tính" */
+.category-label {
+    background-color: #2DD100; /* Nền xanh khi hover */
+    color: #fff; /* Màu chữ trắng khi hover */
+    padding: 10px 15px;
+    text-align: center;
+    font-size: 16px;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    border: 1px solid #2DD100;
+    border-radius: 5px;
+    z-index: 2;
+    max-width: 80%;
+    word-wrap: break-word;
+    transition: background-color 0.3s, color 0.3s; /* Thêm hiệu ứng chuyển đổi */
+}
+
+    /* Hiệu ứng khi hover vào dòng chữ */
+    .category-label:hover {
+        background-color: #fff; /* Nền trắng mặc định */
+        color: #2DD100; /* Màu chữ xanh */
+    }
+
+
+.post-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 15px 10px;
+    text-align: center;
+    display: block;
+    color: #000; /* Màu chữ ban đầu */
+    text-decoration: none; /* Bỏ gạch chân */
+    transition: color 0.3s ease; /* Thêm hiệu ứng chuyển màu */
+    padding-bottom: 10px;
+}
+
+    .post-title:hover {
+        color: #4caf50; /* Màu xanh khi hover vào tiêu đề */
+    }
+
+.post-meta {
+    color: #777;
+    margin: 0 10px;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.date-created {
+    font-size: 14px;
+    display: flex;
+    margin-top: 30px;
+}
+
+.post-image-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.post-image {
+    width: 100%;
+    height: 400px;
+    transition: transform 0.3s ease;
+    border-bottom: 2px solid #f4f4f4;
+}
+
+.post-image-container:hover .post-image {
+    transform: scale(1.1);
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    visibility: hidden;
+    transition: visibility 0.3s ease;
+}
+
+.post-link {
+    display: block; /* Đảm bảo thẻ a chiếm toàn bộ diện tích */
+    text-decoration: none; /* Bỏ gạch chân */
+    color: inherit; /* Giữ màu chữ mặc định */
+}
+
+
+.post-image-container:hover .overlay {
+    visibility: visible;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    flex: 1;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* Thanh tìm kiếm */
+.search-bars {
+    display: flex;
+    align-items: center;
+    background-color: #f2f6fc; /* Màu nền sáng như trong ảnh */
+    border-radius: 5px; /* Bo tròn các góc */
+    border: 1px solid #f2f6fc;
+    padding: 5px 15px;
+    margin-bottom: 20px;
+}
+
+.search-inp {
+    width: 85%;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    outline: none; /* Bỏ viền khi focus */
+    border-radius: 5px;
+    background-color: transparent;
+    color: #333; /* Màu chữ đen như trong ảnh */
+}
+
+.search-button {
+    background-color: transparent; /* Nền trong suốt */
+    padding: 5px;
+    border: none;
+    border-radius: 50%; /* Nút tròn */
+    color: #333; /* Màu đen cho biểu tượng */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .search-btn i {
+        font-size: 18px; /* Kích thước icon */
+    }
+
+
+
+/* Liên kết */
+.ad-link {
+    text-decoration: none; /* Xóa gạch chân khỏi liên kết */
+    color: inherit; /* Giữ nguyên màu chữ */
+}
+
+
+.advertisement {
+    background-color: #fff;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+}
+
+    .advertisement .ad-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #000;
+        margin: 10px 0;
+    }
+
+    .advertisement .advertisement-price {
+        font-size: 16px;
+        color: #d9534f;
+        font-weight: bold;
+    }
+
+.advertisement-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+    .advertisement-image:hover {
+        transform: scale(1.05); /* Hiệu ứng khi hover vào ảnh */
+    }

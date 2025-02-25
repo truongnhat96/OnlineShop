@@ -66,7 +66,6 @@
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: inner-spin-button;
     opacity: 1;
 }
 
@@ -91,64 +90,78 @@ hr {
 }
 
 /* Nút thêm vào giỏ hàng */
-.add-to-cart {
-    align-items: center;
-    background-image: linear-gradient(144deg,#AF40FF, #5B42F3 50%,#00DDEB);
-    border: 0;
-    border-radius: 8px;
-    box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
-    box-sizing: border-box;
-    color: #FFFFFF;
+.cartBtn {
+    width: 255px;
+    height: 50px;
+    border: none;
+    border-radius: 0px;
     display: flex;
-    font-family: Phantomsans, sans-serif;
-    font-size: 10px;
+    align-items: center;
     justify-content: center;
-    line-height: 1em;
-    max-width: 100%;
-    min-width: 140px;
-    padding: 3px;
-    text-decoration: none;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    white-space: nowrap;
+    gap: 7px;
+    color: white;
+    font-weight: 500;
+    position: relative;
+    background-color: rgb(29, 29, 29);
+    box-shadow: 0 20px 30px -7px rgba(27, 27, 27, 0.219);
+    transition: all 0.3s ease-in-out;
     cursor: pointer;
-    margin-left: 15px;
+    overflow: hidden;
 }
 
-.add-to-cart:active,
-.add-to-cart:hover {
-    outline: 0;
+.cart {
+    z-index: 2;
 }
 
-.add-to-cart span {
-    background-color: rgb(5, 6, 45);
-    padding: 16px 24px;
-    border-radius: 6px;
-    width: 100%;
-    height: 100%;
-    transition: 300ms;
+.cartBtn:active {
+    transform: scale(0.96);
 }
 
-.add-to-cart:hover span {
-    background: none;
+.product {
+    position: absolute;
+    width: 12px;
+    border-radius: 3px;
+    content: "";
+    left: 23px;
+    bottom: 23px;
+    opacity: 0;
+    z-index: 1;
+    fill: rgb(211, 211, 211);
 }
 
-.cartIcon {
-    width: 14px;
-    height: fit-content;
+.cartBtn:hover .product {
+    animation: slide-in-top 1.2s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
 
-    .cartIcon path {
-        fill: white;
+@keyframes slide-in-top {
+    0% {
+        transform: translateY(-30px);
+        opacity: 1;
     }
 
-@media (min-width: 768px) {
-    .add-to-cart {
-        font-size: 24px;
-        min-width: 196px;
+    100% {
+        transform: translateY(0) rotate(-90deg);
+        opacity: 1;
     }
 }
+
+.cartBtn:hover .cart {
+    animation: slide-in-left 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+@keyframes slide-in-left {
+    0% {
+        transform: translateX(-10px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+
 
 
 /* Tab điều hướng (Mô tả - Đánh giá) */
@@ -238,6 +251,8 @@ hr {
 }
 
 .user-avatar {
+    width: 60px;
+    height: 60px;
     border-radius: 5px;
     margin-right: 8px;
 }
@@ -296,49 +311,113 @@ hr {
     font-size: 15px;
 }
 
-/* Phần input rating (5 sao) */
-.review-star-input {
+/* Đánh giá - star */
+.rating {
     display: flex;
-    align-items: center;
+    flex-direction: row-reverse;
+    gap: 0.3rem;
+    transform-style: preserve-3d;
+    perspective: 1000px;
 }
 
-    /* Ẩn radio button, chỉ hiển thị label */
-    .review-star-input input[type="radio"] {
+    .rating input {
         display: none;
     }
 
-    /* Label sao */
-    /* Label sao trong form review */
-    .review-star-input label {
-        font-size: 32px; /* Tăng kích thước sao */
-        color: #ccc; /* Màu mặc định cho sao */
-        cursor: pointer;
-        margin-right: 6px;
-        transition: color 0.2s;
+    .rating label .svgOne {
+        stroke: #ccc;
+        fill: rgba(255, 217, 0, 0);
+        transition: stroke 0.5s ease, fill 0.5s ease;
     }
 
-        /* Hover label sao */
-        .review-star-input label:hover,
-        .review-star-input label:hover ~ label {
-            color: #f1c40f; /* Vàng khi hover */
+    .rating label .svgTwo {
+        position: absolute;
+        top: -1px;
+        fill: gold;
+        stroke: rgba(255, 217, 0, 0);
+        opacity: 0;
+        transition: stroke 0.5s ease, fill 0.5s ease, opacity 0.5s ease;
+    }
+
+    .rating label {
+        position: relative;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 3px;
+        transition: all 0.5s ease;
+    }
+
+        .rating label:hover .svgOne,
+        .rating label:hover ~ label .svgOne {
+            stroke: gold;
         }
 
-    /* Sao được chọn */
-    .review-star-input input[type="radio"]:checked ~ label {
-        color: #f1c40f;
+    .rating input:checked ~ label .svgOne {
+        stroke: #cccccc00;
     }
 
+    .rating input:checked ~ label .svgTwo {
+        transform: rotateX(0deg) rotateY(0deg) translateY(0px);
+        opacity: 1;
+        animation: displayStar 0.5s cubic-bezier(0.75, 0.41, 0.82, 1.2);
+    }
 
-/* Đảm bảo thứ tự từ phải sang trái cho hiệu ứng hover đầy đủ:
-   Mẹo: đặt các input radio từ 5 -> 1, label từ 5 -> 1 */
-.review-star-input {
-    direction: rtl; /* Lật hướng để khi hover 1 sao, nó highlight tất cả sao bên trái */
+@keyframes displayStar {
+    0% {
+        transform: rotateX(100deg) rotateY(100deg) translateY(10px);
+    }
+
+    100% {
+        transform: rotateX(0deg) rotateY(0deg) translateY(0px);
+    }
 }
 
-    /* Chuyển label sang trái sang phải khi hiển thị */
-    .review-star-input label {
-        direction: ltr;
+.ombre {
+    background: radial-gradient( ellipse closest-side, rgba(0, 0, 0, 0.24), rgba(0, 0, 0, 0) );
+    width: 30px;
+    height: 8px;
+    opacity: 0;
+    transition: opacity 0.6s ease 0.2s;
+}
+
+.rating label:hover .ombre,
+.rating label:hover ~ label .ombre {
+    opacity: 0.3;
+}
+
+.rating input:checked ~ label .ombre {
+    opacity: 1;
+}
+
+.rating label:hover .svgTwo:hover {
+    animation: chackStar 0.6s ease-out, displayStar none 1s;
+}
+
+@keyframes chackStar {
+    0% {
+        transform: rotate(0deg);
     }
+
+    20% {
+        transform: rotate(-20deg);
+    }
+
+    50% {
+        transform: rotate(20deg);
+    }
+
+    80% {
+        transform: rotate(-20deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
 
 /* Nút gửi đánh giá */
 .review-submit-btn {

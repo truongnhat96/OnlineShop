@@ -10,10 +10,10 @@ namespace UseCase.Repository
     public interface IPostRepository
     {
         Task<IEnumerable<Post>> GetPostsAsync();
-        Task<IEnumerable<Post>> GetPostsAsync(string categoryId);
         Task<IEnumerable<Post>> FindPostsAsync(string keyword);
         Task<Post> AddPostAsync(Post post);
         Task<Post> UpdatePostAsync(Post post);
         Task<Post> DeletePostAsync(Guid id);
+        Task<Post> GetPostAsync(Guid id);
     }
 }

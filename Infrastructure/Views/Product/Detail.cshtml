@@ -1,8 +1,6 @@
 ﻿@model ProductModel
 @{
     Random rdImage = new Random();
-    TempData["oldPrice"] = Model.oldPrice.ToString();
-    TempData["productId"] = Model.Id;
 }
 
 <div class="product-container">
@@ -16,7 +14,10 @@
             <span class="star">⭐</span>
         }
         <p class="price">
-            <span class="old-price">@Model.oldPrice.ToString("c0", new CultureInfo("vi-VN"))</span>
+            @if (Model.oldPrice > Model.Price)
+            {
+                <span class="old-price">@Model.oldPrice.ToString("c0", new CultureInfo("vi-VN"))</span>
+            }
             <span class="new-price">@Model.Price.ToString("c0", new CultureInfo("vi-VN"))</span>
         </p>
         <div class="product-details">
@@ -28,14 +29,22 @@
         <br />
         <hr />
         <div class="category-container">
-            <p><strong>Danh mục:</strong> <a href="/category/@Model.CategoryId" class="category-name">@Model.CategoryName</a></p>
+            <p><strong>Danh mục: </strong><a href="/category/@Model.CategoryId" class="category-name">@Model.CategoryName</a></p>
         </div>
         <hr />
         <!-- Container chứa ô số lượng và nút Thêm vào giỏ hàng cùng hàng -->
+        <form action="@Url.RouteUrl("cart", new { productId = Model.Id, productName = Model.Name })">
         <div class="purchase-container">
-            <input type="number" id="quantity" value="1" inputmode="numeric" class="quantity-input" min="1">
-            <a href="#" class="add-to-cart" role="button"><span class="text">THÊM VÀO GIỎ HÀNG <svg class="cartIcon" viewBox="0 0 576 512"><path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"></path></svg></span></a>
+            
+            <input type="number" id="quantity" name="quantity" value="1" inputmode="numeric" class="quantity-input" min="1">
+            <!-- -->
+                <button class="cartBtn">
+                    <svg class="cart" fill="white" viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg"><path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"></path></svg>
+                    THÊM VÀO GIỎ HÀNG
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 640 512" class="product"><path d="M211.8 0c7.8 0 14.3 5.7 16.7 13.2C240.8 51.9 277.1 80 320 80s79.2-28.1 91.5-66.8C413.9 5.7 420.4 0 428.2 0h12.6c22.5 0 44.2 7.9 61.5 22.3L628.5 127.4c6.6 5.5 10.7 13.5 11.4 22.1s-2.1 17.1-7.8 23.6l-56 64c-11.4 13.1-31.2 14.6-44.6 3.5L480 197.7V448c0 35.3-28.7 64-64 64H224c-35.3 0-64-28.7-64-64V197.7l-51.5 42.9c-13.3 11.1-33.1 9.6-44.6-3.5l-56-64c-5.7-6.5-8.5-15-7.8-23.6s4.8-16.6 11.4-22.1L137.7 22.3C155 7.9 176.7 0 199.2 0h12.6z"></path></svg>
+                </button>
         </div>
+        </form>
     </div>
 </div>
 
@@ -100,21 +109,154 @@
                     <textarea name="comment"
                               class="review-textarea"
                               rows="4"
-                              placeholder="Viết bình luận của bạn..."></textarea>
+                              placeholder="Viết đánh giá của bạn..."></textarea>
 
-                    <div class="review-star-input">
-                        <span>Đánh giá:</span>
-                        <!-- 5 sao, dùng input radio -->
-                        <input type="radio" id="star5" name="rating" value="5" checked />
-                        <label for="star5" title="5 sao">★</label>
-                        <input type="radio" id="star4" name="rating" value="4" />
-                        <label for="star4" title="4 sao">★</label>
-                        <input type="radio" id="star3" name="rating" value="3" />
-                        <label for="star3" title="3 sao">★</label>
-                        <input type="radio" id="star2" name="rating" value="2" />
-                        <label for="star2" title="2 sao">★</label>
-                        <input type="radio" id="star1" name="rating" value="1" />
-                        <label for="star1" title="1 sao">★</label>
+                    <!-- Rating -->
+                    <div class="rating">
+                        <input value="5" name="rating" id="star5" type="radio" />
+                        <label title="5 stars" for="star5">
+                            <svg stroke-linejoin="round"
+                                 stroke-linecap="round"
+                                 stroke-width="2"
+                                 stroke="#000000"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 height="35"
+                                 width="35"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 class="svgOne">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <svg stroke-linejoin="round"
+                                 stroke-linecap="round"
+                                 stroke-width="2"
+                                 stroke="#000000"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 height="35"
+                                 width="35"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 class="svgTwo">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <div class="ombre"></div>
+                        </label>
+
+                        <input value="4" name="rating" id="star4" type="radio" />
+                        <label title="4 stars" for="star4">
+                            <svg stroke-linejoin="round"
+                                 stroke-linecap="round"
+                                 stroke-width="2"
+                                 stroke="#000000"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 height="35"
+                                 width="35"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 class="svgOne">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <svg stroke-linejoin="round"
+                                 stroke-linecap="round"
+                                 stroke-width="2"
+                                 stroke="#000000"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 height="35"
+                                 width="35"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 class="svgTwo">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <div class="ombre"></div>
+                        </label>
+
+                        <input value="3" name="rating" id="star3" type="radio" />
+                        <label title="3 stars" for="star3">
+                            <svg stroke-linejoin="round"
+                                 stroke-linecap="round"
+                                 stroke-width="2"
+                                 stroke="#000000"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 height="35"
+                                 width="35"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 class="svgOne">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <svg stroke-linejoin="round"
+                                 stroke-linecap="round"
+                                 stroke-width="2"
+                                 stroke="#000000"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 height="35"
+                                 width="35"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 class="svgTwo">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <div class="ombre"></div>
+                        </label>
+
+                        <input value="2" name="rating" id="star2" type="radio" />
+                        <label title="2 stars" for="star2">
+                            <svg stroke-linejoin="round"
+                                 stroke-linecap="round"
+                                 stroke-width="2"
+                                 stroke="#000000"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 height="35"
+                                 width="35"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 class="svgOne">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <svg stroke-linejoin="round"
+                                 stroke-linecap="round"
+                                 stroke-width="2"
+                                 stroke="#000000"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 height="35"
+                                 width="35"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 class="svgTwo">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <div class="ombre"></div>
+                        </label>
+
+                        <input value="1" name="rating" id="star1" type="radio" required/>
+                        <label title="1 star" for="star1">
+                            <svg stroke-linejoin="round"
+                                 stroke-linecap="round"
+                                 stroke-width="2"
+                                 stroke="#000000"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 height="35"
+                                 width="35"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 class="svgOne">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <svg stroke-linejoin="round"
+                                 stroke-linecap="round"
+                                 stroke-width="2"
+                                 stroke="#000000"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 height="35"
+                                 width="35"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 class="svgTwo">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <div class="ombre"></div>
+                        </label>
                     </div>
 
                     <button class="review-submit-btn">

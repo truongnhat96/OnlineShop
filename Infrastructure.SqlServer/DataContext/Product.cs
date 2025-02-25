@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Infrastructure.SqlServer.DataContext
 {
@@ -17,6 +12,7 @@ namespace Infrastructure.SqlServer.DataContext
         public required string Brand { get; set; }
         public int Quantity { get; set; }
         public DateTime Date_Import { get; set; }
+        public double OldPrice { get; set; } = 0;
         public double Price { get; set; }
         public int Sold { get; set; }
         public string? Coupon { get; set; }
@@ -26,7 +22,7 @@ namespace Infrastructure.SqlServer.DataContext
         [Url]
         public required string ImageUrl { get; set; }
         public virtual Category? Category { get; set; }
-        public virtual ItemInfor? ItemInfor { get; set; }
+        public virtual ICollection<ItemInfor> ItemInfor { get; set; } = [];
         public virtual ICollection<CartItem> CartItems { get; set; } = [];
         public virtual ICollection<Review> Reviews { get; set; } = [];
     }

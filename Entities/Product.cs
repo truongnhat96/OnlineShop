@@ -19,5 +19,6 @@ namespace Entities
         public int CategoryId { get; set; }
         public required string Description { get; set; }
         public string? ImageUrl { get; set; }
+        public double OldPrice {  get; set; }
     }
 }

@@ -70,7 +70,10 @@ namespace Infrastructure.SqlServer.Migrations
             modelBuilder.Entity("Infrastructure.SqlServer.DataContext.ItemInfor", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AccountName")
                         .HasMaxLength(100)
@@ -84,7 +87,12 @@ namespace Infrastructure.SqlServer.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("ItemInfors");
                 });
@@ -102,8 +110,8 @@ namespace Infrastructure.SqlServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("Date");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
@@ -111,7 +119,8 @@ namespace Infrastructure.SqlServer.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -162,6 +171,9 @@ namespace Infrastructure.SqlServer.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<double>("OldPrice")
+                        .HasColumnType("float");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
@@ -292,8 +304,8 @@ namespace Infrastructure.SqlServer.Migrations
             modelBuilder.Entity("Infrastructure.SqlServer.DataContext.ItemInfor", b =>
                 {
                     b.HasOne("Infrastructure.SqlServer.DataContext.Product", "Product")
-                        .WithOne("ItemInfor")
-                        .HasForeignKey("Infrastructure.SqlServer.DataContext.ItemInfor", "Id")
+                        .WithMany("ItemInfor")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -36,10 +36,6 @@ a:hover {
     text-align: start;
 }
 
-img {
-    width: 50px;
-    height: 50px;
-}
 
 .navbar-nav {
     display: flex;
@@ -175,6 +171,11 @@ img {
             transform: scale(1.1);
         }
 
+
+.ico-contact {
+    width: 50px;
+    height: 50px;
+}
 
 
 /*Search*/
@@ -421,3 +422,33 @@ input {
     padding-bottom: 200px;
 }
 
+
+/*Cart*/
+.icon {
+    color: black;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .icon svg {
+        width: 34px;
+        height: 34px;
+    }
+
+.badge {
+    position: absolute;
+    top: -7px; /* Adjust top for better alignment */
+    right: -7px; /* Adjust right for better alignment */
+    background-color: orange;
+    color: white;
+    border-radius: 50%;
+    width: 20px; /* Set fixed width for the badge */
+    height: 20px; /* Set fixed height for the badge */
+    display: flex;
+    align-items: center; /* Center text vertically */
+    justify-content: center; /* Center text horizontally */
+    font-size: 15px; /* Adjust font size to fit */
+    font-weight: bold;
+}

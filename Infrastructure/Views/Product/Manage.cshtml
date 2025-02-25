@@ -7,7 +7,6 @@
 <!-- Các nút thao tác -->
 <div>
     <button id="btnAdd" type="button" class="btn btn-success">Thêm Sản phẩm</button>
-    <button id="btnDelete" type="button" class="btn btn-danger">Xóa Sản phẩm</button>
     <a href="/Update" type="button" class="btn btn-primary">Xem sản phẩm đã lưu</a>
 </div>
 
@@ -62,7 +61,7 @@
         </div>
 
         <div class="form-group">
-            @Html.Label("Mô tả (Giới hạn 5 triệu ký tự)")
+            @Html.Label("Mô tả")
             @Html.TextArea("Description", null, new { @class = "form-control", rows = "4", placeholder = "Nhập mô tả sản phẩm" })
         </div>
 
@@ -75,19 +74,6 @@
     }
 </div>
 
-<!-- Form Xóa Sản phẩm -->
-<div id="deleteProductForm" style="padding-bottom:200px; display:none; margin-top:20px;">
-    @using (Html.BeginForm("Delete", "Product", FormMethod.Post))
-    {
-        <h3>Xóa Sản phẩm</h3>
-        <div class="form-group">
-            @Html.Label("Nhập ID sản phẩm cần xóa")
-            @Html.TextBox("id", null, new { @class = "form-control", placeholder = "Nhập ID sản phẩm" })
-        </div>
-        <br />
-        <button href="/Delete" type="submit" class="btn btn-danger">Xóa sản phẩm</button>
-    }
-</div>
 
 
 <!-- Script jQuery để hiển thị ẩn form theo nút bấm -->
@@ -95,12 +81,7 @@
 <script>
     $(document).ready(function () {
         $("#btnAdd").click(function () {
-            $("#deleteProductForm").hide(); // Ẩn form xóa nếu đang hiển thị
             $("#addProductForm").toggle();   // Toggle form thêm
-        });
-        $("#btnDelete").click(function () {
-            $("#addProductForm").hide();      // Ẩn form thêm nếu đang hiển thị
-            $("#deleteProductForm").toggle(); // Toggle form xóa
         });
     });
 </script>

@@ -20,6 +20,9 @@ namespace Infrastructure
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddSession(config =>
+                    config.IdleTimeout = TimeSpan.FromHours(9));
+
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
@@ -43,6 +46,8 @@ namespace Infrastructure
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseSession();
+
             app.UseRouting();
 
             app.UseAuthentication();
@@ -64,21 +69,24 @@ namespace Infrastructure
                  option.UseSqlServer(configuration.GetConnectionString("OnlineShopDatabase"))
                        .UseLazyLoadingProxies());
 
-            services.AddScoped<IUserRepository>(service => new UserRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
-            services.AddScoped<IRoleRepository>(service => new RoleRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
-            services.AddScoped<IPostRepository>(service => new PostRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
-            services.AddScoped<IReviewRepository>(service => new ReviewRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
-            services.AddScoped<IProductRepository>(service => new ProductRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
-            services.AddScoped<ICategoryRepository>(service => new CategoryRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
-            services.AddScoped<IItemInforRepository>(service => new ItemInforRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
+            services.AddTransient<IUserRepository>(service => new UserRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
+            services.AddTransient<IRoleRepository>(service => new RoleRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
+            services.AddTransient<IPostRepository>(service => new PostRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
+            services.AddTransient<IReviewRepository>(service => new ReviewRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
+            services.AddTransient<IProductRepository>(service => new ProductRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
+            services.AddTransient<ICategoryRepository>(service => new CategoryRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
+            services.AddTransient<IItemInforRepository>(service => new ItemInforRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
+            services.AddTransient<ICartItemRepository>(service => new CartItemRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
 
-            services.AddScoped<IUserUnitOfWork>(service => new UserUnitOfWork(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
-            services.AddScoped<IProductUnitOfWork>(service => new ProductUnitOfWork(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
-            services.AddScoped<ISearchingUnitOfWork>(service => new SearchingUnitOfWork(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
+            services.AddTransient<IUserUnitOfWork>(service => new UserUnitOfWork(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
+            services.AddTransient<IProductUnitOfWork>(service => new ProductUnitOfWork(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
+            services.AddTransient<ISearchingUnitOfWork>(service => new SearchingUnitOfWork(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
+            services.AddTransient<ICartItemUnitOfWork>(service => new CartItemUnitOfWork(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
 
-            services.AddScoped<IHomeManage>(service => new HomeManage(service.GetRequiredService<ISearchingUnitOfWork>()));
-            services.AddScoped<IUserManage>(service => new UserManage(service.GetRequiredService<IUserUnitOfWork>()));
-            services.AddScoped<IProductManage>(service => new ProductManage(service.GetRequiredService<IProductUnitOfWork>()));
+            services.AddTransient<IHomeManage>(service => new HomeManage(service.GetRequiredService<ISearchingUnitOfWork>()));
+            services.AddTransient<IUserManage>(service => new UserManage(service.GetRequiredService<IUserUnitOfWork>()));
+            services.AddTransient<IProductManage>(service => new ProductManage(service.GetRequiredService<IProductUnitOfWork>()));
+            services.AddTransient<ICartManage>(service => new CartManage(service.GetRequiredService<ICartItemUnitOfWork>()));
         }
     }
 }

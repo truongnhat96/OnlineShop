@@ -14,9 +14,16 @@ namespace UseCase
         {
             _unitOfWork = unitOfWork;
         }
-        public Task<Post> AddPostAsync(int userId, string title, string content, string image)
+        public async Task<Post> AddPostAsync(int userId, string title, string content, string image)
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.PostRepository.AddPostAsync(new Post
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                Title = title,
+                Content = content,
+                ImageUrl = image,
+            });
         }
 
         public async Task<Review> AddReviewAsync(int userId, int productId, int rating, string? comment = null)
@@ -32,19 +39,24 @@ namespace UseCase
             });
         }
 
-        public Task<Post> DeletePostAsync(Guid id)
+        public async Task<Post> DeletePostAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.PostRepository.DeletePostAsync(id);
         }
 
-        public Task<Post> GetPostDetailAsync(Guid id)
+        public async Task<Post> GetPostDetailAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.PostRepository.GetPostAsync(id);
         }
 
-        public Task<IEnumerable<Post>> GetPostsAsync(string keyword)
+        public async Task<IEnumerable<Post>> GetPostsAsync(string keyword)
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.PostRepository.FindPostsAsync(keyword);
+        }
+
+        public async Task<IEnumerable<Post>> GetPostsAsync()
+        {
+            return await _unitOfWork.PostRepository.GetPostsAsync();
         }
 
         public async Task<string> GetRoleNameAsync(int id)
@@ -56,6 +68,11 @@ namespace UseCase
         public async Task<User> GetUserAsync(string UoE)
         {
             return await _unitOfWork.UserRepository.GetUserAsync(UoE) ?? throw new ArgumentNullException("Email hoặc người dùng không tồn tại trong hệ thống");
+        }
+
+        public async Task<User> GetUserAsync(int id)
+        {
+            return await _unitOfWork.UserRepository.GetUserAsync(id) ?? throw new("User not exsist");
         }
 
         public async Task<User> LoginAsync(string username, string password)
@@ -73,9 +90,9 @@ namespace UseCase
             return await _unitOfWork.UserRepository.AddAccountAsync(user);
         }
 
-        public Task<Post> UpdatePostAsync(int userId, string title, string content, string image)
+        public async Task<Post> UpdatePostAsync(Post post)
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.PostRepository.UpdatePostAsync(post);
         }
 
         public async Task<ValidationResult> Validate(string username, string password, string confirmPassword, string email, bool passwordValid)

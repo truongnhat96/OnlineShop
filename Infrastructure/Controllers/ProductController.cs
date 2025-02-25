@@ -61,7 +61,6 @@ namespace Infrastructure.Controllers
 
             int pageSize = 6;
             int totalProduct = list.Count;
-            TempData["totalProduct"] = totalProduct;
             var totalPage = (int)Math.Ceiling((double)totalProduct / pageSize);
 
             var productsPerPage = list.Skip((page - 1) * pageSize).Take(pageSize).ToList();
@@ -71,7 +70,8 @@ namespace Infrastructure.Controllers
                 ProductList = productsPerPage,
                 CategoryId = id,
                 currentPage = page,
-                totalPage = totalPage
+                totalPage = totalPage,
+                totalProduct = totalProduct
             };
             foreach (var product in productsPerPage)
             {
@@ -82,8 +82,8 @@ namespace Infrastructure.Controllers
         }
 
 
-        [HttpGet("/Product/{id}/{oldPrice:double}", Name = "product")]
-        public async Task<IActionResult> Detail(int id, double oldPrice)
+        [HttpGet("/Product/{id}")]
+        public async Task<IActionResult> Detail(int id)
         {
             var product = await _productManager.GetProductDetail(id);
             var reviews = (await _productManager.GetReview(id)).ToList();
@@ -105,7 +105,7 @@ namespace Infrastructure.Controllers
                 Rating = await _productManager.GetAvgRating(id),
                 Reviews = reviews,
                 ReviewerName = reviewerName,
-                oldPrice = oldPrice,
+                oldPrice = product.OldPrice,
                 CategoryName = (await _productManager.GetAllCategoriesAsync()).FirstOrDefault(c => c.Id == product.CategoryId)?.Name ?? string.Empty
             };
             return View(model);
@@ -160,6 +160,7 @@ namespace Infrastructure.Controllers
                 {
                     Name = model.Name,
                     Price = model.Price,
+                    OldPrice = model.Price * new Random().Next(2, 4),
                     CategoryId = model.CategoryId,
                     Coupon = model.Coupon,
                     Brand = model.Brand,
@@ -193,20 +194,20 @@ namespace Infrastructure.Controllers
         }
 
 
-        [HttpPost("/Delete")]
-        public async Task<IActionResult> Delete([FromForm]int id)
+        [HttpGet("/Remove/{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 await _productManager.DeleteProductAsync(id);
-                TempData["Message"] = "Xóa sản phẩm thành công";
+                TempData["Message"] = "Xóa sản phẩm thành công!";
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                TempData["Message"] = "Xóa sản phẩm thất bại";
+                TempData["Message"] = "Xóa sản phẩm thất bại!";
             }
-            return RedirectToAction("Manage");
+            return RedirectToAction("Update");
         }
 
 
@@ -221,15 +222,13 @@ namespace Infrastructure.Controllers
                 Price = product.Price,
                 CategoryId = product.CategoryId,
                 Coupon = product.Coupon,
+                oldPrice = product.OldPrice,
                 Brand = product.Brand,
                 Date_Import = product.Date_Import,
                 Description = product.Description,
                 Quantity = product.Quantity,
+                Image = product.ImageUrl ?? string.Empty
             };
-            if(product.ImageUrl != null)
-            {
-                model.ImageUrl = new FormFile(new MemoryStream(), 0, 0, product.ImageUrl, product.ImageUrl);
-            }
             return View(model);
         }
 
@@ -238,7 +237,7 @@ namespace Infrastructure.Controllers
         [HttpPost("/Edit/{id}")]
         public async Task<IActionResult> Edit(ProductModel model, [FromRoute]int id)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && double.TryParse(TempData["OldPrice"]?.ToString() ?? "0", out double oldPrice) && double.TryParse(TempData["Price"]?.ToString() ?? "0", out double pre_price))
             {
                 var product = new Product
                 {
@@ -253,6 +252,18 @@ namespace Infrastructure.Controllers
                     Quantity = model.Quantity,
                 };
 
+                // Check if the price is lower than the previous price
+                if (product.Price < pre_price)
+                {
+                    product.OldPrice = pre_price;
+                    model.oldPrice = pre_price;
+                }
+                else
+                {
+                    product.OldPrice = oldPrice;
+                    model.oldPrice = oldPrice;
+                }
+
                 if (model.ImageUrl != null)
                 {
                     var fileName = model.ImageUrl.FileName;
@@ -266,6 +277,7 @@ namespace Infrastructure.Controllers
                     }
                     product.ImageUrl = fileName;
                 }
+                model.Image = product.ImageUrl ?? string.Empty;
                 await _productManager.UpdateProductAsync(product);
                 TempData["Notify"] = "Cập nhật sản phẩm thành công";
             }

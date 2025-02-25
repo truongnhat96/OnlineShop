@@ -1,0 +1,302 @@
+﻿@media (min-width: 1225px) {
+    .h-custom {
+        height: 100vh !important;
+    }
+}
+
+.card-registration .select-input.form-control[readonly]:not([disabled]) {
+    font-size: 1rem;
+    line-height: 2.15;
+    padding-left: .75em;
+    padding-right: .75em;
+}
+
+.card-registration .select-arrow {
+    top: 13px;
+}
+
+
+.quantity-input {
+    width: 90px;
+    height: 50px;
+    padding: 5px;
+    color: black;
+    font-weight: bold;
+    text-align: center;
+    font-size: 18px;
+    background: #F3F5FE;
+    border: 1px solid #F3F5FE;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    opacity: 1;
+}
+
+.product-link {
+    display: inline-block; /* Đảm bảo thẻ a chiếm toàn bộ diện tích */
+    text-decoration: none; /* Bỏ gạch chân */
+    color: inherit; /* Giữ màu chữ mặc định */
+}
+
+    .product-link:hover {
+        color: #2DD100;
+    }
+
+
+/*Nút update cart*/
+.cursor-disable {
+    cursor: not-allowed;
+}
+
+.btn.disabled {
+    background-color: white;
+    border: 1px solid black;
+    opacity: 0.5; /* Độ sáng 50% */
+    color: black;
+    transition: background-color 0.3s ease, opacity 0.3s ease; /* Thêm hiệu ứng mượt mà khi thay đổi trạng thái */
+}
+
+/* Hiệu ứng khi nút được kích hoạt */
+.btn-update {
+    align-items: center;
+    background-image: linear-gradient(144deg, #af40ff, #5b42f3 50%, #00ddeb);
+    border: 0;
+    border-radius: 8px;
+    box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
+    box-sizing: border-box;
+    color: #ffffff;
+    display: flex;
+    font-size: 18px;
+    justify-content: center;
+    line-height: 1em;
+    max-width: 100%;
+    min-width: 140px;
+    padding: 3px;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+    .btn-update:active,
+    .btn-update:hover {
+        outline: 0;
+    }
+
+    .btn-update span {
+        background-color: rgb(5, 6, 45);
+        padding: 16px 24px;
+        border-radius: 6px;
+        width: 100%;
+        height: 100%;
+        transition: 300ms;
+    }
+
+    .btn-update:hover span {
+        background: none;
+    }
+
+    .btn-update:active {
+        transform: scale(0.9);
+    }
+
+
+/*Nút thanh toán */
+.pay-btn {
+    position: relative;
+    padding: 12px 24px;
+    font-size: 21px;
+    background: #1a1a1a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+    .pay-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    }
+
+.icon-container {
+    position: relative;
+    width: 24px;
+    height: 24px;
+}
+
+.icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 24px;
+    height: 24px;
+    color: #22c55e;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.default-icon {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Hover animations */
+.pay-btn:hover .icon {
+    animation: none;
+}
+
+.pay-btn:hover .wallet-icon {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.pay-btn:hover .card-icon {
+    animation: iconRotate 2.5s infinite;
+    animation-delay: 0s;
+}
+
+.pay-btn:hover .payment-icon {
+    animation: iconRotate 2.5s infinite;
+    animation-delay: 0.5s;
+}
+
+.pay-btn:hover .dollar-icon {
+    animation: iconRotate 2.5s infinite;
+    animation-delay: 1s;
+}
+
+.pay-btn:hover .check-icon {
+    animation: iconRotate 2.5s infinite;
+    animation-delay: 1.5s;
+}
+
+/* Active state - show only checkmark */
+.pay-btn:active .icon {
+    animation: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.pay-btn:active .check-icon {
+    animation: checkmarkAppear 0.6s ease forwards;
+    visibility: visible;
+}
+
+.btn-text {
+    font-weight: 600;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+@keyframes iconRotate {
+    0% {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px) scale(0.5);
+    }
+
+    5% {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+    }
+
+    15% {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+    }
+
+    20% {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px) scale(0.5);
+    }
+
+    100% {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px) scale(0.5);
+    }
+}
+
+@keyframes checkmarkAppear {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) rotate(-45deg);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: scale(1.2) rotate(0deg);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+
+/* Alert */
+.alert {
+    position: absolute;
+    display: flex;
+    top: 200px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 30px;
+    align-items: center;
+    border-radius: 6px;
+    background-color: #CCE5FF; 
+    color: #004085;
+    width: 1265px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    /* Hiệu ứng mờ dần ban đầu */
+    opacity: 0;
+    /* Kéo lên một chút để khi hiển thị sẽ trượt nhẹ xuống */
+    transform: translate(-50%, calc(-50% - 10px));
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+    /* Khi thêm class .show => alert hiển thị (opacity = 1) */
+    .alert.show {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+
+/* Icon dấu tích */
+.alert-icon {
+    margin-right: 10px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* Text thông báo */
+.alert-text {
+    justify-content: center;
+    font-size: 20px;
+}
+
+/* Nút đóng (dấu x) */
+.alert-close {
+    cursor: pointer;
+    font-size: 24px;
+    margin-left: auto; /* đẩy nút đóng sang phải */
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+    .alert-close:hover {
+        color: #001F3F; /* hover đổi màu nhẹ */
+    }

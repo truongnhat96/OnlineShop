@@ -1,0 +1,189 @@
+﻿body {
+    font-family: Arial, sans-serif;
+}
+
+.main {
+    display: flex;
+    margin: 20px;
+    padding-top: 20px;
+    padding-bottom: 100px;
+}
+
+.head {
+    flex: 3;
+    margin-right: 20px;
+}
+
+.content {
+    margin-top: 20px;
+    font-size: 25px;
+    line-height: 1.6;
+}
+
+.category {
+    background-color: #2DD100;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    border: 1px solid #2DD100;
+    display: inline-block;
+    transition: all 0.3s;
+    text-decoration: none;
+}
+
+    .category:hover {
+        color: #2DD100;
+        background-color: white;
+    }
+
+.title {
+    font-family: 'Quicksand';
+    font-size: 40px;
+    font-weight: 100;
+    margin-bottom: 10px;
+}
+
+.date {
+    color: gray;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.comments {
+    color: gray;
+    font-size: 14px;
+}
+
+
+.sidebar {
+    flex: 1;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+
+.ad-link {
+    text-decoration: none; /* Xóa gạch chân khỏi liên kết */
+    color: inherit; /* Giữ nguyên màu chữ */
+}
+
+
+.advertisement {
+    background-color: #fff;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+}
+
+    .advertisement .ad-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #000;
+        margin: 10px 0;
+    }
+
+    .advertisement .advertisement-price {
+        font-size: 16px;
+        color: #d9534f;
+        font-weight: bold;
+    }
+
+.advertisement-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+    .advertisement-image:hover {
+        transform: scale(1.05); /* Hiệu ứng khi hover vào ảnh */
+    }
+
+
+/* Like */
+#heart {
+    display: none;
+}
+
+.like-button {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    height: 48px;
+    width: 136px;
+    margin-left: auto;
+    border-radius: 16px;
+    border: none;
+    background-color: #1d1d1d;
+    overflow: hidden;
+    box-shadow: inset -2px -2px 5px rgba(255, 255, 255, 0.2), inset 2px 2px 5px rgba(0, 0, 0, 0.1), 4px 4px 10px rgba(0, 0, 0, 0.4), -2px -2px 8px rgba(255, 255, 255, 0.1);
+}
+
+.like {
+    width: 70%;
+    height: 100%;
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.like-icon {
+    fill: #505050;
+    height: 28px;
+    width: 28px;
+}
+
+.like-text {
+    color: #fcfcfc;
+    font-size: 16px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.like-count {
+    position: absolute;
+    right: 0;
+    width: 30%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #717070;
+    font-size: 16px;
+    border-left: 2px solid #4e4e4e;
+    transition: all 0.5s ease-out;
+}
+
+    .like-count.two {
+        transform: translateY(40px);
+    }
+
+.on:checked ~ .like .like-icon {
+    fill: #fc4e4e;
+    animation: enlarge 0.2s ease-out 1;
+    transition: all 0.2s ease-out;
+}
+
+.on:checked ~ .like-count.two {
+    transform: translateX(0);
+    color: #fcfcfc;
+}
+
+.on:checked ~ .like-count.one {
+    transform: translateY(-40px);
+}
+
+@keyframes enlarge {
+    0% {
+        transform: scale(0.5);
+    }
+
+    100% {
+        transform: scale(1.2);
+    }
+}

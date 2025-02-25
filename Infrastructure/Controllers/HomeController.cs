@@ -38,11 +38,8 @@ namespace Infrastructure.Controllers
             int totalItems = list1.Count() + list2.Count();
             int totalPage = (int)Math.Ceiling((double)totalItems / pageSize);
 
-            int takePrd = list1.Skip((page - 1) * pageSize / 2).Count() - 5;
-            int takePost = list2.Skip((page - 1) * pageSize / 2).Count() - 5;
-
-            var products = list1.Skip((page - 1) * pageSize / 2).Take(pageSize / 2 - takePost).ToList();
-            var posts = list2.Skip((page - 1) * pageSize / 2).Take(pageSize / 2 - takePrd).ToList();
+            var products = list1.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var posts = list2.Skip((page - 1) * (pageSize / 2)).Take(pageSize / 2).ToList();
 
             var model = new SearchResultModel
             {

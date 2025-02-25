@@ -14,3 +14,46 @@
     margin-bottom: 1.5rem;
     color: #333;
 }
+
+/* Cảnh báo lỗi */
+#warning-message {
+    font-size: 1rem;
+    font-weight: bold;
+    color: red;
+    margin-top: 10px;
+}
+
+.invalid-input {
+    border: 2px solid red !important; /* Bôi đỏ viền */
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Thêm hiệu ứng shadow */
+}
+
+.valid-input {
+    border: 1px solid #ccc !important;
+    box-shadow: none;
+}
+
+/*Save*/
+.save {
+    background-color: #0050ec;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 15px 20px;
+    border-radius: 2em;
+    cursor: pointer;
+    transition: 0.1s ease;
+    border-width: 0;
+    box-shadow: 1px 5px 0 0 #0e285d;
+}
+
+    .save:hover {
+        transform: translateY(-4px);
+        box-shadow: 1px 9px 0 0 #0e285d;
+    }
+
+    .save:active {
+        transform: translateY(4px);
+        box-shadow: 0px 0px 0 0 #0e285d;
+    }
+

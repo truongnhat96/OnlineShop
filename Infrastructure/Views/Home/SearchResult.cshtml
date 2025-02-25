@@ -1,6 +1,5 @@
 ﻿@model SearchResultModel
 @{
-    var rd = new Random();
 }
 
 <div class="search-title">Kết quả tìm kiếm cho: <strong>@Model.Keyword</strong></div>
@@ -9,16 +8,13 @@
     <div class="product-list">
         <div class="product-item">
             <div class="image-container">
-                @{
-                    var rdPrice = rd.Next(2, 4) * product.Price;
-                }
-                <a href="/product/@product.Id/@rdPrice">
+                <a href="/product/@product.Id">
                     <img src="/uploads/products/@product.ImageUrl" alt="Sản phẩm 1">
                 </a>
             </div>
-            <a href="/product/@product.Id/@rdPrice" class="product-name">@product.Name</a>
+            <a href="/product/@product.Id" class="product-name">@product.Name</a>
             <div class="product-description">Thương Hiệu: @product.Brand</div>
-            <a href="/product/@product.Id/@rdPrice" class="read-more">READ MORE</a>
+            <a href="/product/@product.Id" class="read-more">READ MORE</a>
         </div>
     </div>
 }
@@ -27,13 +23,12 @@
     <div class="product-list">
         <div class="product-item">
             <div class="image-container">
-                <a href="#">
-                    <img src="/uploads/posts/@post.Image" alt="">
+                <a href="/Post/@post.Id">
+                    <img src="/uploads/posts/@post.ImageUrl" alt="">
                 </a>
             </div>
-            <a href="#" class="product-name">@post.Title</a>
-            <div class="product-description">@(post.Content.Substring(0, 60))...</div>
-            <a href="#" class="read-more">READ MORE</a>
+            <a href="/Post/@post.Id" class="product-name">@post.Title</a>
+            <a href="/Post/@post.Id" class="read-more">READ MORE</a>
         </div>
     </div>
 }

@@ -22,6 +22,7 @@ namespace Infrastructure.Models
         public int Rating { get; set; }
         public int currentPage { get; set; }
         public int totalPage { get; set; }
+        public int totalProduct { get; set; }
         public List<string> ReviewerName { get; set; } = [];
         public List<Review> Reviews { get; set; } = [];
     }

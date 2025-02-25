@@ -2,26 +2,38 @@
 @{
     ViewData["Title"] = "Đăng nhập";
 }
-<br />
-<br />
-<div class="d-flex border-5 justify-content-center align-items-center vh-100 pb-4">
+
+<div class="d-flex border-5 justify-content-center align-items-center vh-100 pb-4" style="margin-top: 100px;">
     <form asp-action="Login" method="post" class="form">
         <p class="form-title">Đăng nhập để tiếp tục</p>
         @if(Html.ViewContext.ModelState["LoginError"]?.Errors.Count > 0)
         {
-            <div class="alert alert-danger" role="alert">
+            <div class="alert alert-danger" style="margin-bottom: 42px;" role="alert">
                 @Html.ViewContext.ModelState["LoginError"]?.Errors.FirstOrDefault()?.ErrorMessage
+                <span>
+                    <i class="fa-solid fa-exclamation-circle"></i>
+                    </span>
             </div>
         }
-        <div class="input-container">
-            <input name="Username" type="text" placeholder="Tên tài khoản" required>
-            <span>
-            </span>
+
+        <div class="brutalist-container" style="margin-bottom: 53px;">
+            <input name="Username" 
+                   placeholder="Enter Username"
+                   class="brutalist-input smooth-type"
+                   type="text" required/>
+            <label class="brutalist-label">Tên tài khoản</label>
         </div>
-        <div class="input-container">
-            <input name="Password" type="password" id="password" placeholder="Mật khẩu" required>
+
+        <div class="brutalist-container">
+            <input name="Password"
+                   id="password"
+                   placeholder="Enter Password"
+                   class="brutalist-input smooth-type"
+                   type="password" required/>
+            <label class="brutalist-label">Mật khẩu</label>
             <i class="fa-solid fa-eye toggle-password" id="togglePassword"></i>
         </div>
+
         <div class="justify-content-end">
             <p class="forgetpass-link">
                 <a href="/ForgotPassword">Quên mật khẩu?</a>
@@ -42,6 +54,19 @@
     </form>
 </div>
 
+<script>
+        const passwordInput = document.getElementById('password');
+    const togglePassword = document.getElementById('togglePassword');
 
+    togglePassword.addEventListener('click', () => {
+        // Toggle the type attribute
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+
+        // Toggle the eye icon
+        togglePassword.classList.toggle('fa-eye');
+        togglePassword.classList.toggle('fa-eye-slash');
+    });
+</script>
 
 

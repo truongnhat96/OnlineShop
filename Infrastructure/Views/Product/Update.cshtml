@@ -1,9 +1,15 @@
 ﻿@model ProductModel
 @{
     ViewData["Title"] = "Cập nhật";
-    int padding = 300 + (Model.ProductList.Count * 20);
+    int padding = 300 + (Model.ProductList.Count * 10);
 }
 
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info mt-4" role="alert">
+        @TempData["Message"]
+    </div>
+}
 <div class="main-container" style="padding-bottom: @(padding)px">
     @if (Model.ProductList.Count == 0)
     {
@@ -30,6 +36,7 @@
                                     <p>Giá: @product.Price.ToString("c0", new CultureInfo("vi-VN"))</p>
                                     <p>Ngày nhập: @product.Date_Import.ToShortDateString()</p>
                                     <a href="/Edit/@product.Id" class="btn btn-primary mt-auto">Sửa thông tin</a>
+                                    <a href="@Url.Action("Delete", new {id = product.Id})" class="btn btn-danger mt-3">Xóa Sản phẩm</a>
                                 </div>
                             </div>
                         </div>
@@ -39,7 +46,7 @@
             <br />
             <br />
             <a href="/Manage" class="btn btn-primary">← Quay lại</a>
-        }
         <hr />
+        }
     }
 </div>

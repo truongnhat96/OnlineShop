@@ -1,26 +1,36 @@
-﻿@{
+﻿@model PostModel
+@{
 }
-<script src="https://cdn.ckeditor.com/ckeditor5/39.0.0/classic/ckeditor.js"></script>
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="form-container">
-                <h1 class="custom-header">Đăng bài viết mới</h1>
+                @if (TempData["submit"] != null)
+                {
+                    <div class="alert alert-success" role="alert">
+                        @TempData["submit"]
+                    </div>
+                }
+                <h2 class="custom-header">Tạo hoặc sửa thông tin bài viết tại đây</h2>
                 <form id="blogForm" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="title" class="form-label">Tiêu đề:</label>
-                        <input type="text" id="title" name="title" class="form-control" placeholder="Nhập tiêu đề bài viết..." required>
+                        <input type="text" id="title" name="Title" value="@Model?.Title" class="form-control" placeholder="Nhập tiêu đề bài viết..." required>
                     </div>
                     <div class="mb-3">
                         <label for="content" class="form-label">Nội dung:</label>
-                        <textarea id="content" name="content" class="form-control" placeholder="Nhập nội dung bài viết..." rows="6" required></textarea>
+                        <textarea id="content" name="Content" asp-for="Content" class="form-control" placeholder="Nhập nội dung bài viết..." rows="6" required></textarea>
+                    </div>
+                    <!-- Cảnh báo sẽ hiển thị ở đây -->
+                    <div id="warning-message" class="text-danger" style="display: none;">
+                        Nội dung quá lớn. Vui lòng giảm kích thước trước khi tiếp tục!
                     </div>
                     <div class="mb-3">
-                        <label for="images" class="form-label">Chọn ảnh (có thể chọn nhiều ảnh):</label>
-                        <input type="file" id="images" name="images" class="form-control" multiple accept="image/*">
+                        <label for="images" class="form-label">Chọn ảnh bìa:</label>
+                        <input type="file" id="images" name="ImageUrl" class="form-control" accept="image/*" required>
                     </div>
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary">Đăng bài</button>
+                        <button id="submit-button" type="submit" class="save">Lưu bài viết</button>
                     </div>
                 </form>
             </div>
@@ -28,23 +38,55 @@
     </div>
 </div>
 
+
 @section Scripts {
     <script>
         $(document).ready(function () {
+
+            const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+
+            // Khởi tạo Summernote
             $('#content').summernote({
                 placeholder: 'Nhập nội dung tại đây...',
-                height: 200,
+                height: 350,
                 toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'underline', 'clear']],
-                ['fontname', ['fontname']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['table', ['table']],
-                ['insert', ['link', 'picture', 'video']],
-                ['view', ['fullscreen', 'codeview', 'help']],
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']],
                 ]
+            });
+
+            // Lắng nghe sự kiện thay đổi nội dung
+            $('#content').on('summernote.change', function () {
+                let content = $('#content').summernote('code');  // Lấy mã HTML của nội dung
+                let contentSize = new Blob([content]).size;  // Tính kích thước nội dung
+
+                console.log("Content size: " + contentSize + " bytes");
+
+                // Kiểm tra nếu nội dung vượt quá 2MB
+                if (contentSize > maxSize) {
+                    // Thêm lớp invalid-input (bôi đỏ viền)
+                    $('#content').addClass('invalid-input').removeClass('valid-input');
+                    // Hiển thị cảnh báo
+                    $('#warning-message').show();
+                    // Vô hiệu hóa nút submit
+                    $('#submit-button').prop('disabled', true);
+                } else {
+                    // Xóa lớp invalid-input và thêm lớp valid-input (reset viền)
+                    $('#content').removeClass('invalid-input').addClass('valid-input');
+                    // Ẩn cảnh báo
+                    $('#warning-message').hide();
+                    // Kích hoạt nút submit
+                    $('#submit-button').prop('disabled', false);
+                }
             });
         });
     </script>
 }
+
+

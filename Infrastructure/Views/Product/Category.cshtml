@@ -1,16 +1,11 @@
 ﻿@model ProductModel
 @{
     int pb = 150 + (Model.ProductList.Count * 20);
-    Random rdPrice = new Random();
+
     var ReturnUrl = Url.Action("Category");
     if(!string.IsNullOrEmpty(ReturnUrl) && ReturnUrl.Contains("page"))
     {
         ReturnUrl = ReturnUrl.Replace($"/page/{Model.currentPage}", "");
-    }
-    int totalProduct = 0;
-    if (TempData["totalProduct"] != null && TempData["totalProduct"] is int)
-    {
-        totalProduct = (int)TempData["totalProduct"]!;
     }
 }
 
@@ -21,7 +16,7 @@
             <button type="submit" class="search-button">&#x1F50E;&#xFE0E;</button>
         </div>
         @if(Model.totalPage > 1) {
-            <span class="result-count">Hiển thị @((Model.currentPage - 1) * 6 + 1) - @(Model.currentPage * 6 < totalProduct ? Model.currentPage * 6 : totalProduct) của @totalProduct kết quả</span>
+            <span class="result-count">Hiển thị @((Model.currentPage - 1) * 6 + 1) - @(Model.currentPage * 6 < Model.totalProduct ? Model.currentPage * 6 : Model.totalProduct) của @Model.totalProduct kết quả</span>
         }
         else {
             <span class="result-count">Hiển thị tất cả @Model.ProductList.Count kết quả</span>
@@ -68,24 +63,31 @@
     <section class="products">
         @for(int i = 0; i<Model.ProductList.Count; i++){
             <div class="product">
-                <span class="discount">GIẢM GIÁ!</span>
-                @{
-                    int expo = rdPrice.Next(2, 4);
+                @if (Model.ProductList[i].OldPrice > Model.ProductList[i].Price)
+                {
+                    <span class="discount">GIẢM GIÁ!</span>
                 }
-                <img src="/uploads/products/@Model.ProductList[i].ImageUrl">
-                <a href="/Product/@Model.ProductList[i].Id/@(Model.ProductList[i].Price * expo)" class="product-name">@Model.ProductList[i].Name</a>
+                <a href="/Product/@Model.ProductList[i].Id" class="product-link">
+                    <div class="product-image-container">
+                        <img src="/uploads/products/@Model.ProductList[i].ImageUrl" class="product-image">
+                    </div>
+                </a>
+                <a href="/Product/@Model.ProductList[i].Id" class="product-name">@Model.ProductList[i].Name</a>
                 @for (int j = 0; j < Model.ProductListReview[i]; j++)
                 {
                     <span class="star">⭐</span>
                 }
-                <p class="old-price">@((Model.ProductList[i].Price * expo).ToString("c0", new CultureInfo("vi-VN")))</p>
+                @if (Model.ProductList[i].OldPrice > Model.ProductList[i].Price)
+                {
+                    <p class="old-price">@((Model.ProductList[i].OldPrice).ToString("c0", new CultureInfo("vi-VN")))</p>
+                }
                 <p class="new-price">@(Model.ProductList[i].Price.ToString("c0", new CultureInfo("vi-VN")))</p>
-                <a href="#" role="button" class="btn-cart">THÊM VÀO GIỎ HÀNG</a>
+                <a href="/Cart-Add/@(Model.ProductList[i].Id)/@(Model.ProductList[i].Name)?quantity=1" role="button" class="btn-cart">THÊM VÀO GIỎ HÀNG</a>
             </div>
         }
     </section>
 </div>
-<div class="pagination" style="padding-bottom: @(pb)px">
+<div class="pagination" style="padding-bottom: @(pb)px;">
     @if(Model.totalPage > 1) {
         @if (Model.currentPage > 1)
         {

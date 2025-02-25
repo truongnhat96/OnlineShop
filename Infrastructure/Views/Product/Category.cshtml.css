@@ -139,7 +139,7 @@ h3 {
             border: 3px solid red;
         }
 
-    .slider::-moz-range-thumb {
+    .slider::-webkit-slider-thumb {
         width: 20px;
         height: 20px;
         background: white;
@@ -210,7 +210,7 @@ ul {
 
 .product {
     width: 285px;
-    height: 450px;
+    height: 520px;
     border: 1px solid #ddd;
     padding: 10px;
     border-radius: 10px;
@@ -220,10 +220,29 @@ ul {
     transition: box-shadow 0.3s;
 }
 
-.product img {
-    width: 100%;
-    height: 270px;
+
+.product-image-container {
+    position: relative;
+    overflow: hidden;
 }
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+    border-bottom: 2px solid #f4f4f4;
+}
+
+.product-link {
+    display: block; /* Đảm bảo thẻ a chiếm toàn bộ diện tích */
+    text-decoration: none; /* Bỏ gạch chân */
+    color: inherit; /* Giữ màu chữ mặc định */
+}
+
+.product-image-container:hover .product-image {
+    transform: scale(1.1);
+}
+
 
 .product-name {
     font-size: 16px;
@@ -263,6 +282,7 @@ ul {
     font-size: 14px;
     font-weight: bold;
     border-radius: 5px;
+    z-index: 1;
 }
 
 

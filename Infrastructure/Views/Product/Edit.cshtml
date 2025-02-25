@@ -1,6 +1,8 @@
 ﻿@model ProductModel
 @{
     ViewData["Title"] = "Edit Product";
+    TempData["Price"] = Model.Price.ToString();
+    TempData["OldPrice"] = Model.oldPrice.ToString();
 }
 
 <div class="justify-content-center" style="padding-bottom:200px;">
@@ -40,8 +42,9 @@
         </div>
 
         <div class="form-group">
-            @Html.Label("Giá")
-            @Html.TextBox("Price", Model.Price, new { @class = "form-control", type = "number", step = "0.01", placeholder = "Nhập giá" })
+            <label style="display:flex">Giá Gốc: @Model.oldPrice.ToString("c0", new CultureInfo("vi-VN"))</label>
+            @Html.Label("Giá hiện tại")
+            @Html.TextBox("Price", Model.Price, new { @class = "form-control", type = "number", step = "1", placeholder = "Nhập giá" })
         </div>
 
         <div class="form-group">
@@ -55,7 +58,8 @@
         </div>
 
         <div class="form-group">
-            @Html.Label("Ảnh sản phẩm")
+            @Html.Label("Ảnh sản phẩm - ")
+            <label>Url hiện tại: @Model.Image</label>
             <input asp-for=@(Model.ImageUrl) type="file" class="form-control" accept="image/*" required/>
         </div>
         <br />

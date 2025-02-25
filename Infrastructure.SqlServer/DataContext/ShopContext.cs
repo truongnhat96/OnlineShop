@@ -8,10 +8,9 @@ namespace Infrastructure.SqlServer.DataContext
         private readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=OnlineShop;Trusted_Connection=True;TrustServerCertificate=True;";
 
         //Use to run command add migrations and update database
-        /*public ShopContext()
+        public ShopContext()
         {
-            _connectionString = @"Server=.\SQLEXPRESS;Database=OnlineShop;Trusted_Connection=True;TrustServerCertificate=True;";
-        }*/
+        }
 
         public ShopContext(DbContextOptions<ShopContext> options) : base(options)
         {
@@ -27,7 +26,7 @@ namespace Infrastructure.SqlServer.DataContext
         public required DbSet<Review> Reviews { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(_connectionString).UseLazyLoadingProxies();
+            optionsBuilder.UseSqlServer(_connectionString).UseLazyLoadingProxies().EnableSensitiveDataLogging();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -42,8 +41,8 @@ namespace Infrastructure.SqlServer.DataContext
             modelBuilder.Entity<ItemInfor>(entity =>
             {
                 entity.HasOne(i => i.Product)
-                    .WithOne(p => p.ItemInfor)
-                    .HasForeignKey<ItemInfor>(i => i.Id)
+                    .WithMany(p => p.ItemInfor)
+                    .HasForeignKey(i => i.ProductId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
             modelBuilder.Entity<Review>(entity =>

@@ -1,0 +1,297 @@
+﻿@using System.Text.Json
+@model List<CartModel>
+@{
+    int totalItems = 0;
+    double totalPrice = 0;
+    foreach (var item in Model)
+    {
+        totalItems += item.Quantity;
+        totalPrice += item.Product.Price * item.Quantity;
+    }
+    int pt = 0;
+    int mb = 300 + (Model.Count * 10);
+}
+
+@if(TempData["CartMessage"] != null)
+{
+    pt = 100;
+    <div class="alert" id="alertBox">
+        <span class="alert-icon">✔</span>
+        <span class="alert-text">@TempData["CartMessage"]</span>
+        <span class="alert-close" id="closeBtn">&times;</span>
+    </div>
+}
+
+@if (Model.Count != 0)
+{
+    <section class="h-100 h-custom" style="margin-bottom: @(mb)px; margin-top: @(pt)px;">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12">
+                    <div class="card card-registration card-registration-2" style="border-radius: 15px;">
+                        <div class="card-body p-0">
+                            <div class="row g-0">
+                                <div class="col-lg-8">
+                                    <div class="p-5">
+                                        <div class="d-flex justify-content-between align-items-center mb-5">
+                                            <h1 class="fw-bold mb-0">Shopping Cart</h1>
+                                            <h6 class="mb-0 text-muted">@totalItems items</h6>
+                                        </div>
+                                        <hr class="my-4">
+
+                                        @foreach (var item in Model)
+                                        {
+                                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+
+                                                <div class="col-md-2 col-lg-2 col-xl-2">
+                                                    <a href="/product/@item.Product.Id" class="product-link">
+                                                        <img src="/uploads/products/@item.Product.ImageUrl"
+                                                        class="img-fluid rounded-3" alt="@item.Product.Name">
+                                                    </a>
+                                                </div>
+                                                <div class="col-md-3 col-lg-3 col-xl-3">
+                                                    <a href="/product/@item.Product.Id" class="product-link">
+                                                        <h6 class="mb-0">@item.Product.Name</h6>
+                                                    </a>
+                                                </div>
+                                                <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+
+                                                    <input type="number" class="quantity-input" value="@item.Quantity" inputmode="numeric" min="0" data-product-id="@item.Product.Id">
+
+                                                </div>
+                                                <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                                                    <h6 class="mb-0">@item.Product.Price.ToString("c0", new CultureInfo("vi-VN"))</h6>
+                                                </div>
+                                                <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                                                    <a href="/Cart-Remove/@item.Product.Id/@item.Product.Name" class="text-muted"><i class="fas fa-times"></i></a>
+                                                </div>
+                                            </div>
+
+                                            <hr class="my-4">
+                                        }
+
+
+                                        <div class="pt-5 d-flex justify-content-between">
+                                            <h6 class="mb-0">
+                                                <a href="/" class="text-body">
+                                                    <i class="fas fa-long-arrow-alt-left me-2"></i>Back to shop
+                                                </a>
+                                            </h6>
+                                            <div id="wrapper" class="cursor-disable">
+                                                <button id="button-update" class="btn-update" disabled>
+                                                    <span class="text">Update Cart</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 bg-body-tertiary">
+                                    <div class="p-5">
+                                        <h3 class="fw-bold mb-5 mt-2 pt-1">Tổng cộng giỏ hàng</h3>
+                                        <hr class="my-4">
+
+                                        <div class="d-flex justify-content-between mb-4">
+                                            <h5 class="text-uppercase">Số lượng: @totalItems</h5>
+                                            <h5>@totalPrice.ToString("c0", new CultureInfo("vi-VN"))</h5>
+                                        </div>
+
+                                        <h5 class="text-uppercase mb-3">Mã giảm giá</h5>
+
+                                        <div class="mb-5">
+                                            <div data-mdb-input-init class="form-outline">
+                                                <input type="text" id="form3Examplea2" class="form-control form-control-lg mb-2" placeholder="Enter your coupon" />
+                                                @* <label class="form-label" for="form3Examplea2">Enter your coupon</label> *@
+                                                <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-block btn-lg"
+                                                data-mdb-ripple-color="dark">
+                                                    Áp dụng
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <hr class="my-4">
+
+                                        <div class="d-flex justify-content-between mb-5">
+                                            <h5 class="text-uppercase">Tổng tiền:</h5>
+                                            <h5>@totalPrice.ToString("c0", new CultureInfo("vi-VN"))</h5>
+                                        </div>
+
+                                        <!---->
+                                        <button class="pay-btn">
+                                            <span class="btn-text">Thanh Toán</span>
+                                            <div class="icon-container">
+                                                <svg viewBox="0 0 24 24" class="icon card-icon">
+                                                    <path d="M20,8H4V6H20M20,18H4V12H20M20,4H4C2.89,4 2,4.89 2,6V18C2,19.11 2.89,20 4,20H20C21.11,20 22,19.11 22,18V6C22,4.89 21.11,4 20,4Z"
+                                                    fill="currentColor"></path>
+                                                </svg>
+                                                <svg viewBox="0 0 24 24" class="icon payment-icon">
+                                                    <path d="M2,17H22V21H2V17M6.25,7H9V6H6V3H18V6H15V7H17.75L19,17H5L6.25,7M9,10H15V8H9V10M9,13H15V11H9V13Z"
+                                                    fill="currentColor"></path>
+                                                </svg>
+                                                <svg viewBox="0 0 24 24" class="icon dollar-icon">
+                                                    <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"
+                                                    fill="currentColor"></path>
+                                                </svg>
+
+                                                <svg viewBox="0 0 24 24" class="icon wallet-icon default-icon">
+                                                    <path d="M21,18V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5A2,2 0 0,1 5,3H19A2,2 0 0,1 21,5V6H12C10.89,6 10,6.9 10,8V16A2,2 0 0,0 12,18M12,16H22V8H12M16,13.5A1.5,1.5 0 0,1 14.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,12A1.5,1.5 0 0,1 16,13.5Z"
+                                                    fill="currentColor"></path>
+                                                </svg>
+
+                                                <svg viewBox="0 0 24 24" class="icon check-icon">
+                                                    <path d="M9,16.17L4.83,12L3.41,13.41L9,19L21,7L19.59,5.59L9,16.17Z"
+                                                    fill="currentColor"></path>
+                                                </svg>
+                                            </div>
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+else
+{
+    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="card shadow-sm p-4" style="width: 750px;">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-info text-white rounded-circle d-flex justify-content-center align-items-center" style="width: 50px; height: 50px;">
+                    <i class="bi bi-info-circle" style="font-size: 35px;"></i>
+                </div>
+                <p class="ms-2 mb-0" style="font-size: 36px;">Chưa có sản phẩm nào trong giỏ hàng.</p>
+            </div>
+            <a href="/" class="btn btn-success w-100">Quay Trở Lại Cửa Hàng</a>
+        </div>
+    </div>
+}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Lấy tất cả các ô nhập số lượng và nút "Update Cart"
+        const quantityInputs = document.querySelectorAll('.quantity-input');
+        const updateCartButton = document.getElementById('button-update');
+        const wrap = document.querySelector('#wrapper');
+
+        let initialQuantities = {}; // Lưu giá trị ban đầu của các ô nhập số lượng
+
+        // Lưu giá trị ban đầu cho mỗi ô nhập số lượng
+        quantityInputs.forEach(input => {
+            const productId = input.getAttribute('data-product-id');
+            initialQuantities[productId] = input.value;
+        });
+
+        // Hàm kiểm tra nếu số lượng thay đổi so với giá trị ban đầu
+        function checkQuantityChange() {
+            let isModified = false; // Kiểm tra nếu có ô nhập nào thay đổi
+
+            // Kiểm tra tất cả các ô nhập số lượng
+            quantityInputs.forEach(input => {
+                const productId = input.getAttribute('data-product-id');
+                const currentValue = input.value;
+
+                // Nếu giá trị hiện tại khác giá trị ban đầu thì đánh dấu là có thay đổi
+                if (currentValue !== initialQuantities[productId]) {
+                    isModified = true;
+                }
+            });
+
+            // Nếu có ô nhập nào thay đổi thì enable nút "Update Cart", ngược lại disable
+            if (isModified) {
+                updateCartButton.disabled = false;
+                updateCartButton.classList.add('active');
+                updateCartButton.classList = 'btn-update';
+                wrap.classList.remove('cursor-disable');
+                updateCartButton.classList.remove('disabled');
+            } else {
+                updateCartButton.disabled = true;
+                updateCartButton.classList.add('disabled');
+                updateCartButton.classList = 'btn btn-dark btn-lg';
+                updateCartButton.classList.remove('active');
+                wrap.classList.add('cursor-disable');
+            }
+        }
+
+        // Gắn sự kiện khi người dùng thay đổi giá trị ô nhập
+        quantityInputs.forEach(input => {
+            input.addEventListener('input', checkQuantityChange);
+        });
+
+        // Kiểm tra lần đầu khi trang load
+        checkQuantityChange();
+
+    });
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const updateCartButton = document.getElementById('button-update');
+        const quantityInputs = document.querySelectorAll('.quantity-input');
+
+        // Hàm thu thập dữ liệu số lượng sản phẩm
+        function gatherQuantities() {
+            const quantities = [];
+
+            quantityInputs.forEach(input => {
+                const productId = input.getAttribute('data-product-id');
+                const quantity = input.value;
+                quantities.push({ ProductId: parseInt(productId), Quantity: parseInt(quantity) });
+            });
+
+            return quantities;
+        }
+
+        // Sự kiện nhấn nút "Update Cart"
+        updateCartButton.addEventListener('click', function () {
+            const model = gatherQuantities();
+
+            // Gửi dữ liệu đến máy chủ qua AJAX (fetch)
+            fetch('/Cart-Update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ UpdateItem: model })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Nếu thành công, có thể cập nhật lại giao diện hoặc thông báo cho người dùng
+                    alert('Giỏ hàng đã được cập nhật!');
+                    window.location.reload();
+                } else {
+                    alert('Có lỗi xảy ra, vui lòng thử lại.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra!');
+            });
+        });
+    });
+</script>
+
+<script>
+        // Thêm class .show cho alert khi trang vừa load
+    window.addEventListener('load', function() {
+      const alertBox = document.getElementById('alertBox');
+      // Sau 200ms (hoặc tùy chỉnh) sẽ thêm class .show
+      setTimeout(() => {
+        alertBox.classList.add('show');
+      }, 200);
+    });
+
+    // Đóng alert khi click nút close
+    document.getElementById('closeBtn').addEventListener('click', function() {
+      const alertBox = document.getElementById('alertBox');
+      alertBox.classList.remove('show'); // gỡ class .show để fade-out
+      // Có thể remove alert hẳn sau khi ẩn
+      setTimeout(() => {
+        alertBox.style.display = 'none';
+      }, 500); // chờ transition 0.5s
+    });
+
+</script>

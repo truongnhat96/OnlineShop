@@ -12,7 +12,7 @@
     box-shadow: 0 4px 10px rgba(20, 60, 90, 0.4);
     padding: 15px;
     width: 300px; /* Chiều rộng cố định */
-    height: 520px; /* Chiều cao cố định */
+    height: 560px; /* Chiều cao cố định */
     text-align: center;
     font-family: 'Arial', sans-serif; /* Hoặc phông chữ bạn mong muốn */
     display: flex;
@@ -42,4 +42,5 @@
     text-overflow: ellipsis;
     font-weight: bold;
 }
+
 

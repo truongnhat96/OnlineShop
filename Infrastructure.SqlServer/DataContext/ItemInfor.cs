@@ -17,6 +17,7 @@ namespace Infrastructure.SqlServer.DataContext
         public string? Password { get; set; }
         [StringLength(100)]
         public string? Key { get; set; }
+        public int ProductId { get; set; }
         public virtual Product? Product { get; set; }
     }
 }

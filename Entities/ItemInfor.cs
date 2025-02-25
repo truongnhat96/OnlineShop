@@ -12,5 +12,6 @@ namespace Entities
         public string? AccountName { get; set; }
         public string? Password { get; set; }
         public string? Key { get; set; }
+        public int ProductId { get; set; }
     }
 }

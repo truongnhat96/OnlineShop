@@ -9,9 +9,15 @@ namespace UseCase.Repository
 {
     public interface ICartItemRepository
     {
-        Task AddCartItemAsync(CartItem cartItem);
-        Task RemoveCartItemAsync(CartItem cartItem);
-        Task<IEnumerable<CartItem>> GetCartItemsAsync();
-        Task<IEnumerable<CartItem>> GetCartItemsAsync(int productId);
+        Task AddCartAsync(CartItem cartItem);
+        Task RemoveCartAsync(int productId);
+        Task UpdateCartAsync(CartItem cartItem);
+        Task<IEnumerable<CartItem>> GetCartItemsAsync(int userId);
+        /// <summary>
+        /// Get cart item by product id with no tracking
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        Task<CartItem?> GetCartItemAsync(int productId);
     }
 }
