@@ -19,6 +19,8 @@ namespace Infrastructure.SqlServer.AutoMapper
             CreateMap<Entities.ItemInfor, DataContext.ItemInfor>().ReverseMap();
             CreateMap<Entities.CartItem, DataContext.CartItem>().ReverseMap();
             CreateMap<Entities.Review, DataContext.Review>().ReverseMap();
+            CreateMap<Entities.Discount, DataContext.Discount>().ReverseMap();
+            CreateMap<Entities.DiscountUsage, DataContext.DiscountUsage>().ReverseMap();
         }
     }
 }

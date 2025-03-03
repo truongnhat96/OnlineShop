@@ -22,12 +22,12 @@ namespace Infrastructure.Controllers
         #region Customer
         [HttpGet("/Category/{id}", Name = "category")]
         [HttpGet("/Category/{id}/page/{page}")]
-        public async Task<IActionResult> Category(int id, [FromQuery]string keyword, [FromQuery]double min_price, [FromQuery]double max_price, [FromQuery]string orderby, int page = 1)
+        public async Task<IActionResult> Category(int id, [FromQuery] string keyword, [FromQuery] double min_price, [FromQuery] double max_price, [FromQuery] string orderby, int page = 1)
         {
             var products = await _productManager.GetProductsByCategoryAsync(id);
             var list = products.ToList();
 
-            if(min_price != 0 || max_price != 0)
+            if (min_price != 0 || max_price != 0)
             {
                 list = (await _productManager.FilterByPriceAsync(min_price, max_price, id)).ToList();
             }
@@ -77,7 +77,7 @@ namespace Infrastructure.Controllers
             {
                 model.ProductListReview.Add(await _productManager.GetAvgRating(product.Id));
             }
-            
+
             return View(model);
         }
 
@@ -88,7 +88,7 @@ namespace Infrastructure.Controllers
             var product = await _productManager.GetProductDetail(id);
             var reviews = (await _productManager.GetReview(id)).ToList();
             List<string> reviewerName = [];
-            foreach(var review in reviews)
+            foreach (var review in reviews)
             {
                 reviewerName.Add((await _productManager.GetUserName(review.UserId)));
             }
@@ -112,23 +112,13 @@ namespace Infrastructure.Controllers
         }
 
 
-
-
         #endregion
 
         #region Manager
 
         [Authorize(Roles = "Manager")]
         [HttpGet("/Manage")]
-        public IActionResult Manage()
-        {
-            return View();
-        }
-
-
-        [Authorize(Roles = "Manager")]
-        [HttpGet("/IDView")]    
-        public async Task<IActionResult> IDView()
+        public async Task<IActionResult> Manage()
         {
             var cate = await _productManager.GetAllCategoriesAsync();
             var model = new CategoryModel
@@ -140,8 +130,8 @@ namespace Infrastructure.Controllers
 
 
         [Authorize(Roles = "Manager")]
-        [HttpGet("/Update")]
-        public async Task<IActionResult> Update()
+        [HttpGet("/Product-List")]
+        public async Task<IActionResult> ProductList()
         {
             var model = new ProductModel
             {
@@ -162,7 +152,6 @@ namespace Infrastructure.Controllers
                     Price = model.Price,
                     OldPrice = model.Price * new Random().Next(2, 4),
                     CategoryId = model.CategoryId,
-                    Coupon = model.Coupon,
                     Brand = model.Brand,
                     Date_Import = model.Date_Import,
                     Description = model.Description,
@@ -183,14 +172,19 @@ namespace Infrastructure.Controllers
                     product.ImageUrl = fileName;
                 }
                 await _productManager.AddProductAsync(product);
+                if (!string.IsNullOrEmpty(model.Coupon))
+                {
+                    var newProduct = await _productManager.GetProductsByCategoryAsync(model.CategoryId);
+                    await _productManager.AddOrUpdateCouponAsync(newProduct.Last().Id, model.Coupon, model.Discount);
+                }
                 TempData["Message"] = "Thêm sản phẩm thành công";
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 TempData["Message"] = "Thêm sản phẩm thất bại";
             }
-            return View("Manage", model);
+            return RedirectToAction("Manage");
         }
 
 
@@ -207,7 +201,7 @@ namespace Infrastructure.Controllers
                 _logger.LogError(ex.Message);
                 TempData["Message"] = "Xóa sản phẩm thất bại!";
             }
-            return RedirectToAction("Update");
+            return RedirectToAction("ProductList");
         }
 
 
@@ -218,24 +212,31 @@ namespace Infrastructure.Controllers
             var product = await _productManager.GetProductDetail(id);
             var model = new ProductModel
             {
+                Id = id,
                 Name = product.Name,
                 Price = product.Price,
                 CategoryId = product.CategoryId,
-                Coupon = product.Coupon,
                 oldPrice = product.OldPrice,
                 Brand = product.Brand,
                 Date_Import = product.Date_Import,
                 Description = product.Description,
                 Quantity = product.Quantity,
+                CategoryList = (await _productManager.GetAllCategoriesAsync()).SkipLast(1).ToList(),
                 Image = product.ImageUrl ?? string.Empty
             };
+            var discount = await _productManager.GetCouponAsync(id);
+            if (discount != null)
+            {
+                model.Coupon = discount.Coupon;
+                model.Discount = discount.DiscountPercent;
+            }
             return View(model);
         }
 
 
         [Authorize(Roles = "Manager")]
         [HttpPost("/Edit/{id}")]
-        public async Task<IActionResult> Edit(ProductModel model, [FromRoute]int id)
+        public async Task<IActionResult> Edit(ProductModel model, [FromRoute] int id)
         {
             if (ModelState.IsValid && double.TryParse(TempData["OldPrice"]?.ToString() ?? "0", out double oldPrice) && double.TryParse(TempData["Price"]?.ToString() ?? "0", out double pre_price))
             {
@@ -245,7 +246,6 @@ namespace Infrastructure.Controllers
                     Name = model.Name,
                     Price = model.Price,
                     CategoryId = model.CategoryId,
-                    Coupon = model.Coupon,
                     Brand = model.Brand,
                     Date_Import = model.Date_Import,
                     Description = model.Description,
@@ -279,6 +279,10 @@ namespace Infrastructure.Controllers
                 }
                 model.Image = product.ImageUrl ?? string.Empty;
                 await _productManager.UpdateProductAsync(product);
+                if (!string.IsNullOrEmpty(model.Coupon))
+                {
+                    await _productManager.AddOrUpdateCouponAsync(product.Id, model.Coupon, model.Discount);
+                }
                 TempData["Notify"] = "Cập nhật sản phẩm thành công";
             }
             else
@@ -288,6 +292,77 @@ namespace Infrastructure.Controllers
             return View("Edit", model);
         }
 
+
+        [Authorize(Roles = "Manager")]
+        [HttpGet("/EditAccountInfor/{productId}")]
+        public async Task<IActionResult> AccountInfor(int productId)
+        {
+            var infors = await _productManager.GetItems(productId);
+            var model = new ItemInforModel
+            {
+                ItemInfors = infors.ToList(),
+                ProductId = productId
+            };
+            return View(model);
+        }
+
+
+        [Authorize(Roles = "Manager")]
+        [HttpGet("/Infor/{id}/{productId}")]
+        public async Task<IActionResult> AddOrUpdateAccount(int id, int productId)
+        {
+            var infor = await _productManager.GetItem(id);
+            if (infor != null)
+            {
+                var model = new ItemInforModel
+                {
+                    Id = infor.Id,
+                    ProductId = infor.ProductId,
+                    AccountName = infor.AccountName ?? "",
+                    Password = infor.Password ?? "",
+                    Key = infor.Key ?? ""
+                };
+                return View(model);
+            }
+            var newModel = new ItemInforModel
+            {
+                ProductId = productId
+            };
+            return View(newModel);
+        }
+
+        [Authorize(Roles = "Manager")]
+        [HttpPost("/Infor/{id}/{productId}")]
+        public async Task<IActionResult> AddOrUpdateAccount(ItemInforModel model, int id, int productId)
+        {
+            if (id != 0)
+            {
+                var infor = new ItemInfor
+                {
+                    Id = id,
+                    ProductId = productId,
+                    AccountName = model.AccountName,
+                    Password = model.Password,
+                    Key = model.Key
+                };
+                await _productManager.UpdateInforAsync(infor);
+                TempData["Notify"] = "Cập nhật thông tin tài khoản thành công";
+                return RedirectToAction("AccountInfor", new { productId = model.ProductId });
+            }
+            else
+            {
+                var infor = new ItemInfor
+                {
+                    ProductId = model.ProductId,
+                    AccountName = model.AccountName,
+                    Password = model.Password,
+                    Key = model.Key
+                };
+                await _productManager.AddInforAsync(infor);
+                TempData["Notify"] = "Thêm thông tin tài khoản thành công";
+                return RedirectToAction("AccountInfor", new { productId = model.ProductId });
+            }
+        }
         #endregion
     }
 }

@@ -10,7 +10,8 @@ namespace UseCase.Business_Logic
     public interface IProductManage
     {
         Task<Product> AddProductAsync(Product product);
-        Task<ItemInfor> AddInforAsync(int productId, ItemInfor item);
+        Task<ItemInfor> AddInforAsync(ItemInfor item);
+        Task UpdateInforAsync(ItemInfor item);
         Task<Product> UpdateProductAsync(Product product);
         Task<Product> DeleteProductAsync(int id);
         Task<IEnumerable<Product>> GetProductsByCategoryAsync(int categoryId);
@@ -19,11 +20,14 @@ namespace UseCase.Business_Logic
         Task<IEnumerable<Product>> FilterByPriceAsync(double firstPrice, double lastPrice, int id);
         Task<IEnumerable<Product>> Filter(SortingType type, int id);
         Task<Product> GetProductDetail(int id);
-        Task<ItemInfor> GetItem(int productId);
+        Task<IEnumerable<ItemInfor>> GetItems(int productId);
+        Task<ItemInfor?> GetItem(int id);
         Task<IEnumerable<Review>> GetReview(int productId);
         Task<Category> GetCategoryPostAsync();
         Task<string> GetUserName(int id);
         Task<IEnumerable<Category>> GetAllCategoriesAsync();
         Task<int> GetAvgRating(int productId);
+        Task AddOrUpdateCouponAsync(int Id, string coupon, int discountPercent);
+        Task<Discount?> GetCouponAsync(int id);
     }
 }

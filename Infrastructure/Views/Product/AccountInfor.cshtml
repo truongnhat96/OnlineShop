@@ -1,0 +1,41 @@
+﻿@* Pseudocode:
+1. Define a table to display account information.
+2. Loop through each item in Model.ItemInfors.
+3. Display relevant properties (e.g.,).
+4. Keep layout minimal.
+*@
+@model ItemInforModel
+@{
+    int pb = 50 * (Model.ItemInfors.Count * 5);
+}
+
+@if (TempData["notify"] != null)
+{
+    <div class="alert alert-success mt-3" role="alert">
+        @TempData["notify"]
+    </div>
+}
+
+<div class="justify-content-center" style="padding-bottom: @(pb)px;">
+    <h3>Thông tin tài khoản</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tài Khoản</th>
+                <th>Key Sản Phẩm</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ItemInfors)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td><a href="/Infor/@item.Id/@item.ProductId" style="text-decoration: none;">@(!string.IsNullOrEmpty(item.AccountName) ? item.AccountName : "Tài Khoản Key")</a></td>
+                    <td>@(!string.IsNullOrEmpty(item.Key) ? "YES" : "NO")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <a href="/Infor/0/@Model.ProductId" class="btn btn-primary">Thêm tài khoản/key</a>
+</div>

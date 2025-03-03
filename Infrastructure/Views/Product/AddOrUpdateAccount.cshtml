@@ -1,0 +1,55 @@
+﻿@model ItemInforModel
+@{
+}
+
+@using (Html.BeginForm("AddOrUpdateAccount", "Product", FormMethod.Post))
+{
+    <div class="justify-content-center" style="margin-bottom: 250px">
+        <h3>Thêm tài khoản/key</h3>
+        <div class="form-group">
+            @Html.Label("Tên tài khoản")
+            @Html.TextBox("AccountName", Model?.AccountName, new { @class = "form-control", placeholder = "Nhập tên tài khoản" })
+        </div>
+        <div class="form-group">
+            @Html.Label("Mật khẩu")
+            @Html.TextBox("Password", Model?.Password, new { @class = "form-control", id="pass", type="password" ,placeholder = "Nhập mật khẩu" })
+        </div>
+        <i class="fa-solid fa-eye toggle-password" id="tPassword"></i>
+        <div class="form-group">
+            @Html.Label("Key")
+            @Html.TextBox("Key", Model?.Key, new { @class = "form-control", id="key", type="password", placeholder = "Nhập key" })
+        </div>
+        <button type="submit" class="btn btn-success mt-3">Thêm</button>
+        <button type="submit" class="btn btn-primary mt-3">Cập nhật</button>
+    </div>
+}
+
+
+<style>
+    .toggle-password {
+        position: absolute;
+        top: 35%;
+        right: 50px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #777;
+    }
+</style>
+
+
+<script>
+        const togglePass = document.getElementById('tPassword');
+        const KeyInput = document.getElementById('key');
+        const PassInput = document.getElementById('pass');
+
+        togglePass.addEventListener('click', () => {
+        const typekey = KeyInput.getAttribute('type') == 'password' ? 'text' : 'password';
+        const typepass = PassInput.getAttribute('type') == 'password' ? 'text' : 'password';
+        KeyInput.setAttribute('type', typekey);
+        PassInput.setAttribute('type', typepass);
+        // Toggle the eye icon
+        togglePass.classList.toggle('fa-eye');
+        togglePass.classList.toggle('fa-eye-slash');
+    });
+</script>
+

@@ -21,7 +21,7 @@ namespace Infrastructure
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddSession(config =>
-                    config.IdleTimeout = TimeSpan.FromHours(9));
+                    config.IdleTimeout = TimeSpan.FromHours(10));
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -77,6 +77,8 @@ namespace Infrastructure
             services.AddTransient<ICategoryRepository>(service => new CategoryRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
             services.AddTransient<IItemInforRepository>(service => new ItemInforRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
             services.AddTransient<ICartItemRepository>(service => new CartItemRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
+            services.AddTransient<IDiscountRepository>(service => new DiscountRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
+            services.AddTransient<IDiscountUsageRepository>(service => new DiscountUsageRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
 
             services.AddTransient<IUserUnitOfWork>(service => new UserUnitOfWork(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
             services.AddTransient<IProductUnitOfWork>(service => new ProductUnitOfWork(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));

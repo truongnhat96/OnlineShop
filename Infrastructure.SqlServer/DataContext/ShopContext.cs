@@ -18,6 +18,8 @@ namespace Infrastructure.SqlServer.DataContext
 
         public required DbSet<Category> Categories { get; set; }
         public required DbSet<Product> Products { get; set; }
+        public required DbSet<Discount> Discounts { get; set; }
+        public required DbSet<DiscountUsage> DiscountUsages { get; set; }
         public required DbSet<Post> Posts { get; set; }
         public required DbSet<Role> Roles { get; set; }
         public required DbSet<User> Users { get; set; }
@@ -26,7 +28,7 @@ namespace Infrastructure.SqlServer.DataContext
         public required DbSet<Review> Reviews { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(_connectionString).UseLazyLoadingProxies().EnableSensitiveDataLogging();
+            optionsBuilder.UseSqlServer(_connectionString).UseLazyLoadingProxies();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -85,6 +87,24 @@ namespace Infrastructure.SqlServer.DataContext
                 entity.HasOne(p => p.Category)
                     .WithMany(c => c.Posts)
                     .HasForeignKey(p => p.CategoryId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+            modelBuilder.Entity<DiscountUsage>(entity =>
+            {
+                entity.HasOne(du => du.User)
+                    .WithMany(u => u.DiscountUsages)
+                    .HasForeignKey(du => du.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(du => du.Discount)
+                    .WithMany(d => d.DiscountUsages)
+                    .HasForeignKey(du => du.DiscountId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+            modelBuilder.Entity<Discount>(entity =>
+            {
+                entity.HasOne(d => d.Product)
+                    .WithOne(p => p.Discount)
+                    .HasForeignKey<Discount>(d => d.Id)
                     .OnDelete(DeleteBehavior.Cascade);
             });
         }

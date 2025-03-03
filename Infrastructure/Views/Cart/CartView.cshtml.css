@@ -121,6 +121,7 @@ input[type="number"]::-webkit-outer-spin-button {
     align-items: center;
     gap: 10px;
     transition: all 0.3s ease;
+    text-decoration: none;
 }
 
     .pay-btn:hover {
@@ -252,7 +253,7 @@ input[type="number"]::-webkit-outer-spin-button {
 .alert {
     position: absolute;
     display: flex;
-    top: 200px;
+    top: 180px;
     left: 50%;
     transform: translateX(-50%);
     padding: 15px 30px;
@@ -300,3 +301,15 @@ input[type="number"]::-webkit-outer-spin-button {
     .alert-close:hover {
         color: #001F3F; /* hover đổi màu nhẹ */
     }
+
+
+    /*Apply Coupon*/
+input[type=text].error {
+    border: 1px solid red;
+    background-color: #ffcccc;
+}
+
+.notify-error {
+    color: red;
+    font-size: 20px;
+}

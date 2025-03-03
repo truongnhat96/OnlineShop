@@ -12,12 +12,14 @@ namespace Infrastructure.Models
         public double Price { get; set; }
         public double oldPrice { get; set; }
         public string? Coupon { get; set; }
-        public int CategoryId { get; set; }
+        public int Discount { get; set; }
+        public int CategoryId { get; set; } 
         public string CategoryName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Image { get; set; } = string.Empty;
         public IFormFile? ImageUrl { get; set; }
         public List<Product> ProductList { get; set; } = [];
+        public List<Category> CategoryList { get; set; } = [];
         public List<int> ProductListReview { get; set; } = [];
         public int Rating { get; set; }
         public int currentPage { get; set; }

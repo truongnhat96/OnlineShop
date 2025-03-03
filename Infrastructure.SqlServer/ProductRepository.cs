@@ -58,7 +58,7 @@ namespace Infrastructure.SqlServer
                                  where p.CategoryId == id
                                  let sortby = (from r in _context.Reviews
                                                where r.ProductId == p.Id
-                                               select r.Rating).Sum()
+                                               select r.Rating).Average()
                                  orderby sortby descending
                                  select p;
                     queryResult = await result.ToListAsync();

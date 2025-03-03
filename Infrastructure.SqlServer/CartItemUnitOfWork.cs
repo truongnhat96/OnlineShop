@@ -19,12 +19,14 @@ namespace Infrastructure.SqlServer
             UserRepository = new UserRepository(context, mapper);
             ProductRepository = new ProductRepository(context, mapper);
             CartItemRepository = new CartItemRepository(context, mapper);
+            DiscountUsageRepository = new DiscountUsageRepository(context, mapper);
+            DiscountRepository = new DiscountRepository(context, mapper);
         }
         public IUserRepository UserRepository { get; }
-
         public IProductRepository ProductRepository { get; }
-
         public ICartItemRepository CartItemRepository { get; }
+        public IDiscountUsageRepository DiscountUsageRepository { get; }
+        public IDiscountRepository DiscountRepository { get; }
 
         public async Task SaveAsync()
         {

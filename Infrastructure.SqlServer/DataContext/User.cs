@@ -21,6 +21,7 @@ namespace Infrastructure.SqlServer.DataContext
         public required string Email { get; set; }
         public int RoleId { get; set; }
         public virtual Role? Role { get; set; }
+        public virtual ICollection<DiscountUsage> DiscountUsages { get; set; } = [];
         public virtual ICollection<Post> Posts { get; set; } = [];
         public virtual ICollection<Review> Reviews { get; set; } = [];
         public virtual ICollection<CartItem> CartItems { get; set; } = [];

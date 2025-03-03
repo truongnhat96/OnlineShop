@@ -68,10 +68,44 @@ a:hover {
     }
 }
 
-.header {
-    padding-bottom: 400px; /* Tạo khoảng cách với nội dung bên dưới */
-    position: fixed;
+
+.navbar {
+    display: flex;
+    align-items: center; /* Giúp logo & menu được canh giữa theo trục dọc */
+    justify-content: space-between;
+    padding: 0 20px; /* Khoảng cách 2 bên */
+    box-sizing: border-box;
+    transition: height 0.3s ease;
 }
+
+
+
+/* Header mặc định */
+#site-header {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100px; /* Chiều cao ban đầu */
+    background: linear-gradient( 90deg, rgba(244, 237, 253, 0.8) 0%, /* Màu 1 */
+    rgba(188, 171, 249, 0.8) 50%, /* Màu 2 */
+    rgba(143, 89, 248, 0.8) 100% /* Màu 3 */
+    );
+    z-index: 9999;
+    transition: height 0.3s ease, background 0.3s ease;
+}
+
+    /* Khi cuộn trang, thêm lớp .header-shrink để giảm chiều cao */
+    #site-header.header-shrink {
+        height: 70px; /* Chiều cao sau khi cuộn xuống */
+        background: linear-gradient( 90deg, rgba(244, 237, 253, 0.8) 0%, /* Màu 1 */
+        rgba(188, 171, 249, 0.8) 50%, /* Màu 2 */
+        rgba(143, 89, 248, 0.8) 100% /* Màu 3 */
+        );
+    }
+
+        #site-header.header-shrink .navbar {
+            height: 60px; /* Thu nhỏ chiều cao */
+        }
 
 
 /*Login*/
@@ -125,15 +159,18 @@ a:hover {
                 left: 0;
                 bottom: 0; /* Nằm dưới cùng của chữ */
                 width: 0%; /* Bắt đầu từ 0% chiều rộng */
-                height: 3px; /* Độ dày của gạch chân */
+                height: 4px; /* Độ dày của gạch chân */
                 background-color: #FFD000; /* Màu gạch chân */
                 transition: width 0.3s ease; /* Hiệu ứng mở rộng chiều rộng */
                 z-index: 0; /* Đặt gạch chân phía sau chữ */
             }
 
-            .centered-menu li a:hover::after {
+            .centered-menu li a:hover::after,
+            .centered-menu li a.active::after {
                 width: 30%; /* Mở rộng gạch chân từ trái sang phải */
             }
+
+
 
 
 /*Q&A*/
@@ -185,7 +222,7 @@ button, input {
 }
 
 input {
-    color: #171717;
+    color: #fff;
 }
 
 .search-bar {
@@ -419,7 +456,7 @@ input {
 
 .container {
     flex: 1;
-    padding-bottom: 200px;
+    padding-bottom: 100px;
 }
 
 

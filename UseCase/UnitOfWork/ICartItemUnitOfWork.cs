@@ -12,6 +12,8 @@ namespace UseCase.UnitOfWork
         IUserRepository UserRepository { get; }
         IProductRepository ProductRepository { get; }
         ICartItemRepository CartItemRepository { get; }
+        IDiscountUsageRepository DiscountUsageRepository { get; }
+        IDiscountRepository DiscountRepository { get; }
         Task SaveAsync();
     }
 }

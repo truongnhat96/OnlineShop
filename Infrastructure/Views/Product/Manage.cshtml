@@ -1,5 +1,11 @@
-﻿@{
+﻿@model CategoryModel
+@{
     ViewBag.Title = "Quản lý Sản phẩm";
+    List<SelectListItem> items = [];
+    Model.CategoryList.ForEach(c =>
+    {
+        items.Add(new SelectListItem(c.Name, c.Id.ToString()));
+    });
 }
 
 <h2>Quản lý Sản phẩm</h2>
@@ -7,7 +13,7 @@
 <!-- Các nút thao tác -->
 <div>
     <button id="btnAdd" type="button" class="btn btn-success">Thêm Sản phẩm</button>
-    <a href="/Update" type="button" class="btn btn-primary">Xem sản phẩm đã lưu</a>
+    <a href="/Product-List" type="button" class="btn btn-primary">Xem sản phẩm đã lưu</a>
 </div>
 
 <hr />
@@ -19,15 +25,14 @@
     </div>
 }
 <!-- Form Thêm Sản phẩm -->
-<div id="addProductForm" style="padding-bottom:200px; display:none; margin-top:20px;">
+<div id="addProductForm" style="padding-bottom:250px; display:none; margin-top:20px;">
     @using (Html.BeginForm("Add", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         <h3>Thêm Sản phẩm</h3>
 
         <div class="form-group">
-            @Html.Label("ID Danh mục sản phẩm")
-            @Html.TextBox("CategoryId", null, new { @class = "form-control", placeholder = "Nhập ID Danh mục" })
-            <p>Xem ID Danh mục <a style="text-decoration:none" href="/IDView">tại đây</a></p>
+            @Html.Label("Danh mục sản phẩm")
+            @Html.DropDownList("CategoryId", items, "Chọn danh mục")
         </div>
 
         <div class="form-group">
@@ -56,8 +61,9 @@
         </div>
 
         <div class="form-group">
-            @Html.Label("Mã giảm giá")
+            @Html.Label("Mã giảm giá (%)")
             @Html.TextBox("Coupon", null, new { @class = "form-control", placeholder = "Nhập mã giảm giá (nếu có)" })
+            <input type="number" name="Discount" max="100" min="0" style="color: black; width: 60px;" step="1" />
         </div>
 
         <div class="form-group">

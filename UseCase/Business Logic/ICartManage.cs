@@ -13,6 +13,7 @@ namespace UseCase.Business_Logic
         Task UpdateCartItemAsync(int productId, int userId, int quantity);
         Task RemoveCartItemAsync(int productId);
         Task<Product> GetProductInCartAsync(int productId);
+        Task<Product> GetProductInCartAfterDiscountAsync(int productId, string coupon);
         Task<IEnumerable<CartItem>> GetCartItemsAsync(int userId);
     }
 }

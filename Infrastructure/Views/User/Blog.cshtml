@@ -26,7 +26,7 @@
                         Nội dung quá lớn. Vui lòng giảm kích thước trước khi tiếp tục!
                     </div>
                     <div class="mb-3">
-                        <label for="images" class="form-label">Chọn ảnh bìa:</label>
+                        <label class="form-label">Chọn ảnh bìa:  @(Model != null ? $"Url: {Model.Image}" : string.Empty)</label>
                         <input type="file" id="images" name="ImageUrl" class="form-control" accept="image/*" required>
                     </div>
                     <div class="text-center">
@@ -43,7 +43,7 @@
     <script>
         $(document).ready(function () {
 
-            const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+            const maxSize = 2.5 * 1024 * 1024; // 2,5MB in bytes
 
             // Khởi tạo Summernote
             $('#content').summernote({

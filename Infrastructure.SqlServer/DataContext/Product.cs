@@ -15,12 +15,12 @@ namespace Infrastructure.SqlServer.DataContext
         public double OldPrice { get; set; } = 0;
         public double Price { get; set; }
         public int Sold { get; set; }
-        public string? Coupon { get; set; }
         public int CategoryId { get; set; }
         [StringLength(10000000)]
         public required string Description { get; set; }
         [Url]
         public required string ImageUrl { get; set; }
+        public virtual Discount? Discount { get; set; }
         public virtual Category? Category { get; set; }
         public virtual ICollection<ItemInfor> ItemInfor { get; set; } = [];
         public virtual ICollection<CartItem> CartItems { get; set; } = [];

@@ -1,56 +1,78 @@
 ﻿/* Page Content */
 
-.page-content {
-    display: flex;
-    flex-direction: column; /* Sắp xếp nội dung theo cột */
-    justify-content: center; /* Căn giữa theo chiều dọc */
-    align-items: center; /* Căn giữa theo chiều ngang */
-    min-height: 60vh; /* Đặt chiều cao tối thiểu để nội dung luôn ở giữa */
-    text-align: center; /* Căn giữa nội dung văn bản */
-    padding: 50px; /* Khoảng cách padding cho nội dung */
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
-    .page-content h1 {
-        position: relative; /* Đặt relative để sử dụng pseudo-elements */
-        font-family: 'Poppins', sans-serif;
+
+.welcome-hero {
+    position: relative;
+    background: url(/images/banner.jpg)no-repeat;
+    background-position: center;
+    background-size: cover;
+    text-align: center;
+    max-width: none;
+    width: 100%;
+    height: 800px;
+    z-index: 1;
+}
+
+    .welcome-hero:before {
+        position: absolute;
+        content: " ";
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(65,73,89,.65);
+        z-index: -1;
+    }
+
+
+.welcome-hero-txt {
+    padding-top: 155px;
+}
+
+    .welcome-hero-txt h2 {
         font-size: 48px;
-        font-weight: bold;
-        color: #000;
-        margin: 10px 0; /* Khoảng cách trên và dưới */
-        text-align: center;
+        color: #fff;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2.4px;
+        line-height: 1.4;
     }
 
-        .page-content h1::before,
-        .page-content h1::after {
-            content: ''; /* Nội dung là rỗng */
-            position: absolute;
-            width: 120px; /* Chiều dài tổng của đường ngang */
-            height: 3px; /* Độ dày của đường ngang */
-            background: repeating-linear-gradient( 90deg, #2DD100, #2DD100 20px, transparent 20px, transparent 40px ); /* Tạo hiệu ứng nét đứt */
-            left: 50%; /* Căn giữa theo chiều ngang */
-            transform: translateX(-50%); /* Đẩy về giữa */
-        }
-
-        .page-content h1::before {
-            top: -20px; /* Đặt thanh ngang ở trên */
-        }
-
-        .page-content h1::after {
-            bottom: -20px; /* Đặt thanh ngang ở dưới */
-        }
-
-
-    .page-content p {
-        font-family: 'Poppins', sans-serif;
-        font-size: 18px; /* Kích thước chữ mô tả */
-        line-height: 1.6; /* Khoảng cách giữa các dòng */
-        color: #333; /* Màu chữ nhẹ hơn */
-        max-width: 800px; /* Đặt chiều rộng tối đa cho đoạn mô tả */
-        margin: 0; /* Xóa khoảng cách mặc định */
+    .welcome-hero-txt h3 {
+        font-size: 28px;
+        color: #fff;
+        font-weight: 500;
+        margin-top: 20px;
     }
 
-.container {
+    .welcome-hero-txt p {
+        font-size: 18px;
+        color: #fcfcfc;
+        margin-top: 25px;
+        font-weight: 300;
+    }
+
+
+p {
+    margin: 0;
+    color: #767f86;
+    font-size: 14px;
+    line-height: 1.8;
+    text-transform: initial;
+}
+
+
+.container-main {
     margin-top: 50px;
+    max-width: 1300px;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 .feature-box {
@@ -90,11 +112,13 @@ p {
 /*Q&A*/
 
 body {
-    color: #333;
-    background: #fcfcfc;
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #a09e9c;
+    text-transform: initial;
+    max-width: 1920px;
+    margin: 0 auto;
     overflow-x: hidden;
-    flex-direction: column;
 }
 
 .faq-header {
@@ -105,8 +129,8 @@ body {
 }
 
 .faq-content {
-    margin: 0 auto;
-    padding-bottom: 250px;
+    margin: auto;
+    max-width: 1200px;
 }
 
 .faq-question {
@@ -173,3 +197,181 @@ body {
     display: none;
 }
 
+.map-address {
+    margin-top: 50px;
+    padding-bottom: 175px;
+    width: 100%;
+    justify-content: center;
+}
+
+
+.animated {
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+
+    .animated.infinite {
+        -webkit-animation-iteration-count: infinite;
+        animation-iteration-count: infinite;
+    }
+
+    .animated.hinge {
+        -webkit-animation-duration: 2s;
+        animation-duration: 2s;
+    }
+
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(20px);
+        -ms-transform: translateY(20px);
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+        -ms-transform: translateY(0);
+        transform: translateY(0);
+    }
+}
+
+.fadeInUp {
+    -webkit-animation-name: fadeInUp;
+    animation-name: fadeInUp;
+}
+
+
+@keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(-20px);
+        -ms-transform: translateY(-20px);
+        transform: translateY(-20px);
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+        -ms-transform: translateY(0);
+        transform: translateY(0);
+    }
+}
+
+.fadeInDown {
+    -webkit-animation-name: fadeInDown;
+    animation-name: fadeInDown;
+}
+
+
+@keyframes fadeInLeftBig {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateX(-2000px);
+        -ms-transform: translateX(-2000px);
+        transform: translateX(-2000px);
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: translateX(0);
+        -ms-transform: translateX(0);
+        transform: translateX(0);
+    }
+}
+
+.fadeInLeftBig {
+    -webkit-animation-name: fadeInLeftBig;
+    animation-name: fadeInLeftBig;
+}
+
+@keyframes fadeInRightBig {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateX(2000px);
+        -ms-transform: translateX(2000px);
+        transform: translateX(2000px);
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: translateX(0);
+        -ms-transform: translateX(0);
+        transform: translateX(0);
+    }
+}
+
+.fadeInRightBig {
+    -webkit-animation-name: fadeInRightBig;
+    animation-name: fadeInRightBig;
+}
+
+
+.statistics {
+    position: relative;
+    /* chiều cao tối thiểu để ảnh nền đủ hiển thị */
+    min-height: 300px;
+    background: url("/images/counter-banner.jpg") no-repeat center center fixed;
+    background-size: cover;
+    /* Để con cháu text hiển thị trắng */
+    color: #fff;
+    /* Canh giữa dọc (flex container) */
+    display: flex;
+    align-items: center;
+}
+
+    /* Lớp mờ phủ lên ảnh nếu cần */
+    .statistics:before {
+        position: absolute;
+        content: '';
+        background: rgba(75,75,75,.60);
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    /* container sẽ cần "vượt" lớp :before => position relative + z-index */
+    .statistics .container {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Để canh giữa nội dung theo chiều dọc trong .statistics */
+    .statistics .statistics-counter {
+        width: 100%;
+        /* Tạo không gian dọc nếu cần */
+        padding: 40px 0;
+    }
+
+/* single-ststistics-box */
+.single-ststistics-box {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.statistics-content {
+    display: inline-flex;
+    align-items: baseline; /* canh đường cơ sở giữa số và chữ K+ */
+    font-size: 60px;
+    color: #fff;
+}
+
+    /* Khoảng cách giữa số và hậu tố K+ */
+    .statistics-content span {
+        margin-left: 5px;
+        font-size: 47px; 
+        align-self: flex-start; 
+    }
+
+/* Tiêu đề h3 */
+.single-ststistics-box h3 {
+    color: #fff;
+    font-size: 24px;
+    text-transform: capitalize;
+    font-weight: 500;
+    margin-top: 10px;
+}

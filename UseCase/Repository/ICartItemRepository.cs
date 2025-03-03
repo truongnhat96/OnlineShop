@@ -18,6 +18,6 @@ namespace UseCase.Repository
         /// </summary>
         /// <param name="productId"></param>
         /// <returns></returns>
-        Task<CartItem?> GetCartItemAsync(int productId);
+        Task<CartItem?> GetCartItemAsync(int userId, int productId);
     }
 }

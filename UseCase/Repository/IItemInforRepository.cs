@@ -14,7 +14,8 @@ namespace UseCase.Repository
         /// </summary>
         /// <param name="id">id is Product ID</param>
         /// <returns></returns>
-        Task<ItemInfor> GetItemInforAsync(int productId);
+        Task<ItemInfor?> GetItemInforAsync(int id);
+        Task<IEnumerable<ItemInfor>> GetItemsInforAsync(int productId);
         Task AddAsync(ItemInfor itemInfor);
         Task UpdateAsync(ItemInfor itemInfor);
         Task DeleteAsync(int productId);

@@ -1,9 +1,4 @@
 ﻿using Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UseCase.Business_Logic;
 using UseCase.UnitOfWork;
 
@@ -20,7 +15,7 @@ namespace UseCase
 
         public async Task AddCartItemAsync(int productId, int userId, int quantity)
         {
-            var currentCartItem = await _unitOfWork.CartItemRepository.GetCartItemAsync(productId);
+            var currentCartItem = await _unitOfWork.CartItemRepository.GetCartItemAsync(userId, productId);
             if (currentCartItem != null)
             {
                 currentCartItem.Quantity += quantity;
@@ -43,6 +38,21 @@ namespace UseCase
             return await _unitOfWork.CartItemRepository.GetCartItemsAsync(userId);
         }
 
+        public async Task<Product> GetProductInCartAfterDiscountAsync(int productId, string coupon)
+        {
+            var product = await _unitOfWork.ProductRepository.GetProductAsync(productId);
+            var discount = await _unitOfWork.DiscountRepository.GetDiscountAsync(productId);
+            if(discount != null && discount.Coupon == coupon)
+            {
+                product.Price -= product.Price * discount.DiscountPercent / 100;
+            }
+            else
+            {
+                throw new("Coupon not exist");
+            }
+                return product;
+        }
+
         public async Task<Product> GetProductInCartAsync(int productId)
         {
             return await _unitOfWork.ProductRepository.GetProductAsync(productId);
@@ -55,7 +65,7 @@ namespace UseCase
 
         public async Task UpdateCartItemAsync(int productId, int userId, int quantity)
         {
-            Guid id = (await _unitOfWork.CartItemRepository.GetCartItemAsync(productId))?.Id ?? Guid.NewGuid();
+            Guid id = (await _unitOfWork.CartItemRepository.GetCartItemAsync(userId, productId))?.Id ?? Guid.NewGuid();
             await _unitOfWork.CartItemRepository.UpdateCartAsync(new CartItem
             {
                 Id = id,

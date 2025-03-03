@@ -4,6 +4,7 @@ using Infrastructure.SqlServer.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.SqlServer.Migrations
 {
     [DbContext(typeof(ShopContext))]
-    partial class ShopContextModelSnapshot : ModelSnapshot
+    [Migration("20250228132505_ShopUpdate6")]
+    partial class ShopUpdate6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,44 +68,6 @@ namespace Infrastructure.SqlServer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("Infrastructure.SqlServer.DataContext.Discount", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Coupon")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DiscountPercent")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Discounts");
-                });
-
-            modelBuilder.Entity("Infrastructure.SqlServer.DataContext.DiscountUsage", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("DiscountId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DiscountId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("DiscountUsages");
                 });
 
             modelBuilder.Entity("Infrastructure.SqlServer.DataContext.ItemInfor", b =>
@@ -190,6 +155,9 @@ namespace Infrastructure.SqlServer.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Coupon")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Date_Import")
                         .HasColumnType("datetime2");
 
@@ -197,6 +165,9 @@ namespace Infrastructure.SqlServer.Migrations
                         .IsRequired()
                         .HasMaxLength(10000000)
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Discount")
+                        .HasColumnType("int");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
@@ -336,36 +307,6 @@ namespace Infrastructure.SqlServer.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Infrastructure.SqlServer.DataContext.Discount", b =>
-                {
-                    b.HasOne("Infrastructure.SqlServer.DataContext.Product", "Product")
-                        .WithOne("Discount")
-                        .HasForeignKey("Infrastructure.SqlServer.DataContext.Discount", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("Infrastructure.SqlServer.DataContext.DiscountUsage", b =>
-                {
-                    b.HasOne("Infrastructure.SqlServer.DataContext.Discount", "Discount")
-                        .WithMany("DiscountUsages")
-                        .HasForeignKey("DiscountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Infrastructure.SqlServer.DataContext.User", "User")
-                        .WithMany("DiscountUsages")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Discount");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Infrastructure.SqlServer.DataContext.ItemInfor", b =>
                 {
                     b.HasOne("Infrastructure.SqlServer.DataContext.Product", "Product")
@@ -444,16 +385,9 @@ namespace Infrastructure.SqlServer.Migrations
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("Infrastructure.SqlServer.DataContext.Discount", b =>
-                {
-                    b.Navigation("DiscountUsages");
-                });
-
             modelBuilder.Entity("Infrastructure.SqlServer.DataContext.Product", b =>
                 {
                     b.Navigation("CartItems");
-
-                    b.Navigation("Discount");
 
                     b.Navigation("ItemInfor");
 
@@ -468,8 +402,6 @@ namespace Infrastructure.SqlServer.Migrations
             modelBuilder.Entity("Infrastructure.SqlServer.DataContext.User", b =>
                 {
                     b.Navigation("CartItems");
-
-                    b.Navigation("DiscountUsages");
 
                     b.Navigation("Posts");
 

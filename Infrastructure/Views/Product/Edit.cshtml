@@ -3,9 +3,21 @@
     ViewData["Title"] = "Edit Product";
     TempData["Price"] = Model.Price.ToString();
     TempData["OldPrice"] = Model.oldPrice.ToString();
+    List<SelectListItem> items = [];
+    Model.CategoryList.ForEach(c =>
+    {
+        if (c.Id == Model.CategoryId)
+        {
+            items.Add(new SelectListItem(c.Name, c.Id.ToString(), true));
+        }
+        else
+        {
+            items.Add(new SelectListItem(c.Name, c.Id.ToString()));
+        }
+    });
 }
 
-<div class="justify-content-center" style="padding-bottom:200px;">
+<div class="justify-content-center" style="padding-bottom:250px;">
     @using (Html.BeginForm("Edit", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         <h3>Sửa thông tin sản phẩm</h3>
@@ -21,9 +33,8 @@
         </div>
 
         <div class="form-group">
-            @Html.Label("ID Danh mục sản phẩm")
-            @Html.TextBox("CategoryId", Model.CategoryId, new { @class = "form-control", placeholder = "Nhập ID Danh mục" })
-            <p>Xem ID Danh mục <a style="text-decoration:none" href="/IDView">tại đây</a></p>
+            @Html.Label("Danh mục sản phẩm")
+            @Html.DropDownList("CategoryId", items, "Chọn danh mục")
         </div>
 
         <div class="form-group">
@@ -48,8 +59,9 @@
         </div>
 
         <div class="form-group">
-            @Html.Label("Mã giảm giá")
+            @Html.Label("Mã giảm giá (%)")
             @Html.TextBox("Coupon", Model.Coupon, new { @class = "form-control", placeholder = "Mã giảm giá" })
+            <input type="number" asp-for="Discount" max="100" min="0" style="color: black; width: 60px;" step="1" />
         </div>
 
         <div class="form-group">
@@ -64,6 +76,7 @@
         </div>
         <br />
         <button type="submit" class="btn btn-success">Cập nhật</button>
-        <a href="/Update" class="btn btn-danger">Thoát</a>
+        <a href="/EditAccountInfor/@Model.Id" class="btn btn-warning">Thêm thông tin tài khoản/key</a>
+        <a href="/Product-List" class="btn btn-danger">Thoát</a>
     }
 </div>

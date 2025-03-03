@@ -15,5 +15,6 @@ namespace UseCase.UnitOfWork
         IReviewRepository ReviewRepository { get; }
         Task SaveAsync();
         IUserRepository UserRepository { get; }
+        IDiscountRepository DiscountRepository { get; }
     }
 }

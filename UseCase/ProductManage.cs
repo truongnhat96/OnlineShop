@@ -1,9 +1,4 @@
 ﻿using Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UseCase.Business_Logic;
 using UseCase.UnitOfWork;
 
@@ -17,9 +12,33 @@ namespace UseCase
         {
             _productUnitOfWork = productUnitOfWork;
         }
-        public Task<ItemInfor> AddInforAsync(int productId, ItemInfor item)
+
+        public async Task AddOrUpdateCouponAsync(int Id, string coupon, int discountPercent)
         {
-            throw new NotImplementedException();
+            if (await _productUnitOfWork.DiscountRepository.GetDiscountAsync(Id) != null)
+            {
+                await _productUnitOfWork.DiscountRepository.UpdateDiscountAsync(new Discount
+                {
+                    Id = Id,
+                    Coupon = coupon,
+                    DiscountPercent = discountPercent
+                });
+            }
+            else
+            {
+                await _productUnitOfWork.DiscountRepository.AddDiscountAsync(new Discount
+                {
+                    Id = Id,
+                    Coupon = coupon,
+                    DiscountPercent = discountPercent
+                });
+            }
+        }
+
+        public async Task<ItemInfor> AddInforAsync(ItemInfor item)
+        {
+            await _productUnitOfWork.ItemInforRepository.AddAsync(item);
+            return item;
         }
 
         public async Task<Product> AddProductAsync(Product product)
@@ -70,9 +89,14 @@ namespace UseCase
             return await _productUnitOfWork.CategoryRepository.GetCategoryPostAsync();
         }
 
-        public Task<ItemInfor> GetItem(int productId)
+        public async Task<Discount?> GetCouponAsync(int id)
         {
-            throw new NotImplementedException();
+           return await _productUnitOfWork.DiscountRepository.GetDiscountAsync(id);
+        }
+
+        public async Task<IEnumerable<ItemInfor>> GetItems(int productId)
+        {
+           return await _productUnitOfWork.ItemInforRepository.GetItemsInforAsync(productId);
         }
 
         public async Task<Product> GetProductDetail(int id)
@@ -109,6 +133,16 @@ namespace UseCase
         public async Task<Product> UpdateProductAsync(Product product)
         {
             return await _productUnitOfWork.ProductRepository.UpdateProductAsync(product);
+        }
+
+        public async Task<ItemInfor?> GetItem(int id)
+        {
+            return await _productUnitOfWork.ItemInforRepository.GetItemInforAsync(id);
+        }
+
+        public async Task UpdateInforAsync(ItemInfor item)
+        {
+            await _productUnitOfWork.ItemInforRepository.UpdateAsync(item);
         }
     }
 }

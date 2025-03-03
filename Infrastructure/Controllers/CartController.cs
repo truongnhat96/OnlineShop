@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text.Json;
@@ -50,7 +51,7 @@ namespace Infrastructure.Controllers
 
 
         [HttpGet("/Cart-Add/{productId}/{productName}", Name = "cart")]
-        public async Task<IActionResult> Add(int productId, string productName, [FromQuery]int quantity)
+        public async Task<IActionResult> Add(int productId, string productName, [FromQuery] int quantity)
         {
             var user = HttpContext.User;
             if (user.Identity != null && user.Identity.IsAuthenticated)
@@ -125,9 +126,10 @@ namespace Infrastructure.Controllers
 
 
         [HttpPost("/Cart-Update")]
-        public async Task<IActionResult> UpdateCart([FromBody]CartUpdateRequest model)
+        public async Task<IActionResult> UpdateCart([FromBody] CartUpdateRequest model)
         {
             var user = HttpContext.User;
+            bool isDeleted = false;
             if (user.Identity != null && user.Identity.IsAuthenticated)
             {
                 foreach (var item in model.UpdateItem)
@@ -136,6 +138,7 @@ namespace Infrastructure.Controllers
                     if (item.Quantity == 0)
                     {
                         await _cartManage.RemoveCartItemAsync(item.ProductId);
+                        isDeleted = true;
                     }
                     else
                     {
@@ -164,7 +167,48 @@ namespace Infrastructure.Controllers
                     HttpContext.Session.SetString(CartSessionKey, JsonSerializer.Serialize(cart));
                 }
             }
-            return Json(new {success = true});
+            return Json(new { success = true, reload = isDeleted });
         }
+
+        [Authorize]
+        [HttpPost("/Discount")]
+        public async Task<IActionResult> Discount(string coupon)
+        {
+            if (int.TryParse(User.FindFirstValue(ClaimTypes.Sid), out int userId))
+            {
+                var cartItems = await _cartManage.GetCartItemsAsync(userId);
+                var model = new List<CartModel>();
+                bool isDiscount = false;
+                foreach (var item in cartItems)
+                {
+                    dynamic product;
+                    try
+                    {
+                        product = await _cartManage.GetProductInCartAfterDiscountAsync(item.ProductId, coupon);
+                        isDiscount = true;
+                    }
+                    catch
+                    {
+                        product = await _cartManage.GetProductInCartAsync(item.ProductId);
+                    }
+                    model.Add(new CartModel
+                    {
+                        Quantity = item.Quantity,
+                        Product = product
+                    });
+                }
+                if (!isDiscount)
+                {
+                    TempData["CartError"] = "Mã giảm giá không tồn tại hoặc đã được sử dụng";
+                }
+                else
+                {
+                    TempData["CartMessage"] = "Mã đã được áp dụng thành công - Lưu ý: Mã chỉ được áp dụng một lần khi mua hàng";
+                }
+                return View("CartView", model);
+            }
+            return RedirectToAction("CartView");
+        }
+
     }
 }

@@ -15,7 +15,6 @@ namespace Entities
         public DateTime Date_Import { get; set; }
         public double Price { get; set; }
         public int Sold { get; set; }
-        public string? Coupon { get; set; }
         public int CategoryId { get; set; }
         public required string Description { get; set; }
         public string? ImageUrl { get; set; }

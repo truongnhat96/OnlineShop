@@ -20,9 +20,10 @@ namespace Infrastructure.SqlServer
             CategoryRepository = new CategoryRepository(context, mapper);
             ReviewRepository = new ReviewRepository(context, mapper);
             UserRepository = new UserRepository(context, mapper);
+            DiscountRepository = new DiscountRepository(context, mapper);
         }
         public IProductRepository ProductRepository { get; }
-
+        public IDiscountRepository DiscountRepository { get; }
         public IItemInforRepository ItemInforRepository { get; }
 
         public ICategoryRepository CategoryRepository { get; }

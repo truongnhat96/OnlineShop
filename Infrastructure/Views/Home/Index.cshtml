@@ -1,26 +1,27 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "TruongShop";
 }
 
-<div class="page-content">
-    <h1>Welcome to TruongShop</h1>
-    <br />
-    <h2>Chuyên cung cấp Key bản quyền Windows <br /> và các phần mềm văn phòng chuyên nghiệp.</h2>
-    <br />
-    <div class="text-center">
-        <p>
-            Tại đây Shop chuyên cung cấp bản quyền Windows và <br />
-            các phần mềm Văn phòng khác. Với giá cả phải chăng <br />
-            mà vẫn đảm bảo chất lượng sản phẩm, cùng với chế độ bảo <br />
-            hành và chăm sóc khách hàng tận tình. TruongShop tự tin sẽ làm <br />
-            cho bạn hài lòng ngay từ lần mua hàng đầu tiên!
-        </p>
+<div id="home" class="welcome-hero">
+    <div class="container">
+        <div class="welcome-hero-txt">
+            <h2 class="animated fadeInUp">Welcome to eShop</h2>
+            <h3 class="animated fadeInRightBig">Chúng tôi chuyên cung cấp Key bản quyền windows và các phần mềm văn phòng chuyên nghiệp </h3>
+            <p class="animated fadeInDown">
+                Tại đây Shop chuyên cung cấp bản quyền Windows và <br />
+                các phần mềm Văn phòng khác. Với giá cả phải chăng <br />
+                mà vẫn đảm bảo chất lượng sản phẩm, cùng với chế độ bảo <br />
+                hành và chăm sóc khách hàng tận tình. Chúng tôi tự tin sẽ làm <br />
+                cho bạn hài lòng ngay từ lần mua hàng đầu tiên!
+            </p>
+            <br />
+            <p class="animated fadeInLeftBig">eShop hân hạnh được phục vụ Quý khách!</p>
+        </div>
     </div>
-    <br />
-    <p>TruongShop hân hạnh được phục vụ Quý khách!</p>
+
 </div>
 
-<div class="container">
+<div class="container-main">
     <div class="row">
         <div class="col-md-3 text-center">
             <div class="feature-box">
@@ -70,6 +71,49 @@
         </div>
     </div>
 </div>
+
+
+<section id="statistics" class="statistics">
+    <div class="container">
+        <div class="row statistics-counter text-center">
+            <!-- Mỗi cột chiếm 3/12 cột, để hiển thị 4 khối trên 1 dòng -->
+            <div class="col-md-3 col-sm-6">
+                <div class="single-ststistics-box">
+                    <div class="statistics-content">
+                        <div class="counter">90</div><span>+</span>
+                    </div>
+                    <h3>SẢN PHẨM</h3>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="single-ststistics-box">
+                    <div class="statistics-content">
+                        <div class="counter">12500</div><span>+</span>
+                    </div>
+                    <h3>KHÁCH HÀNG</h3>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="single-ststistics-box">
+                    <div class="statistics-content">
+                        <div class="counter">1865</div><span>+</span>
+                    </div>
+                    <h3>ĐÁNH GIÁ</h3>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="single-ststistics-box">
+                    <div class="statistics-content">
+                        <div class="counter">1750</div><span>+</span>
+                    </div>
+                    <h3>HÀI LÒNG</h3>
+                </div>
+            </div>
+        </div><!--/.statistics-counter-->
+    </div><!--/.container-->
+</section><!--/.statistics-->
+
+
 
 <div class="faq-header">Câu hỏi và trả lời</div>
 <div class="faq-content">
@@ -123,7 +167,66 @@
     </div>
 </div>
 
+<div class="map-address">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d1862.7460468248917!2d105.77546034665558!3d20.972902510080978!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1svi!2s!4v1740662787469!5m2!1svi!2s" height="400" style="border:0; width: 100%" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+</div>
 
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Tìm tất cả phần tử .counter
+        const counters = document.querySelectorAll('.counter');
 
+        // IntersectionObserver để “nghe” khi .counter lọt vào khung nhìn
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Bắt đầu hiệu ứng đếm khi phần tử xuất hiện
+                    startCount(entry.target);
+                    // Ngừng quan sát phần tử này (chỉ đếm 1 lần)
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.5 // ít nhất 50% phần tử hiển thị mới kích hoạt
+        });
+
+        // Đăng ký quan sát cho tất cả .counter
+        counters.forEach(counter => observer.observe(counter));
+
+        // Hàm đếm: tất cả sẽ chạy đủ 'duration' ms => cùng kết thúc
+        function startCount(element) {
+            // Giá trị đích (loại bỏ ký tự không phải số)
+            const target = parseInt(element.innerText.replace(/\D/g, ''), 10) || 0;
+            let current = 0;
+
+            // Thời gian chạy hiệu ứng (ms) - tất cả sẽ cùng chạy 3 giây
+            const duration = 3000;
+            // Khoảng thời gian giữa mỗi lần cập nhật
+            const intervalDelay = 50;
+            // Số lần lặp cập nhật
+            const steps = Math.floor(duration / intervalDelay);
+            // Mỗi bước tăng thêm bao nhiêu
+            const increment = target / steps;
+
+            let currentStep = 0;
+
+            // Dùng setInterval để cập nhật số
+            const timer = setInterval(() => {
+                currentStep++;
+                // Tính giá trị hiện tại
+                let value = increment * currentStep;
+                if (value >= target) {
+                    value = target; // Nếu vượt, giữ bằng target
+                }
+                element.innerText = Math.floor(value);
+
+                // Hết số lần lặp => dừng hẳn
+                if (currentStep >= steps) {
+                    clearInterval(timer);
+                }
+            }, intervalDelay);
+        }
+    });
+</script>
 

@@ -1,6 +1,6 @@
 ﻿@model ProductModel
 @{
-    int pb = 150 + (Model.ProductList.Count * 20);
+    int pb = 200 + (Model.ProductList.Count * 10);
 
     var ReturnUrl = Url.Action("Category");
     if(!string.IsNullOrEmpty(ReturnUrl) && ReturnUrl.Contains("page"))

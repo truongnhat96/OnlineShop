@@ -72,6 +72,7 @@ namespace Infrastructure.Controllers
                 {
                     Title = post.Title,
                     Content = post.Content,
+                    Image = post.ImageUrl
                 };
                 return View(model);
             }

@@ -9,10 +9,10 @@
         totalPrice += item.Product.Price * item.Quantity;
     }
     int pt = 0;
-    int mb = 300 + (Model.Count * 10);
+    int mb = 300 + (Model.Count * 150);
 }
 
-@if(TempData["CartMessage"] != null)
+@if (TempData["CartMessage"] != null)
 {
     pt = 100;
     <div class="alert" id="alertBox">
@@ -46,7 +46,7 @@
                                                 <div class="col-md-2 col-lg-2 col-xl-2">
                                                     <a href="/product/@item.Product.Id" class="product-link">
                                                         <img src="/uploads/products/@item.Product.ImageUrl"
-                                                        class="img-fluid rounded-3" alt="@item.Product.Name">
+                                                             class="img-fluid rounded-3" alt="@item.Product.Name">
                                                     </a>
                                                 </div>
                                                 <div class="col-md-3 col-lg-3 col-xl-3">
@@ -97,16 +97,18 @@
 
                                         <h5 class="text-uppercase mb-3">Mã giảm giá</h5>
 
-                                        <div class="mb-5">
-                                            <div data-mdb-input-init class="form-outline">
-                                                <input type="text" id="form3Examplea2" class="form-control form-control-lg mb-2" placeholder="Enter your coupon" />
-                                                @* <label class="form-label" for="form3Examplea2">Enter your coupon</label> *@
-                                                <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-block btn-lg"
-                                                data-mdb-ripple-color="dark">
-                                                    Áp dụng
-                                                </button>
+                                        <form asp-action="Discount" method="post">
+                                            <div class="mb-5">
+                                                <div data-mdb-input-init class="form-outline">
+                                                    <input type="text" name="coupon" class="form-control form-control-lg mb-2 @(TempData["CartError"] != null ? "error" : "")" placeholder="Enter your coupon" required />
+                                                    <span class="notify-error">@TempData["CartError"]</span>
+                                                    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-block btn-lg"
+                                                            data-mdb-ripple-color="dark">
+                                                        Áp dụng
+                                                    </button>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </form>
 
                                         <hr class="my-4">
 
@@ -116,33 +118,33 @@
                                         </div>
 
                                         <!---->
-                                        <button class="pay-btn">
-                                            <span class="btn-text">Thanh Toán</span>
+                                        <a href="#" class="pay-btn">
+                                            <span class="btn-text">Tiến Hành Thanh Toán</span>
                                             <div class="icon-container">
                                                 <svg viewBox="0 0 24 24" class="icon card-icon">
                                                     <path d="M20,8H4V6H20M20,18H4V12H20M20,4H4C2.89,4 2,4.89 2,6V18C2,19.11 2.89,20 4,20H20C21.11,20 22,19.11 22,18V6C22,4.89 21.11,4 20,4Z"
-                                                    fill="currentColor"></path>
+                                                          fill="currentColor"></path>
                                                 </svg>
                                                 <svg viewBox="0 0 24 24" class="icon payment-icon">
                                                     <path d="M2,17H22V21H2V17M6.25,7H9V6H6V3H18V6H15V7H17.75L19,17H5L6.25,7M9,10H15V8H9V10M9,13H15V11H9V13Z"
-                                                    fill="currentColor"></path>
+                                                          fill="currentColor"></path>
                                                 </svg>
                                                 <svg viewBox="0 0 24 24" class="icon dollar-icon">
                                                     <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"
-                                                    fill="currentColor"></path>
+                                                          fill="currentColor"></path>
                                                 </svg>
 
                                                 <svg viewBox="0 0 24 24" class="icon wallet-icon default-icon">
                                                     <path d="M21,18V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5A2,2 0 0,1 5,3H19A2,2 0 0,1 21,5V6H12C10.89,6 10,6.9 10,8V16A2,2 0 0,0 12,18M12,16H22V8H12M16,13.5A1.5,1.5 0 0,1 14.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,12A1.5,1.5 0 0,1 16,13.5Z"
-                                                    fill="currentColor"></path>
+                                                          fill="currentColor"></path>
                                                 </svg>
 
                                                 <svg viewBox="0 0 24 24" class="icon check-icon">
                                                     <path d="M9,16.17L4.83,12L3.41,13.41L9,19L21,7L19.59,5.59L9,16.17Z"
-                                                    fill="currentColor"></path>
+                                                          fill="currentColor"></path>
                                                 </svg>
                                             </div>
-                                        </button>
+                                        </a>
 
                                     </div>
                                 </div>
@@ -156,7 +158,9 @@
 }
 else
 {
-    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+    int rdCate = new Random().Next(1, 9);
+
+    <div class="container d-flex justify-content-center align-items-center" style="height: 80vh;">
         <div class="card shadow-sm p-4" style="width: 750px;">
             <div class="d-flex align-items-center mb-4">
                 <div class="bg-info text-white rounded-circle d-flex justify-content-center align-items-center" style="width: 50px; height: 50px;">
@@ -164,7 +168,7 @@ else
                 </div>
                 <p class="ms-2 mb-0" style="font-size: 36px;">Chưa có sản phẩm nào trong giỏ hàng.</p>
             </div>
-            <a href="/" class="btn btn-success w-100">Quay Trở Lại Cửa Hàng</a>
+            <a href="/Category/@rdCate" class="btn btn-success w-100">MUA SẮM NGAY</a>
         </div>
     </div>
 }
@@ -261,7 +265,12 @@ else
                 if (data.success) {
                     // Nếu thành công, có thể cập nhật lại giao diện hoặc thông báo cho người dùng
                     alert('Giỏ hàng đã được cập nhật!');
-                    window.location.reload();
+                    if(data.reload) {
+                        window.location.href = '/Cart';
+                    }
+                    else {
+                        window.location.reload();
+                    }
                 } else {
                     alert('Có lỗi xảy ra, vui lòng thử lại.');
                 }

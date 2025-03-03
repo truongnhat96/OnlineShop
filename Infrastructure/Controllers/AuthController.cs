@@ -49,8 +49,13 @@ namespace Infrastructure.Controllers
                     };
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var principal = new ClaimsPrincipal(identity);
-
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+                    var authProperties = new AuthenticationProperties
+                    {
+                        IsPersistent = model.IsRememberLoginInfor,
+                        ExpiresUtc = model.IsRememberLoginInfor == true ? DateTimeOffset.UtcNow.AddDays(14) : DateTimeOffset.UtcNow.AddMinutes(25)
+                    };
+ 
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
                     return RedirectToAction("Index", "Home");
                 }
                 catch (ArgumentNullException)
@@ -85,7 +90,7 @@ namespace Infrastructure.Controllers
                     ModelState.AddModelError("Username", "Tên người dùng phải chứa ít nhất một chữ hoặc số và không được chứa ký tự đặc biệt");
                     return View(model);
                 case ValidationResult.UserExists:
-                    ModelState.AddModelError("Username", "Người dùng đã tồn tại");
+                    ModelState.AddModelError("Username", "Tên người dùng đã tồn tại");
                     return View(model);
                 case ValidationResult.EmailExists:
                     ModelState.AddModelError("Email", "Email đã tồn tại");

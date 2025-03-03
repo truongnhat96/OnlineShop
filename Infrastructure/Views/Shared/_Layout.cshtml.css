@@ -11,7 +11,13 @@ a {
     color: #0077cc;
 }
 
-
+.main-container {
+    max-width: none; 
+    width: 100%;
+    margin: 0;  
+    padding: 0;
+    padding-bottom: 100px;
+}
 
 .btn-primary {
   color: #fff;

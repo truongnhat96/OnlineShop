@@ -19,9 +19,9 @@ namespace Infrastructure.SqlServer
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Entities.CartItem?> GetCartItemAsync(int productId)
+        public async Task<Entities.CartItem?> GetCartItemAsync(int userId, int productId)
         {
-            var itemDb = await _context.CartItems.AsNoTracking().FirstOrDefaultAsync(item => item.ProductId == productId);
+            var itemDb = await _context.CartItems.AsNoTracking().FirstOrDefaultAsync(item => item.ProductId == productId && item.UserId == userId);
             return _mapper.Map<CartItem?, Entities.CartItem?>(itemDb);
         }
 

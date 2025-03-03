@@ -1,22 +1,22 @@
 ﻿@model LoginModel
 @{
     ViewData["Title"] = "Đăng nhập";
+    int mt = 50;
 }
-
-<div class="d-flex border-5 justify-content-center align-items-center vh-100 pb-4" style="margin-top: 100px;">
+@if (Html.ViewContext.ModelState["LoginError"]?.Errors.Count > 0)
+{
+    mt += 65;
+    <div class="alert" id="alertBox">
+        <span class="alert-icon"><i class="fa-solid fa-circle-xmark"></i></span>
+        <span class="alert-text"> @Html.ViewContext.ModelState["LoginError"]?.Errors.FirstOrDefault()?.ErrorMessage</span>
+        <span class="alert-close" id="closeBtn">&times;</span>
+    </div>
+}
+<div class="d-flex border fix border-bottom justify-content-center align-items-center" style="margin-top: @(mt)px;">
     <form asp-action="Login" method="post" class="form">
-        <p class="form-title">Đăng nhập để tiếp tục</p>
-        @if(Html.ViewContext.ModelState["LoginError"]?.Errors.Count > 0)
-        {
-            <div class="alert alert-danger" style="margin-bottom: 42px;" role="alert">
-                @Html.ViewContext.ModelState["LoginError"]?.Errors.FirstOrDefault()?.ErrorMessage
-                <span>
-                    <i class="fa-solid fa-exclamation-circle"></i>
-                    </span>
-            </div>
-        }
+        <h2 class="form-title">ĐĂNG NHẬP</h2>
 
-        <div class="brutalist-container" style="margin-bottom: 53px;">
+        <div class="brutalist-container" style="margin-bottom: 53px; margin-top: 45px;">
             <input name="Username" 
                    placeholder="Enter Username"
                    class="brutalist-input smooth-type"
@@ -33,6 +33,19 @@
             <label class="brutalist-label">Mật khẩu</label>
             <i class="fa-solid fa-eye toggle-password" id="togglePassword"></i>
         </div>
+
+        <!-- -->
+        <div class="checkbox-wrapper-46">
+            <input type="checkbox" id="cbx-RememberMe" name="IsRememberLoginInfor" class="inp-cbx" value="true"/>
+            <label for="cbx-RememberMe" class="cbx">
+                <span>
+                    <svg viewBox="0 0 12 10" height="10px" width="12px">
+                        <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                    </svg>
+                </span><span>Lưu thông tin đăng nhập</span>
+            </label>
+        </div>
+
 
         <div class="justify-content-end">
             <p class="forgetpass-link">
@@ -54,6 +67,7 @@
     </form>
 </div>
 
+
 <script>
         const passwordInput = document.getElementById('password');
     const togglePassword = document.getElementById('togglePassword');
@@ -69,4 +83,24 @@
     });
 </script>
 
+<script>
+        // Thêm class .show cho alert khi trang vừa load
+    window.addEventListener('load', function() {
+      const alertBox = document.getElementById('alertBox');
+      // Sau 200ms (hoặc tùy chỉnh) sẽ thêm class .show
+      setTimeout(() => {
+        alertBox.classList.add('show');
+      }, 150);
+    });
 
+    // Đóng alert khi click nút close
+    document.getElementById('closeBtn').addEventListener('click', function() {
+      const alertBox = document.getElementById('alertBox');
+      alertBox.classList.remove('show'); // gỡ class .show để fade-out
+      // Có thể remove alert hẳn sau khi ẩn
+      setTimeout(() => {
+        alertBox.style.display = 'none';
+      }, 500); // chờ transition 0.5s
+    });
+
+</script>
