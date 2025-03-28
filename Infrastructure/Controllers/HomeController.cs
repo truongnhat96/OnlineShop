@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Infrastructure.Models;
 using Microsoft.AspNetCore.Mvc;
 using UseCase.Business_Logic;
@@ -31,21 +33,18 @@ namespace Infrastructure.Controllers
         [HttpGet("/Search/page/{page}")]
         public async Task<IActionResult> Search([FromQuery] string keyword, int page = 1)
         {
-            var list1 = await _homeManage.FindProductAsync(keyword);
-            var list2 = await _homeManage.FindPostAsync(keyword);
+            var list = await _homeManage.FindProductAsync(keyword);
 
             int pageSize = 10;
-            int totalItems = list1.Count() + list2.Count();
-            int totalPage = (int)Math.Ceiling((double)totalItems / pageSize);
+            int totalProduct = list.Count();
+            var totalPage = (int)Math.Ceiling((double)totalProduct / pageSize);
 
-            var products = list1.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-            var posts = list2.Skip((page - 1) * (pageSize / 2)).Take(pageSize / 2).ToList();
+            var products = list.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             var model = new SearchResultModel
             {
                 Keyword = keyword,
                 Products = products,
-                Posts = posts,
                 currentPage = page,
                 totalPage = totalPage
             };

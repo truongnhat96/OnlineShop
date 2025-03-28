@@ -9,7 +9,11 @@
     padding: 20px;
 }
 
-.product-image img {
+.product-image {
+    position: relative;
+}
+
+.img-container {
     width: 480px;
     height: 500px;
 }
@@ -496,3 +500,24 @@ hr {
     .must-login:hover {
         color: black;
     }
+
+
+/* Áp dụng hiệu ứng tối màu chỉ cho thẻ ảnh nếu sản phẩm hết hàng */
+.img-container.out-of-stock-filter {
+    filter: brightness(50%);
+}
+
+/* Nhãn hiển thị "HẾT HÀNG" được đặt chồng lên ảnh, không bị tối màu */
+.out-of-stock-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #F44336;
+    font-size: 1.5em;
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.5em 1em;
+    border-radius: 5px;
+    z-index: 1;
+}

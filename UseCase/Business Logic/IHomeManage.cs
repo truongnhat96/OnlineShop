@@ -10,6 +10,5 @@ namespace UseCase.Business_Logic
     public interface IHomeManage
     {
         Task<IEnumerable<Product>> FindProductAsync(string keyword);
-        Task<IEnumerable<Post>> FindPostAsync(string keyword);
     }
 }

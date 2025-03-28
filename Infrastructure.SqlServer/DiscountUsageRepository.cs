@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,14 +17,17 @@ namespace Infrastructure.SqlServer
             _context = context;
             _mapper = mapper;
         }
-        public Task AddUsageAsync(Entities.DiscountUsage Usage)
+        public async Task AddUsageAsync(Entities.DiscountUsage Usage)
         {
-            throw new NotImplementedException();
+            var discountUsage = _mapper.Map<Entities.DiscountUsage, DiscountUsage>(Usage);
+            await _context.DiscountUsages.AddAsync(discountUsage);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<Entities.DiscountUsage?> GetUsageAsync(int userId, int discountId)
+        public async Task<Entities.DiscountUsage?> GetUsageAsync(int userId, int discountId)
         {
-            throw new NotImplementedException();
+            var discountUsage = await _context.DiscountUsages.FirstOrDefaultAsync(x => x.UserId == userId && x.DiscountId == discountId);
+            return _mapper.Map<DiscountUsage?, Entities.DiscountUsage>(discountUsage);
         }
     }
 }

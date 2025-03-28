@@ -17,6 +17,13 @@ namespace UseCase.Repository
         Task<IEnumerable<Product>> FindProductsAsync(double firstPrice, double lastPrice, int id);
         Task<Product> AddProductAsync(Product product);
         Task<Product> UpdateProductAsync(Product product);
+        /// <summary>
+        /// Use when user buy product
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="quantity"></param>
+        /// <returns></returns>
+        Task UpdateQuantityAsync(int id, int quantity);
         Task<Product> DeleteProductAsync(int id);
     }
 }

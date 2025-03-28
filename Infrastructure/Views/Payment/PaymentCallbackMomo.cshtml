@@ -1,0 +1,44 @@
+﻿@using Infrastructure.Models.Momo
+@model MomoExecuteResponseModel
+@{
+    ViewData["Title"] = "Thanh toán qua momo";
+    var amount = Convert.ToDouble(Model.Amount);
+}
+
+<div class="wrapper-relative">
+    <div class="box-absolute-center">
+
+        @if (TempData["CODE"] != null)
+        {
+            <div class="icon-container">
+                <img src="/images/success.png" width="100" height="100" />
+            </div>
+            <p class="status success">Giao dịch thành công!</p>
+        }
+        else
+        {
+            <p class="status failure">Giao dịch thất bại.</p>
+        }
+
+        <div class="info-container">
+            <div class="info-row">
+                <div class="info-label">Mã giao dịch:</div>
+                <div class="info-value">@(TempData["CODE"] ?? Guid.NewGuid())</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Mã đơn hàng:</div>
+                <div class="info-value">@Model.OrderId</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Số tiền giao dịch</div>
+                <div class="info-value">@amount.ToString("c0", new CultureInfo("vi-VN"))</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Nội dung:</div>
+                <div class="info-value">@Model.OrderInfo</div>
+            </div>
+        </div>
+
+        <a class="btn-back" href="/">Quay lại trang chủ</a>
+    </div>
+</div>

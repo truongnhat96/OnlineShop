@@ -101,6 +101,7 @@ namespace Infrastructure.Controllers
                 Price = product.Price,
                 CategoryId = product.CategoryId,
                 Description = product.Description,
+                Sold = product.Sold,
                 Image = product.ImageUrl ?? string.Empty,
                 Rating = await _productManager.GetAvgRating(id),
                 Reviews = reviews,

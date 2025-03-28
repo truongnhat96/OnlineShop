@@ -1,7 +1,10 @@
 ﻿using Entities;
-using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using UseCase.Business_Logic;
+using UseCase.CachingSupport;
 using UseCase.UnitOfWork;
 
 namespace UseCase
@@ -9,11 +12,22 @@ namespace UseCase
     public class UserManage : IUserManage
     {
         private readonly IUserUnitOfWork _unitOfWork;
-
-        public UserManage(IUserUnitOfWork unitOfWork)
+        private readonly DistributedCacheEntryOptions _cacheOptions;
+        private readonly IDistributedCache _cache;
+        private readonly CachablePostSupportOption _option;
+        private readonly ILogger<UserManage> _logger;
+        public UserManage(IUserUnitOfWork unitOfWork, IDistributedCache cache, CachablePostSupportOption option, ILogger<UserManage> logger)
         {
             _unitOfWork = unitOfWork;
+            _cache = cache;
+            _option = option;
+            _logger = logger;
+            _cacheOptions = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = option.CacheLifeTime
+            };
         }
+
         public async Task<Post> AddPostAsync(int userId, string title, string content, string image)
         {
             return await _unitOfWork.PostRepository.AddPostAsync(new Post
@@ -46,7 +60,22 @@ namespace UseCase
 
         public async Task<Post> GetPostDetailAsync(Guid id)
         {
-            return await _unitOfWork.PostRepository.GetPostAsync(id);
+            var cacheKey = _option.CacheKey;
+            var data = await _cache.GetStringAsync(cacheKey);
+            if (data == null)
+            {
+                return await _unitOfWork.PostRepository.GetPostAsync(id);
+            }
+            else
+            {
+                var posts = JsonSerializer.Deserialize<IEnumerable<Post>>(data) ?? throw new("No Data In Cache");
+                var post = posts.FirstOrDefault(p => p.Id == id);
+                if(post == null)
+                {
+                    return await _unitOfWork.PostRepository.GetPostAsync(id);
+                }
+                return post;
+            }
         }
 
         public async Task<IEnumerable<Post>> GetPostsAsync(string keyword)
@@ -56,7 +85,20 @@ namespace UseCase
 
         public async Task<IEnumerable<Post>> GetPostsAsync()
         {
-            return await _unitOfWork.PostRepository.GetPostsAsync();
+            var cacheKey = _option.CacheKey;
+            var data = await _cache.GetStringAsync(cacheKey);
+            if (data == null)
+            {
+                var Posts = await _unitOfWork.PostRepository.GetPostsAsync();
+                _logger.LogInformation("Storing data to cache...");
+                await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(Posts), _cacheOptions);
+                return Posts;
+            }
+            else
+            {
+                _logger.LogInformation("Getting data from cache...");
+                return JsonSerializer.Deserialize<IEnumerable<Post>>(data)!;
+            }
         }
 
         public async Task<string> GetRoleNameAsync(int id)

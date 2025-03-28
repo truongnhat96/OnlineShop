@@ -1,0 +1,72 @@
+﻿body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f8f8f8;
+    color: #333;
+}
+
+.main-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    padding-bottom: 160px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.thank-you {
+    font-size: 25px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.order-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 15px;
+    column-gap: 10px;
+    margin-bottom: 20px;
+}
+
+    .order-info div {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .order-info .label {
+        font-weight: 600;
+        color: #666;
+        margin-bottom: 5px;
+        font-size: 14px;
+    }
+
+    .order-info .value {
+        font-size: 16px;
+        color: #333;
+    }
+
+.payment-instruction {
+    margin-top: 30px;
+}
+
+    .payment-instruction h3 {
+        font-size: 16px;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .payment-instruction ul {
+        list-style-type: disc;
+        padding-left: 20px;
+        line-height: 1.6;
+    }
+
+/* Tùy chỉnh thêm (màu sắc, font, v.v.) */
+.highlight {
+    color: #d44b45;
+    font-weight: bold;
+}

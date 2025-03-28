@@ -1,9 +1,12 @@
 using AutoMapper;
+using Infrastructure.Models.Caching;
+using Infrastructure.PaymentSupport;
 using Infrastructure.SqlServer;
 using Infrastructure.SqlServer.AutoMapper;
 using Infrastructure.SqlServer.DataContext;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using UseCase;
 using UseCase.Business_Logic;
 using UseCase.Repository;
@@ -31,6 +34,8 @@ namespace Infrastructure
                 });
 
             builder.Services.AddMailService(builder.Configuration);
+            builder.Services.AddPaymentService(builder.Configuration);
+
 
             RegisterServicesForDatabase(builder.Services, builder.Configuration);
 
@@ -69,6 +74,9 @@ namespace Infrastructure
                  option.UseSqlServer(configuration.GetConnectionString("OnlineShopDatabase"))
                        .UseLazyLoadingProxies());
 
+            var cacheOption = configuration.GetSection("Cache").Get<CacheOption>() ?? throw new("");
+            InitCache(services, configuration,cacheOption);
+
             services.AddTransient<IUserRepository>(service => new UserRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
             services.AddTransient<IRoleRepository>(service => new RoleRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
             services.AddTransient<IPostRepository>(service => new PostRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
@@ -82,13 +90,34 @@ namespace Infrastructure
 
             services.AddTransient<IUserUnitOfWork>(service => new UserUnitOfWork(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
             services.AddTransient<IProductUnitOfWork>(service => new ProductUnitOfWork(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
-            services.AddTransient<ISearchingUnitOfWork>(service => new SearchingUnitOfWork(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
             services.AddTransient<ICartItemUnitOfWork>(service => new CartItemUnitOfWork(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
 
-            services.AddTransient<IHomeManage>(service => new HomeManage(service.GetRequiredService<ISearchingUnitOfWork>()));
-            services.AddTransient<IUserManage>(service => new UserManage(service.GetRequiredService<IUserUnitOfWork>()));
+            services.AddTransient<IHomeManage>(service => new HomeManage(service.GetRequiredService<IProductRepository>()));
+            services.AddTransient<IUserManage>(service => new UserManage(service.GetRequiredService<IUserUnitOfWork>(), service.GetRequiredService<IDistributedCache>(), new(), service.GetRequiredService<ILogger<UserManage>>()));
             services.AddTransient<IProductManage>(service => new ProductManage(service.GetRequiredService<IProductUnitOfWork>()));
             services.AddTransient<ICartManage>(service => new CartManage(service.GetRequiredService<ICartItemUnitOfWork>()));
+        }
+
+        private static void InitCache(IServiceCollection services, ConfigurationManager configuration, CacheOption cacheOption)
+        {
+            switch (cacheOption.Type)
+            {
+                case CacheTypes.Memory:
+                    services.AddDistributedMemoryCache();
+                    break;
+                case CacheTypes.Redis:
+                    if(cacheOption.CacheRedisOptions == null)
+                    {
+                        throw new("Redis option is required");
+                    }
+                    services.AddStackExchangeRedisCache(option =>
+                    {
+                        option.Configuration = configuration.GetConnectionString(cacheOption.CacheRedisOptions.ConnectionStringName);
+                    });
+                    break;
+                default:
+                    throw new("Cache type not supported");
+            }
         }
     }
 }

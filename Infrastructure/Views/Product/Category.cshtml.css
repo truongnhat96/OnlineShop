@@ -402,3 +402,30 @@ ul {
     padding: 8px 12px;
     font-size: 16px;
 }
+
+
+/* Áp dụng hiệu ứng tối màu chỉ cho thẻ ảnh nếu sản phẩm hết hàng */
+.product-image.out-of-stock-filter {
+    filter: brightness(50%);
+}
+
+/* Nhãn hiển thị "HẾT HÀNG" được đặt chồng lên ảnh, không bị tối màu */
+.out-of-stock-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 1.5em;
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.5em 1em;
+    border-radius: 5px;
+    z-index: 1;
+}
+
+/* Đảm bảo container ảnh có vị trí relative để định vị tuyệt đối cho nhãn */
+.product-image-container {
+    position: relative;
+}
+

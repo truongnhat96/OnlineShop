@@ -1,7 +1,9 @@
 ﻿@using System.Text.Json
+@using System.Security.Claims
 @model List<CartModel>
 @{
     int totalItems = 0;
+    int userId = User.Identity?.IsAuthenticated == true ? int.Parse(User.FindFirstValue(ClaimTypes.Sid) ?? "0") : 0;
     double totalPrice = 0;
     foreach (var item in Model)
     {
@@ -118,7 +120,7 @@
                                         </div>
 
                                         <!---->
-                                        <a href="#" class="pay-btn">
+                                        <a href="/pay/@userId" class="pay-btn">
                                             <span class="btn-text">Tiến Hành Thanh Toán</span>
                                             <div class="icon-container">
                                                 <svg viewBox="0 0 24 24" class="icon card-icon">
@@ -145,7 +147,6 @@
                                                 </svg>
                                             </div>
                                         </a>
-
                                     </div>
                                 </div>
                             </div>

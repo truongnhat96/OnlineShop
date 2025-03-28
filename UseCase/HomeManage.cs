@@ -1,30 +1,22 @@
 ﻿using Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UseCase.Business_Logic;
-using UseCase.UnitOfWork;
+using UseCase.Repository;
 
 namespace UseCase
 {
     public class HomeManage : IHomeManage
     {
-        private readonly ISearchingUnitOfWork _searchUnitOfWork;
+        private readonly IProductRepository _productRepository;
 
-        public HomeManage(ISearchingUnitOfWork searchUnitOfWork)
+        public HomeManage(IProductRepository productRepository)
         {
-            _searchUnitOfWork = searchUnitOfWork;
+            _productRepository = productRepository;
         }
-        public async Task<IEnumerable<Post>> FindPostAsync(string keyword)
-        {
-            return await _searchUnitOfWork.PostRepository.FindPostsAsync(keyword);
-        }
+
 
         public async Task<IEnumerable<Product>> FindProductAsync(string keyword)
         {
-            return await _searchUnitOfWork.ProductRepository.FindProductsAsync(keyword);
+            return await _productRepository.FindProductsAsync(keyword);
         }
     }
 }

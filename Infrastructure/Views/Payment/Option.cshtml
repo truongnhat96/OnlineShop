@@ -1,0 +1,129 @@
+﻿@model List<CartModel>
+@{
+    double totalAmount = 0;
+}
+
+<div class="checkout-container">
+    <form method="post" asp-action="Order">
+        <div class="checkout-left">
+            <h2>Thông tin thanh toán</h2>
+            <div class="form-group">
+                <label for="name">Tên *</label>
+                <input class="form-control" type="text" id="name" name="name" required />
+            </div>
+            <div class="form-group">
+                <label for="phone">Số Điện Thoại *</label>
+                <input class="form-control" type="text" id="phone" name="phone" required />
+            </div>
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input class="form-control" type="email" id="email" name="email" required />
+            </div>
+
+            <h3>Thông tin bổ sung</h3>
+            <div class="form-group">
+                <label for="note">Ghi chú đơn hàng</label>
+                <textarea id="note" class="form-control" name="note" placeholder="Nếu bạn có yêu cầu đặc biệt, hãy ghi chú tại đây..."></textarea>
+            </div>
+        </div>
+
+        <div class="checkout-right">
+            <h2>Đơn hàng của bạn</h2>
+            <!-- Ví dụ sản phẩm -->
+            @foreach (var item in Model)
+            {
+                totalAmount += item.Product.Price * item.Quantity;
+                <div class="order-item">
+                    <p>@item.Product.Name x @item.Quantity</p>
+                    <span>@item.Product.Price.ToString("C0", new CultureInfo("vi-VN"))</span>
+                </div>
+            }
+
+            <div class="order-total">
+                Tổng cộng: @totalAmount.ToString("C0", new CultureInfo("vi-VN"))
+                <input type="hidden" name="totalAmount" value="@totalAmount" />
+            </div>
+
+            <h2>Hướng dẫn thanh toán</h2>
+            <p>
+                Quý khách có thể thanh toán qua chuyển khoản ngân hàng hoặc ví điện tử. Vui lòng quét mã QR tương ứng hoặc chuyển khoản theo thông tin bên dưới:
+            </p>
+
+            <div class="payment-section">
+                <h3>Ngân Hàng MB Bank</h3>
+                <p>
+                    Số tài khoản: <strong>12310020049999</strong><br>
+                    Chủ tài khoản: <strong>Lương Nhật Trường</strong>
+                </p>
+                <div class="qr-code">
+                    <img src="/images/z6421858835558_509e567814b20a267f986868c7911004.jpg" alt="QR HDBank" />
+                </div>
+            </div>
+
+            <div class="payment-section">
+                <h3>MoMo</h3>
+                <p>
+                    Số điện thoại: <strong>0359223929</strong><br>
+                    Chủ tài khoản: <strong>Lương Nhật Trường</strong>
+                </p>
+                <div class="qr-code">
+                    <img src="/images/z6435641289089_4b7be114ab15f9b8a0d11d025f1e438b.jpg" alt="QR MoMo" />
+                </div>
+            </div>
+
+            <!-- Ghi chú & nút xác nhận -->
+            <p class="note">
+                Đơn hàng của bạn sẽ được xác nhận ngay khi chúng tôi nhận được thanh toán. Mọi thắc mắc xin vui lòng liên hệ qua hotline, Zalo hoặc Fanpage để được hỗ trợ.
+            </p>
+            <div class="btn-group">
+                <button class="btn-select-method" id="openModal">Chọn phương thức thanh toán</button>
+                <button type="submit" class="btn-confirm">Xác nhận</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal" id="paymentModal">
+    <div class="modal-content">
+        <span class="close" id="closeModal">&times;</span>
+        <h2>Chọn Phương Thức Thanh Toán</h2>
+        <form method="post" asp-action="PayByMomo">
+            <input type="hidden" name="FullName" value="@User.Identity?.Name" />
+            <input type="hidden" name="Amount" value="@totalAmount" />
+            <input type="hidden" name="OrderInfo" value="Thanh toán đơn hàng qua Momo tại TruongShop" />
+            <button class="option-btn momo">Thanh Toán Qua Momo</button>
+        </form>
+
+        <form asp-action="PayByVnpay" method="post">
+            <input type="hidden" name="Name" value="@User.Identity?.Name" />
+            <input type="hidden" name="Amount" value="@totalAmount" />
+            <input type="hidden" name="OrderDescription" value="Thanh toán đơn hàng qua Vnpay tại TruongShop" />
+            <input type="hidden" name="OrderType" value="other" />
+            <button class="option-btn vnpay">Thanh Toán Qua VnPay</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Lấy các phần tử cần thiết
+    const openModalBtn = document.getElementById('openModal');
+    const closeModalBtn = document.getElementById('closeModal');
+    const modal = document.getElementById('paymentModal');
+
+    // Mở modal khi nhấn nút "Chọn Thanh Toán"
+    openModalBtn.addEventListener('click', function() {
+      modal.style.display = 'flex';
+    });
+
+    // Đóng modal khi nhấn dấu "x"
+    closeModalBtn.addEventListener('click', function() {
+      modal.style.display = 'none';
+    });
+
+    // Đóng modal khi click bên ngoài vùng nội dung của modal
+    window.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+</script>

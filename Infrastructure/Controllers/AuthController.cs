@@ -36,14 +36,11 @@ namespace Infrastructure.Controllers
                     var user = await _userManage.LoginAsync(model.Username, model.Password);
                     var role = await _userManage.GetRoleNameAsync(user.RoleId);
 
-                    var tok = user.DisplayName.Split([' '], StringSplitOptions.RemoveEmptyEntries);
-                    var displayName = tok.Last();
-
                     var claims = new List<Claim>
                     {
                         new(ClaimTypes.Sid, user.Id.ToString()),
                         new(ClaimTypes.NameIdentifier, user.Username),
-                        new(ClaimTypes.Name, displayName),
+                        new(ClaimTypes.Name, user.DisplayName),
                         new(ClaimTypes.Email, user.Email),
                         new(ClaimTypes.Role, role)
                     };

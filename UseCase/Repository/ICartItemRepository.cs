@@ -10,7 +10,7 @@ namespace UseCase.Repository
     public interface ICartItemRepository
     {
         Task AddCartAsync(CartItem cartItem);
-        Task RemoveCartAsync(int productId);
+        Task RemoveCartAsync(int productId, int userId);
         Task UpdateCartAsync(CartItem cartItem);
         Task<IEnumerable<CartItem>> GetCartItemsAsync(int userId);
         /// <summary>

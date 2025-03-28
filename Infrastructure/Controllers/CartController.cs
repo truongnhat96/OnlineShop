@@ -10,6 +10,7 @@ namespace Infrastructure.Controllers
     public class CartController : Controller
     {
         public const string CartSessionKey = "Cart";
+        public const string CouponSessionKey = "CouponKey";
         private readonly ICartManage _cartManage;
         private readonly ILogger<CartController> _logger;
 
@@ -51,7 +52,7 @@ namespace Infrastructure.Controllers
 
 
         [HttpGet("/Cart-Add/{productId}/{productName}", Name = "cart")]
-        public async Task<IActionResult> Add(int productId, string productName, [FromQuery] int quantity)
+        public async Task<IActionResult> Add(int productId, string productName, [FromQuery]int quantity)
         {
             var user = HttpContext.User;
             if (user.Identity != null && user.Identity.IsAuthenticated)
@@ -104,7 +105,8 @@ namespace Infrastructure.Controllers
             var user = HttpContext.User;
             if (user.Identity != null && user.Identity.IsAuthenticated)
             {
-                await _cartManage.RemoveCartItemAsync(productId);
+                var userId = int.Parse(user.FindFirstValue(ClaimTypes.Sid) ?? "0");
+                await _cartManage.RemoveCartItemAsync(productId, userId);
             }
             else
             {
@@ -126,7 +128,7 @@ namespace Infrastructure.Controllers
 
 
         [HttpPost("/Cart-Update")]
-        public async Task<IActionResult> UpdateCart([FromBody] CartUpdateRequest model)
+        public async Task<IActionResult> UpdateCart([FromBody]CartUpdateRequest model)
         {
             var user = HttpContext.User;
             bool isDeleted = false;
@@ -137,7 +139,7 @@ namespace Infrastructure.Controllers
                     var userId = int.Parse(user.FindFirstValue(ClaimTypes.Sid) ?? "0");
                     if (item.Quantity == 0)
                     {
-                        await _cartManage.RemoveCartItemAsync(item.ProductId);
+                        await _cartManage.RemoveCartItemAsync(item.ProductId, userId);
                         isDeleted = true;
                     }
                     else
@@ -170,10 +172,17 @@ namespace Infrastructure.Controllers
             return Json(new { success = true, reload = isDeleted });
         }
 
+
         [Authorize]
         [HttpPost("/Discount")]
         public async Task<IActionResult> Discount(string coupon)
         {
+            var couponEntered = new List<CouponModel>();
+            var couponSTR = HttpContext.Session.GetString(CouponSessionKey);
+            if (!string.IsNullOrEmpty(couponSTR))
+            {
+                couponEntered = JsonSerializer.Deserialize<List<CouponModel>>(couponSTR)!;
+            }
             if (int.TryParse(User.FindFirstValue(ClaimTypes.Sid), out int userId))
             {
                 var cartItems = await _cartManage.GetCartItemsAsync(userId);
@@ -185,7 +194,15 @@ namespace Infrastructure.Controllers
                     try
                     {
                         product = await _cartManage.GetProductInCartAfterDiscountAsync(item.ProductId, coupon);
-                        isDiscount = true;
+                        isDiscount = await _cartManage.IsCouponUsed(userId, item.ProductId);
+                        if (couponEntered.FirstOrDefault(x => x.Id == item.ProductId) == null)
+                        {
+                            couponEntered.Add(new CouponModel
+                            {
+                                Id = item.ProductId,
+                                Name = coupon
+                            });
+                        }
                     }
                     catch
                     {
@@ -197,6 +214,7 @@ namespace Infrastructure.Controllers
                         Product = product
                     });
                 }
+                HttpContext.Session.SetString(CouponSessionKey, JsonSerializer.Serialize(couponEntered));
                 if (!isDiscount)
                 {
                     TempData["CartError"] = "Mã giảm giá không tồn tại hoặc đã được sử dụng";
@@ -209,6 +227,7 @@ namespace Infrastructure.Controllers
             }
             return RedirectToAction("CartView");
         }
+
 
     }
 }

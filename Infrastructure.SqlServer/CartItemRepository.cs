@@ -31,9 +31,9 @@ namespace Infrastructure.SqlServer
             return _mapper.Map<IEnumerable<CartItem>, IEnumerable<Entities.CartItem>>(itemsDb);
         }
 
-        public async Task RemoveCartAsync(int productId)
+        public async Task RemoveCartAsync(int productId, int userId)
         {
-            var itemDb = await _context.CartItems.FirstOrDefaultAsync(item => item.ProductId == productId) ?? throw new("item not exist");
+            var itemDb = await _context.CartItems.FirstOrDefaultAsync(item => item.ProductId == productId && item.UserId == userId) ?? throw new("item not exist");
             _context.CartItems.Remove(itemDb);
             await _context.SaveChangesAsync();
         }

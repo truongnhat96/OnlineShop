@@ -8,6 +8,7 @@ namespace Infrastructure.Models
         public string Name { get; set; } = string.Empty;
         public string Brand { get; set; } = string.Empty;
         public int Quantity { get; set; }
+        public int Sold { get; set; }
         public DateTime Date_Import { get; set; }
         public double Price { get; set; }
         public double oldPrice { get; set; }

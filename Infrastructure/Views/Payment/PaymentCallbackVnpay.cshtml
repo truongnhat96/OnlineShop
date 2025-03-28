@@ -1,0 +1,46 @@
+﻿@using Infrastructure.Models.VnPay
+@model PaymentResponseModel
+@{
+    ViewData["Title"] = "Thanh toán qua vnpay";
+    var token = Model.OrderDescription.Split('-');
+    string message = token[0];
+    double amount = double.Parse(token[1]);
+}
+
+<div class="wrapper-relative">
+    <div class="box-absolute-center">
+
+        @if (Model.Success && !Model.TransactionId.Equals("0"))
+        {
+            <div class="icon-container">
+                <img src="~/images/success.png" width="100" height="100" />
+            </div>
+            <p class="status success">Giao dịch thành công!</p>
+        }
+        else
+        {
+            <p class="status failure">Giao dịch thất bại.</p>
+        }
+
+        <div class="info-container">
+            <div class="info-row">
+                <div class="info-label">Mã giao dịch:</div>
+                <div class="info-value">@Model.TransactionId</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Mã đơn hàng:</div>
+                <div class="info-value">@Model.OrderId</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Số tiền giao dịch</div>
+                <div class="info-value">@amount.ToString("c0", new CultureInfo("vi-VN"))</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Nội dung:</div>
+                <div class="info-value">@message</div>
+            </div>
+        </div>
+
+        <a class="btn-back" href="/">Quay lại trang chủ</a>
+    </div>
+</div>

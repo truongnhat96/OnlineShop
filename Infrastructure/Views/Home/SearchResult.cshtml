@@ -18,20 +18,6 @@
         </div>
     </div>
 }
-@foreach(var post in Model.Posts)
-{
-    <div class="product-list">
-        <div class="product-item">
-            <div class="image-container">
-                <a href="/Post/@post.Id">
-                    <img src="/uploads/posts/@post.ImageUrl" alt="">
-                </a>
-            </div>
-            <a href="/Post/@post.Id" class="product-name">@post.Title</a>
-            <a href="/Post/@post.Id" class="read-more">READ MORE</a>
-        </div>
-    </div>
-}
 
 <div class="pagination">
     @if (Model.totalPage > 1)

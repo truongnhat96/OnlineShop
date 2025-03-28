@@ -61,28 +61,38 @@
 
     <!-- Danh sách sản phẩm -->
     <section class="products">
-        @for(int i = 0; i<Model.ProductList.Count; i++){
+        @for (int i = 0; i < Model.ProductList.Count; i++)
+        {
+            var product = Model.ProductList[i];
+            bool outOfStock = product.Quantity <= 0;
             <div class="product">
-                @if (Model.ProductList[i].OldPrice > Model.ProductList[i].Price)
+                @if (product.OldPrice > product.Price)
                 {
                     <span class="discount">GIẢM GIÁ!</span>
                 }
-                <a href="/Product/@Model.ProductList[i].Id" class="product-link">
+                <a href="/Product/@product.Id" class="product-link">
                     <div class="product-image-container">
-                        <img src="/uploads/products/@Model.ProductList[i].ImageUrl" class="product-image">
+                        <img src="/uploads/products/@product.ImageUrl" class="product-image @(outOfStock ? "out-of-stock-filter" : "")">
+                        @if (outOfStock)
+                        {
+                            <div class="out-of-stock-label">HẾT HÀNG</div>
+                        }
                     </div>
                 </a>
-                <a href="/Product/@Model.ProductList[i].Id" class="product-name">@Model.ProductList[i].Name</a>
+                <a href="/Product/@product.Id" class="product-name">@product.Name</a>
                 @for (int j = 0; j < Model.ProductListReview[i]; j++)
                 {
                     <span class="star">⭐</span>
                 }
-                @if (Model.ProductList[i].OldPrice > Model.ProductList[i].Price)
+                @if (product.OldPrice > product.Price)
                 {
-                    <p class="old-price">@((Model.ProductList[i].OldPrice).ToString("c0", new CultureInfo("vi-VN")))</p>
+                    <p class="old-price">@product.OldPrice.ToString("c0", new CultureInfo("vi-VN"))</p>
                 }
-                <p class="new-price">@(Model.ProductList[i].Price.ToString("c0", new CultureInfo("vi-VN")))</p>
-                <a href="/Cart-Add/@(Model.ProductList[i].Id)/@(Model.ProductList[i].Name)?quantity=1" role="button" class="btn-cart">THÊM VÀO GIỎ HÀNG</a>
+                <p class="new-price">@product.Price.ToString("c0", new CultureInfo("vi-VN"))</p>
+                @if (!outOfStock)
+                {
+                    <a href="/Cart-Add/@(product.Id)/@(product.Name)?quantity=1" role="button" class="btn-cart">THÊM VÀO GIỎ HÀNG</a>
+                }
             </div>
         }
     </section>

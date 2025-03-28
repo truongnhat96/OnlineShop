@@ -25,9 +25,13 @@
                     {
                         <ul class="centered-menu nav-menu" style="margin-bottom: 0;">
                             <li class="dropdown">
-                                <div class="name-container" title="@(User.Identity.Name?.Length > 14 ? User.Identity.Name : "")">
+                                @{
+                                    var tok = User.Identity.Name?.Split([' '], StringSplitOptions.RemoveEmptyEntries);
+                                    var displayName = tok?.Last();
+                                }
+                                <div class="name-container" title="@(displayName?.Length > 14 ? displayName : "")">
                                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                                        Xin chào @User.Identity.Name
+                                        Xin chào @displayName
                                     </a>
                                 </div>
                                 <ul class="dropdown-menu">
@@ -134,7 +138,7 @@
         <ul class="fixed-buttons">
             <li><a href="tel:0869553721" rel="nofollow"><img src="~/images/call.png" class="ico-contact" /></a></li>
             <li><a href="https://www.messenger.com/t/100031933698842" rel="nofollow"><img src="~/images/messenger.png" class="ico-contact" /></a></li>
-            <li><a href="https://zalo.me/0869553721" rel="nofollow"><img src="~/images/icon-zalo.png" class="ico-contact" /></a></li>
+            <li><a href="https://zalo.me/0358223929" rel="nofollow"><img src="~/images/icon-zalo.png" class="ico-contact" /></a></li>
         </ul>
     </div>
     <footer class="footer">

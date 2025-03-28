@@ -104,5 +104,18 @@ namespace Infrastructure.SqlServer
             await _context.SaveChangesAsync();
             return product;
         }
+
+
+        public async Task UpdateQuantityAsync(int id, int quantity)
+        {
+            var productDb = await _context.Products.FindAsync(id) ?? throw new("Nullable");
+            productDb.Quantity-=quantity;
+            productDb.Sold += quantity;
+            if (productDb.Quantity < 0)
+            {
+                productDb.Quantity = 0;
+            }
+            await _context.SaveChangesAsync();
+        }
     }
 }

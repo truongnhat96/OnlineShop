@@ -1,0 +1,262 @@
+﻿body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background-color: #f0f2f5;
+}
+
+/* Khung tổng (chứa 2 cột) */
+.checkout-container {
+    display: flex;
+    flex-wrap: wrap; /* Cho phép xuống hàng trên màn hình nhỏ */
+    max-width: 1200px;
+    margin: 10px auto;
+    gap: 20px;
+    padding: 0 10px;
+}
+
+/* Cột trái: Thông tin thanh toán */
+.checkout-left {
+    flex: 1;
+    min-width: 280px; /* Đảm bảo cột không quá hẹp */
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    border-radius: 6px;
+}
+
+/* Cột phải: Đơn hàng & Hướng dẫn thanh toán */
+.checkout-right {
+    flex: 1;
+    min-width: 280px;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    border-radius: 6px;
+    padding-bottom: 200px;
+}
+
+    /* Tiêu đề chung */
+    .checkout-left h2,
+    .checkout-right h2 {
+        margin-top: 0;
+        font-size: 1.2rem;
+        margin-bottom: 16px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 8px;
+    }
+
+/* Form thông tin thanh toán */
+.form-group {
+    margin-bottom: 15px;
+}
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .form-group textarea {
+        min-height: 80px;
+        resize: vertical;
+    }
+
+/* Tiêu đề phụ (Thông tin bổ sung) */
+.checkout-left h3 {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+/* Đơn hàng của bạn */
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    border-bottom: 1px dotted #ddd;
+    padding-bottom: 5px;
+}
+
+    .order-item p {
+        margin: 0;
+    }
+
+    .order-item span {
+        font-weight: 600;
+    }
+
+.order-total {
+    text-align: right;
+    margin-top: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    padding-top: 5px;
+    border-top: 1px solid #ddd;
+}
+
+/* Hướng dẫn thanh toán */
+.payment-section {
+    margin-top: 20px;
+}
+
+    .payment-section h3 {
+        margin: 15px 0 5px;
+        font-size: 1rem;
+        color: #333;
+    }
+
+    .payment-section p {
+        line-height: 1.6;
+    }
+
+.qr-code {
+    text-align: center;
+    margin: 10px 0;
+}
+
+    .qr-code img {
+        width: 300px;
+        height: 350px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+
+/* Ghi chú cuối & nút xác nhận */
+.note {
+    margin-top: 20px;
+    font-style: italic;
+    color: #666;
+}
+
+.btn-group {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap; /* Cho phép xuống hàng nếu thiếu chỗ */
+    gap: 10px; /* Khoảng cách giữa các nút */
+}
+
+/* Nút chọn phương thức thanh toán */
+.btn-select-method {
+    padding: 8px 16px; /* Giảm padding để nút nhỏ hơn */
+    font-size: 0.875rem; /* Giảm cỡ chữ */
+    background-color: #28a745;
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+    border: none;
+}
+
+    .btn-select-method:hover {
+        background-color: #218838;
+    }
+
+/* Nút xác nhận */
+.btn-confirm {
+    padding: 8px 16px; /* Giảm padding để nút nhỏ hơn */
+    font-size: 0.875rem; /* Giảm cỡ chữ */
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+    border: none;
+}
+
+    .btn-confirm:hover {
+        background-color: #0056b3;
+    }
+
+
+
+/*payment option*/
+/* Modal Overlay */
+.modal {
+    display: none; /* Ẩn modal mặc định */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Lớp phủ mờ */
+    justify-content: center; /* Căn giữa nội dung theo chiều ngang */
+    align-items: center; /* Căn giữa nội dung theo chiều dọc */
+    z-index: 9999; /* Đảm bảo modal nằm trên các phần tử khác */
+}
+
+/* Modal Content */
+.modal-content {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 40px;
+    /* Giới hạn chiều rộng tối đa và cho phép co giãn */
+    max-width: 600px;
+    width: 90%;
+    box-sizing: border-box;
+    text-align: center;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+}
+
+
+.option-btn {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+    .option-btn:hover {
+        transform: scale(1.05);
+        opacity: 0.9;
+    }
+
+.momo {
+    background: #A50064;
+    color: #fff;
+}
+
+.vnpay {
+    background: #005AA9;
+    color: #fff;
+}
+
+/* Responsive: xếp chồng cột trên màn hình nhỏ */
+@media (max-width: 768px) {
+    .checkout-container {
+        flex-direction: column;
+    }
+
+    .checkout-left,
+    .checkout-right {
+        margin-bottom: 20px;
+    }
+}

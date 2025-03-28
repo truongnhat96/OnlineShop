@@ -1,0 +1,39 @@
+﻿@model double
+@{
+    DateTime orderDate = DateTime.Now;
+}
+
+<div class="main-container">
+    <!-- Thông báo đặt hàng thành công -->
+    <div class="thank-you">Cảm ơn bạn. Đơn hàng của bạn đã được nhận.</div>
+
+    <!-- Thông tin đơn hàng -->
+    <div class="order-info">
+        <div>
+            <span class="label">Đơn hàng</span>
+            <span class="value">@(new Random().Next(121212, 929292))</span>
+        </div>
+        <div>
+            <span class="label">Ngày</span>
+            <span class="value">Tháng @orderDate.Month @(orderDate.Day), @orderDate.Year</span>
+        </div>
+        <div>
+            <span class="label">Tổng cộng</span>
+            <span class="value highlight">@Model.ToString("c0", new CultureInfo("vi-VN"))</span>
+        </div>
+        <div>
+            <span class="label">Phương thức thanh toán</span>
+            <span class="value"><strong>Chuyển khoản ngân hàng</strong></span>
+        </div>
+    </div>
+
+    <!-- Hướng dẫn thanh toán -->
+    <div class="payment-instruction">
+        <h3>Hướng dẫn THANH TOÁN:</h3>
+        <ul>
+            <li>Có thể thanh toán qua chuyển khoản ngân hàng hoặc ví điện tử Momo.</li>
+            <li>Nhập <b>Mã Đơn Hàng</b> trong phần Nội dung thanh toán. Sau khi thanh toán xong, quý khách nhắn tin qua SĐT/Zalo <b>0358223929</b> để chúng tôi xử lý đơn hàng nhanh hơn.</li>
+            <li>Đơn hàng sẽ được giao ngay sau khi chúng tôi nhận được thanh toán.</li>
+        </ul>
+    </div>
+</div>
