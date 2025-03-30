@@ -88,7 +88,7 @@
         <span class="close" id="closeModal">&times;</span>
         <h2>Chọn Phương Thức Thanh Toán</h2>
         <form method="post" asp-action="PayByMomo">
-            <input type="hidden" name="FullName" value="@User.Identity?.Name" />
+            <input type="hidden" name="FullName" value="@User.Identity?.Name"/>
             <input type="hidden" name="Amount" value="@totalAmount" />
             <input type="hidden" name="OrderInfo" value="Thanh toán đơn hàng qua Momo tại TruongShop" />
             <button class="option-btn momo">Thanh Toán Qua Momo</button>

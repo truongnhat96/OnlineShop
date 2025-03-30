@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text.Json;
-using System.Threading.Tasks;
 using UseCase.Business_Logic;
 using UseCase.MailService;
 

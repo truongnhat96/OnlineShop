@@ -16,13 +16,12 @@ namespace Infrastructure.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Comment(int rating, string comment)
+        public async Task<IActionResult> Comment(int rating, string comment, int productId)
         {
             var userId = HttpContext.User.FindFirst(ClaimTypes.Sid)?.Value;
             TempData["active"] = "active";
-            int productId = Convert.ToInt32(TempData["productId"]?.ToString());
             await _userManage.AddReviewAsync(Convert.ToInt32(userId), productId, rating, comment);
-            return Redirect(Url.RouteUrl("product", new { id = productId, oldPrice = Convert.ToDouble(TempData["oldPrice"]) }) ?? throw new("Url null"));
+            return RedirectToAction("Detail", "Product", new { id = productId });
         }
 
 
