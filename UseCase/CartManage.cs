@@ -1,5 +1,8 @@
 ﻿using Entities;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Text.Json;
 using UseCase.Business_Logic;
+using UseCase.CachingSupport;
 using UseCase.UnitOfWork;
 
 namespace UseCase
@@ -7,10 +10,19 @@ namespace UseCase
     public class CartManage : ICartManage
     {
         private readonly ICartItemUnitOfWork _unitOfWork;
-
-        public CartManage(ICartItemUnitOfWork unitOfWork)
+        private readonly IDistributedCache _cache;
+        private readonly DistributedCacheEntryOptions _cacheEntryOptions;
+        private readonly CachableCartSupportOption _cacheOption;
+        
+        public CartManage(ICartItemUnitOfWork unitOfWork, IDistributedCache cache, CachableCartSupportOption cacheOption)
         {
             _unitOfWork = unitOfWork;
+            _cache = cache;
+            _cacheOption = cacheOption;
+            _cacheEntryOptions = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = _cacheOption.CacheLifeTime
+            };
         }
 
         public async Task AddCartItemAsync(int productId, int userId, int quantity)
@@ -40,6 +52,9 @@ namespace UseCase
                     Quantity = quantitySelected
                 });
             }
+            var cachekey = _cacheOption.CacheKey;
+            var cart = await _unitOfWork.CartItemRepository.GetCartItemsAsync(userId);
+            await _cache.SetStringAsync(cachekey, JsonSerializer.Serialize(cart), _cacheEntryOptions);
         }
 
         public async Task<IEnumerable<CartItem>> GetCartItemsAsync(int userId)
@@ -99,6 +114,9 @@ namespace UseCase
         public async Task RemoveCartItemAsync(int productId, int userId)
         {
             await _unitOfWork.CartItemRepository.RemoveCartAsync(productId, userId);
+            var cachekey = _cacheOption.CacheKey;
+            var cart = await _unitOfWork.CartItemRepository.GetCartItemsAsync(userId);
+            await _cache.SetStringAsync(cachekey, JsonSerializer.Serialize(cart), _cacheEntryOptions);
         }
 
         public async Task UpdateCartItemAsync(int productId, int userId, int quantity)
@@ -114,6 +132,9 @@ namespace UseCase
                 UserId = userId,
                 Quantity = quantitySelected
             });
+            var cachekey = _cacheOption.CacheKey;
+            var cart = await _unitOfWork.CartItemRepository.GetCartItemsAsync(userId);
+            await _cache.SetStringAsync(cachekey, JsonSerializer.Serialize(cart), _cacheEntryOptions);
         }
     }
 }

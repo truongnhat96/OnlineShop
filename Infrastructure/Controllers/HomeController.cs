@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using Infrastructure.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using UseCase.Business_Logic;
 
 namespace Infrastructure.Controllers

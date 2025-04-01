@@ -33,6 +33,7 @@ namespace Infrastructure
                     options.AccessDeniedPath = "/Forbidden";
                 });
 
+
             builder.Services.AddMailService(builder.Configuration);
             builder.Services.AddPaymentService(builder.Configuration);
 
@@ -58,6 +59,7 @@ namespace Infrastructure
             app.UseAuthentication();
             app.UseAuthorization();
 
+
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
@@ -75,7 +77,7 @@ namespace Infrastructure
                        .UseLazyLoadingProxies());
 
             var cacheOption = configuration.GetSection("Cache").Get<CacheOption>() ?? throw new("");
-            InitCache(services, configuration,cacheOption);
+            InitCache(services, configuration, cacheOption);
 
             services.AddTransient<IUserRepository>(service => new UserRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
             services.AddTransient<IRoleRepository>(service => new RoleRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
@@ -95,7 +97,7 @@ namespace Infrastructure
             services.AddTransient<IHomeManage>(service => new HomeManage(service.GetRequiredService<IProductRepository>()));
             services.AddTransient<IUserManage>(service => new UserManage(service.GetRequiredService<IUserUnitOfWork>(), service.GetRequiredService<IDistributedCache>(), new(), service.GetRequiredService<ILogger<UserManage>>()));
             services.AddTransient<IProductManage>(service => new ProductManage(service.GetRequiredService<IProductUnitOfWork>()));
-            services.AddTransient<ICartManage>(service => new CartManage(service.GetRequiredService<ICartItemUnitOfWork>()));
+            services.AddTransient<ICartManage>(service => new CartManage(service.GetRequiredService<ICartItemUnitOfWork>(), service.GetRequiredService<IDistributedCache>(), new()));
         }
 
         private static void InitCache(IServiceCollection services, ConfigurationManager configuration, CacheOption cacheOption)
@@ -106,7 +108,7 @@ namespace Infrastructure
                     services.AddDistributedMemoryCache();
                     break;
                 case CacheTypes.Redis:
-                    if(cacheOption.CacheRedisOptions == null)
+                    if (cacheOption.CacheRedisOptions == null)
                     {
                         throw new("Redis option is required");
                     }

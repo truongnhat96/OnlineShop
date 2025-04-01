@@ -30,7 +30,7 @@ namespace UseCase
 
         public async Task<Post> AddPostAsync(int userId, string title, string content, string image)
         {
-            return await _unitOfWork.PostRepository.AddPostAsync(new Post
+            var post = await _unitOfWork.PostRepository.AddPostAsync(new Post
             {
                 Id = Guid.NewGuid(),
                 UserId = userId,
@@ -38,6 +38,11 @@ namespace UseCase
                 Content = content,
                 ImageUrl = image,
             });
+            var cacheKey = _option.CacheKey;
+            var Posts = await _unitOfWork.PostRepository.GetPostsAsync();
+            _logger.LogInformation("Storing data to cache...");
+            await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(Posts), _cacheOptions);
+            return post;
         }
 
         public async Task<Review> AddReviewAsync(int userId, int productId, int rating, string? comment = null)
@@ -55,7 +60,12 @@ namespace UseCase
 
         public async Task<Post> DeletePostAsync(Guid id)
         {
-            return await _unitOfWork.PostRepository.DeletePostAsync(id);
+            var post = await _unitOfWork.PostRepository.DeletePostAsync(id);
+            var cacheKey = _option.CacheKey;
+            var Posts = await _unitOfWork.PostRepository.GetPostsAsync();
+            _logger.LogInformation("Storing data to cache...");
+            await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(Posts), _cacheOptions);
+            return post;
         }
 
         public async Task<Post> GetPostDetailAsync(Guid id)

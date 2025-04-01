@@ -1,17 +1,42 @@
 ﻿@using System.Text.Json
 @using System.Security.Claims
+@using Entities
 @using UseCase.Business_Logic
+@using Microsoft.Extensions.Caching.Distributed
+@using UseCase.CachingSupport
 @inject ICartManage CartManage
+@inject IDistributedCache Cache
 @{
     if (User.Identity?.IsAuthenticated == true)
     {
         int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.Sid));
-        var cart = await CartManage.GetCartItemsAsync(userId);
-        if(cart.Count() > 0)
+        var option = new CachableCartSupportOption();
+        var cacheOption = new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = option.CacheLifeTime
+                };
+        var cacheKey = option.CacheKey;
+        var cacheValue = await Cache.GetStringAsync(cacheKey);
+        if (cacheValue == null)
         {
-            int quantity = 0;
-            cart.ToList().ForEach(c => quantity += c.Quantity);
-            <span class="badge">@quantity</span>
+            var cart = await CartManage.GetCartItemsAsync(userId);
+            if (cart.Count() > 0)
+            {
+                int quantity = 0;
+                cart.ToList().ForEach(c => quantity += c.Quantity);
+                await Cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(cart), cacheOption);
+                <span class="badge">@quantity</span>
+            }
+        }
+        else
+        {
+            var cart = JsonSerializer.Deserialize<IEnumerable<CartItem>>(cacheValue);
+            if(cart != null && cart.Count() > 0)
+            {
+                int quantity = 0;
+                cart.ToList().ForEach(c => quantity += c.Quantity);
+                <span class="badge">@quantity</span>
+            }
         }
     }
     else

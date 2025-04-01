@@ -2,6 +2,7 @@
 using Infrastructure.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using UseCase;
 using UseCase.Business_Logic;
 
