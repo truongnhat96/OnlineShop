@@ -35,7 +35,7 @@ namespace Infrastructure.SqlServer
             return _mapper.Map<IEnumerable<Entities.Post>>(posts);
         }
 
-        public async Task<Entities.Post> GetPostAsync(Guid id)
+        public async Task<Entities.Post?> GetPostAsync(Guid id)
         {
             var postDb = await _context.Posts.FindAsync(id);
             return _mapper.Map<Entities.Post>(postDb);

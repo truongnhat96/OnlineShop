@@ -5,18 +5,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using UseCase;
 using UseCase.Business_Logic;
+using UseCase.UnitOfWork;
 
 namespace Infrastructure.Controllers
 {
     public class ProductController : Controller
     {
         private readonly IProductManage _productManager;
+        private readonly IReviewerFinder _reviewerFinder;
         private readonly ILogger<ProductController> _logger;
 
-        public ProductController(IProductManage productManager, ILogger<ProductController> logger)
+        public ProductController(IProductManage productManager, ILogger<ProductController> logger, IReviewerFinder reviewerFinder)
         {
             _productManager = productManager;
             _logger = logger;
+            _reviewerFinder = reviewerFinder;
         }
 
 
@@ -87,11 +90,11 @@ namespace Infrastructure.Controllers
         public async Task<IActionResult> Detail(int id)
         {
             var product = await _productManager.GetProductDetail(id);
-            var reviews = (await _productManager.GetReview(id)).ToList();
+            var reviews = (await _reviewerFinder.GetReview(id)).ToList();
             List<string> reviewerName = [];
             foreach (var review in reviews)
             {
-                reviewerName.Add((await _productManager.GetUserName(review.UserId)));
+                reviewerName.Add((await _reviewerFinder.GetUserName(review.UserId)));
             }
             var model = new ProductModel
             {
@@ -218,6 +221,7 @@ namespace Infrastructure.Controllers
                 Name = product.Name,
                 Price = product.Price,
                 CategoryId = product.CategoryId,
+                Sold = product.Sold,
                 oldPrice = product.OldPrice,
                 Brand = product.Brand,
                 Date_Import = product.Date_Import,
@@ -249,6 +253,7 @@ namespace Infrastructure.Controllers
                     Price = model.Price,
                     CategoryId = model.CategoryId,
                     Brand = model.Brand,
+                    Sold = model.Sold,
                     Date_Import = model.Date_Import,
                     Description = model.Description,
                     Quantity = model.Quantity,

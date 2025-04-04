@@ -119,16 +119,6 @@ namespace UseCase
             return await _productUnitOfWork.ProductRepository.GetProductsAsync(categoryId);
         }
 
-        public async Task<IEnumerable<Review>> GetReview(int productId)
-        {
-            return await _productUnitOfWork.ReviewRepository.GetReviewAsync(productId);
-        }
-
-        public async Task<string> GetUserName(int id)
-        {
-            var user = await _productUnitOfWork.UserRepository.GetUserAsync(id) ?? throw new();
-            return user.DisplayName;
-        }
 
         public async Task<Product> UpdateProductAsync(Product product)
         {

@@ -3,16 +3,21 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using UseCase.Business_Logic;
+using UseCase.UnitOfWork;
 
 namespace Infrastructure.Controllers
 {
     public class UserController : Controller
     {
         private readonly IUserManage _userManage;
+        private readonly IReviewerFinder _reviewerFinder;
+        private readonly IPostManage _postMange;
 
-        public UserController(IUserManage userManage)
+        public UserController(IUserManage userManage, IReviewerFinder reviewerFinder, IPostManage postMange)
         {
             _userManage = userManage;
+            _reviewerFinder = reviewerFinder;
+            _postMange = postMange;
         }
 
         [HttpPost]
@@ -20,7 +25,7 @@ namespace Infrastructure.Controllers
         {
             var userId = HttpContext.User.FindFirst(ClaimTypes.Sid)?.Value;
             TempData["active"] = "active";
-            await _userManage.AddReviewAsync(Convert.ToInt32(userId), productId, rating, comment);
+            await _reviewerFinder.AddReviewAsync(Convert.ToInt32(userId), productId, rating, comment);
             return RedirectToAction("Detail", "Product", new { id = productId });
         }
 
@@ -28,10 +33,10 @@ namespace Infrastructure.Controllers
         [HttpGet("/Posts")]
         public async Task<IActionResult> PostView([FromQuery]string keyword)
         {
-            var posts = await _userManage.GetPostsAsync();
+            var posts = await _postMange.GetPostsAsync();
             if(!string.IsNullOrEmpty(keyword))
             {
-                posts = await _userManage.GetPostsAsync(keyword);
+                posts = await _postMange.GetPostsAsync(keyword);
             }
             var model = new PostModel
             {
@@ -44,7 +49,7 @@ namespace Infrastructure.Controllers
         [HttpGet("/Post/{id}")]
         public async Task<IActionResult> PostDetail(string id)
         {
-            var post = await _userManage.GetPostDetailAsync(Guid.Parse(id));
+            var post = await _postMange.GetPostDetailAsync(Guid.Parse(id));
             var model = new PostModel
             {
                 Title = post.Title,
@@ -66,7 +71,7 @@ namespace Infrastructure.Controllers
         {
             if (!string.IsNullOrEmpty(id))
             {
-                var post = await _userManage.GetPostDetailAsync(Guid.Parse(id));
+                var post = await _postMange.GetPostDetailAsync(Guid.Parse(id));
                 var model = new PostModel
                 {
                     Title = post.Title,
@@ -99,7 +104,7 @@ namespace Infrastructure.Controllers
 
                 if (!string.IsNullOrEmpty(id))
                 {
-                    await _userManage.UpdatePostAsync(new Entities.Post 
+                    await _postMange.UpdatePostAsync(new Entities.Post 
                     {
                         Id = Guid.Parse(id),
                         UserId = Convert.ToInt32(userId),
@@ -111,7 +116,7 @@ namespace Infrastructure.Controllers
                 }
                 else
                 {
-                    await _userManage.AddPostAsync(Convert.ToInt32(userId), model.Title, model.Content, imageFile);
+                    await _postMange.AddPostAsync(Convert.ToInt32(userId), model.Title, model.Content, imageFile);
                     TempData["submit"] = "Đăng bài viết thành công!";
                 }
             }
@@ -126,7 +131,7 @@ namespace Infrastructure.Controllers
         [HttpGet("/BlogList")]
         public async Task<IActionResult> BlogManage()
         {
-            var posts = await _userManage.GetPostsAsync();
+            var posts = await _postMange.GetPostsAsync();
             var model = new PostModel
             {
                 Posts = posts.ToList()
@@ -137,7 +142,7 @@ namespace Infrastructure.Controllers
         [HttpGet("/Delete/{id}")]
         public async Task<IActionResult> DeletePost(string id)
         {
-            await _userManage.DeletePostAsync(Guid.Parse(id));
+            await _postMange.DeletePostAsync(Guid.Parse(id));
             TempData["delete"] = "Xóa bài viết thành công!";
             return RedirectToAction("BlogManage");
         }

@@ -22,9 +22,7 @@ namespace UseCase.Business_Logic
         Task<Product> GetProductDetail(int id);
         Task<IEnumerable<ItemInfor>> GetItems(int productId);
         Task<ItemInfor?> GetItem(int id);
-        Task<IEnumerable<Review>> GetReview(int productId);
         Task<Category> GetCategoryPostAsync();
-        Task<string> GetUserName(int id);
         Task<IEnumerable<Category>> GetAllCategoriesAsync();
         Task<int> GetAvgRating(int productId);
         Task AddOrUpdateCouponAsync(int Id, string coupon, int discountPercent);

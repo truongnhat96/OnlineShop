@@ -48,6 +48,11 @@
         </div>
 
         <div class="form-group">
+            @Html.Label("Đã bán")
+            @Html.TextBox("Sold", Model.Sold, new { @class = "form-control", type = "number", @readonly = "readonly" })
+        </div>
+
+        <div class="form-group">
             @Html.Label("Ngày nhập")
             @Html.TextBox("Date_Import", Model.Date_Import.ToString("yyyy-MM-dd"), new { @class = "form-control", type = "date" })
         </div>

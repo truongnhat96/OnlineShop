@@ -16,16 +16,16 @@ namespace Infrastructure.SqlServer.DataContext
         {
         }
 
-        public required DbSet<Category> Categories { get; set; }
-        public required DbSet<Product> Products { get; set; }
-        public required DbSet<Discount> Discounts { get; set; }
-        public required DbSet<DiscountUsage> DiscountUsages { get; set; }
-        public required DbSet<Post> Posts { get; set; }
-        public required DbSet<Role> Roles { get; set; }
-        public required DbSet<User> Users { get; set; }
-        public required DbSet<ItemInfor> ItemInfors { get; set; }
-        public required DbSet<CartItem> CartItems { get; set; }
-        public required DbSet<Review> Reviews { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Discount> Discounts { get; set; }
+        public DbSet<DiscountUsage> DiscountUsages { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<ItemInfor> ItemInfors { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Review> Reviews { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(_connectionString).UseLazyLoadingProxies();

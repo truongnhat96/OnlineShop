@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using UseCase;
 using UseCase.Business_Logic;
+using UseCase.Caching;
 using UseCase.Repository;
 using UseCase.UnitOfWork;
 
@@ -93,11 +94,14 @@ namespace Infrastructure
             services.AddTransient<IUserUnitOfWork>(service => new UserUnitOfWork(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
             services.AddTransient<IProductUnitOfWork>(service => new ProductUnitOfWork(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
             services.AddTransient<ICartItemUnitOfWork>(service => new CartItemUnitOfWork(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
+            services.AddTransient<IReviewUnitOfWork>(service => new ReviewUnitOfWork(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
 
             services.AddTransient<IHomeManage>(service => new HomeManage(service.GetRequiredService<IProductRepository>()));
-            services.AddTransient<IUserManage>(service => new UserManage(service.GetRequiredService<IUserUnitOfWork>(), service.GetRequiredService<IDistributedCache>(), new(), service.GetRequiredService<ILogger<UserManage>>()));
+            services.AddTransient<IReviewerFinder>(service => new ReviewerFinder(service.GetRequiredService<IReviewUnitOfWork>() /*, service.GetRequiredService<IReviewUnitOfWork>(), service.GetRequiredService<IDistributedCache>()*/));
+            services.AddTransient<IUserManage>(service => new UserManage(service.GetRequiredService<IUserUnitOfWork>()));
+            services.AddTransient<IPostManage>(service => new CachablePostManage(service.GetRequiredService<IPostRepository>(), service.GetRequiredService<IDistributedCache>(), new(), service.GetRequiredService<ILogger<CachablePostManage>>()));
             services.AddTransient<IProductManage>(service => new ProductManage(service.GetRequiredService<IProductUnitOfWork>()));
-            services.AddTransient<ICartManage>(service => new CartManage(service.GetRequiredService<ICartItemUnitOfWork>(), service.GetRequiredService<IDistributedCache>(), new()));
+            services.AddTransient<ICartManage>(service => new CachableCartManage(service.GetRequiredService<ICartItemUnitOfWork>(), service.GetRequiredService<IDistributedCache>(), new()));
         }
 
         private static void InitCache(IServiceCollection services, ConfigurationManager configuration, CacheOption cacheOption)

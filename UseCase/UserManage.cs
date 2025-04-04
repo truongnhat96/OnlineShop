@@ -12,104 +12,12 @@ namespace UseCase
     public class UserManage : IUserManage
     {
         private readonly IUserUnitOfWork _unitOfWork;
-        private readonly DistributedCacheEntryOptions _cacheOptions;
-        private readonly IDistributedCache _cache;
-        private readonly CachablePostSupportOption _option;
-        private readonly ILogger<UserManage> _logger;
-        public UserManage(IUserUnitOfWork unitOfWork, IDistributedCache cache, CachablePostSupportOption option, ILogger<UserManage> logger)
+
+        public UserManage(IUserUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _cache = cache;
-            _option = option;
-            _logger = logger;
-            _cacheOptions = new DistributedCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = option.CacheLifeTime
-            };
         }
 
-        public async Task<Post> AddPostAsync(int userId, string title, string content, string image)
-        {
-            var post = await _unitOfWork.PostRepository.AddPostAsync(new Post
-            {
-                Id = Guid.NewGuid(),
-                UserId = userId,
-                Title = title,
-                Content = content,
-                ImageUrl = image,
-            });
-            var cacheKey = _option.CacheKey;
-            var Posts = await _unitOfWork.PostRepository.GetPostsAsync();
-            _logger.LogInformation("Storing data to cache...");
-            await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(Posts), _cacheOptions);
-            return post;
-        }
-
-        public async Task<Review> AddReviewAsync(int userId, int productId, int rating, string? comment = null)
-        {
-            return await _unitOfWork.ReviewRepository.AddReviewAsync(new Review
-            {
-                Id = Guid.NewGuid(),
-                UserId = userId,
-                ProductId = productId,
-                Rating = rating,
-                Comment = comment,
-                CreatedAt = DateTime.Now
-            });
-        }
-
-        public async Task<Post> DeletePostAsync(Guid id)
-        {
-            var post = await _unitOfWork.PostRepository.DeletePostAsync(id);
-            var cacheKey = _option.CacheKey;
-            var Posts = await _unitOfWork.PostRepository.GetPostsAsync();
-            _logger.LogInformation("Storing data to cache...");
-            await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(Posts), _cacheOptions);
-            return post;
-        }
-
-        public async Task<Post> GetPostDetailAsync(Guid id)
-        {
-            var cacheKey = _option.CacheKey;
-            var data = await _cache.GetStringAsync(cacheKey);
-            if (data == null)
-            {
-                return await _unitOfWork.PostRepository.GetPostAsync(id);
-            }
-            else
-            {
-                var posts = JsonSerializer.Deserialize<IEnumerable<Post>>(data) ?? throw new("No Data In Cache");
-                var post = posts.FirstOrDefault(p => p.Id == id);
-                if(post == null)
-                {
-                    return await _unitOfWork.PostRepository.GetPostAsync(id);
-                }
-                return post;
-            }
-        }
-
-        public async Task<IEnumerable<Post>> GetPostsAsync(string keyword)
-        {
-            return await _unitOfWork.PostRepository.FindPostsAsync(keyword);
-        }
-
-        public async Task<IEnumerable<Post>> GetPostsAsync()
-        {
-            var cacheKey = _option.CacheKey;
-            var data = await _cache.GetStringAsync(cacheKey);
-            if (data == null)
-            {
-                var Posts = await _unitOfWork.PostRepository.GetPostsAsync();
-                _logger.LogInformation("Storing data to cache...");
-                await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(Posts), _cacheOptions);
-                return Posts;
-            }
-            else
-            {
-                _logger.LogInformation("Getting data from cache...");
-                return JsonSerializer.Deserialize<IEnumerable<Post>>(data)!;
-            }
-        }
 
         public async Task<string> GetRoleNameAsync(int id)
         {
@@ -140,11 +48,6 @@ namespace UseCase
         public async Task<User> SignUpAsync(User user)
         {
             return await _unitOfWork.UserRepository.AddAccountAsync(user);
-        }
-
-        public async Task<Post> UpdatePostAsync(Post post)
-        {
-            return await _unitOfWork.PostRepository.UpdatePostAsync(post);
         }
 
         public async Task<ValidationResult> Validate(string username, string password, string confirmPassword, string email, bool passwordValid)

@@ -14,6 +14,6 @@ namespace UseCase.Repository
         Task<Post> AddPostAsync(Post post);
         Task<Post> UpdatePostAsync(Post post);
         Task<Post> DeletePostAsync(Guid id);
-        Task<Post> GetPostAsync(Guid id);
+        Task<Post?> GetPostAsync(Guid id);
     }
 }
