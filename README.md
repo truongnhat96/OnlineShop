@@ -1,7 +1,4 @@
 ---
-
-## name: README.md
-
 # OnlineShop
 
 A demonstration of an e-commerce backend and foundational architecture built with ASP.NET Core MVC, Razor, Entity Framework Core, and Clean Architecture principles, including caching and comprehensive unit/integration tests. The solution illustrates separation of concerns across domain, application, and infrastructure layers, backed by SQL Server.
