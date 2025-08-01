@@ -227,7 +227,5 @@ namespace Infrastructure.Controllers
             }
             return RedirectToAction("CartView");
         }
-
-
     }
 }

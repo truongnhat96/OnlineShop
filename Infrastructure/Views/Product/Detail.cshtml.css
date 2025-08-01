@@ -47,11 +47,76 @@
 .product-details p {
     margin: 5px 0;
 }
+
+/* Responsive product container */
+@media (max-width: 992px) {
+    .product-container {
+        flex-direction: column;
+        padding: 15px;
+    }
+    
+    .img-container {
+        width: 100%;
+        max-width: 400px;
+        height: 400px;
+        margin: 0 auto;
+    }
+    
+    .product-info {
+        margin-left: 0;
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-container {
+        padding: 10px;
+    }
+    
+    .img-container {
+        height: 350px;
+    }
+}
+
+@media (max-width: 576px) {
+    .product-container {
+        padding: 5px;
+    }
+    
+    .img-container {
+        height: 300px;
+    }
+}
+
 /* Container chứa ô số lượng và nút thêm vào giỏ hàng cùng hàng */
 .purchase-container {
     display: flex;
     align-items: center;
     margin-top: 50px;
+}
+
+/* Responsive purchase container */
+@media (max-width: 768px) {
+    .purchase-container {
+        flex-direction: column;
+        align-items: stretch;
+        margin-top: 30px;
+    }
+    
+    .quantity-input {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    .cartBtn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .purchase-container {
+        margin-top: 20px;
+    }
 }
 
 .quantity-input {
@@ -66,6 +131,15 @@
     border: 1px solid #F3F5FE;
     border-radius: 5px;
     margin-right: 10px;
+}
+
+/* Responsive quantity input */
+@media (max-width: 576px) {
+    .quantity-input {
+        width: 80px;
+        height: 45px;
+        font-size: 16px;
+    }
 }
 
 input[type="number"]::-webkit-inner-spin-button,
@@ -89,6 +163,13 @@ input[type="number"]::-webkit-outer-spin-button {
         color: #ff1493;
     }
 
+/* Responsive category name */
+@media (max-width: 576px) {
+    .category-name {
+        font-size: 14px;
+    }
+}
+
 hr {
     border: 1px solid #E5E5E5;
 }
@@ -111,6 +192,14 @@ hr {
     transition: all 0.3s ease-in-out;
     cursor: pointer;
     overflow: hidden;
+}
+
+/* Responsive cart button */
+@media (max-width: 576px) {
+    .cartBtn {
+        height: 45px;
+        font-size: 14px;
+    }
 }
 
 .cart {
@@ -165,14 +254,27 @@ hr {
     }
 }
 
-
-
-
 /* Tab điều hướng (Mô tả - Đánh giá) */
 .description-container {
     padding-bottom: 235px;
     margin-left: 20px;
     margin-top: 80px;
+}
+
+/* Responsive description container */
+@media (max-width: 992px) {
+    .description-container {
+        margin-left: 0;
+        margin-top: 40px;
+        padding-bottom: 150px;
+    }
+}
+
+@media (max-width: 576px) {
+    .description-container {
+        margin-top: 30px;
+        padding-bottom: 100px;
+    }
 }
 
     .description-container .tab-btn {
@@ -187,6 +289,23 @@ hr {
         margin-right: 10px;
     }
 
+/* Responsive tab buttons */
+@media (max-width: 768px) {
+    .description-container .tab-btn {
+        padding: 8px 15px;
+        font-size: 0.9em;
+        margin-right: 5px;
+    }
+}
+
+@media (max-width: 576px) {
+    .description-container .tab-btn {
+        padding: 6px 12px;
+        font-size: 0.8em;
+        margin-right: 3px;
+    }
+}
+
         .description-container .tab-btn.active {
             background: linear-gradient(90deg, #FF1FC5, #FA072C);
             color: white;
@@ -196,22 +315,37 @@ hr {
         }
 
 .product-description {
-    background: #f9f9f9; /* Màu nền nhẹ nhàng */
-    border-radius: 8px; /* Bo tròn góc */
-    padding: 16px; /* Tạo khoảng cách với nội dung */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
-    font-family: "Arial", sans-serif; /* Font chữ dễ đọc */
-    font-size: 18px; /* Cỡ chữ phù hợp */
-    line-height: 1.6; /* Giãn cách dòng hợp lý */
-    color: #333; /* Màu chữ tối giúp dễ đọc hơn */
-    text-align: justify; /* Căn đều văn bản */
-    transition: all 0.3s ease-in-out; /* Hiệu ứng chuyển động mượt mà */
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: "Arial", sans-serif;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333;
+    text-align: justify;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Responsive product description */
+@media (max-width: 768px) {
+    .product-description {
+        font-size: 16px;
+        padding: 12px;
+    }
+}
+
+@media (max-width: 576px) {
+    .product-description {
+        font-size: 14px;
+        padding: 10px;
+    }
 }
 
     .product-description:hover {
-        transform: scale(1.02); /* Phóng to nhẹ */
-        background: #f1f1f1; /* Đổi màu nền nhạt hơn */
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Đổ bóng mạnh hơn */
+        transform: scale(1.02);
+        background: #f1f1f1;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
 
 .tab-content {
@@ -223,7 +357,19 @@ hr {
         display: block;
     }
 
-    
+/* Responsive tab content */
+@media (max-width: 768px) {
+    .tab-content {
+        padding-top: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .tab-content {
+        padding-top: 10px;
+    }
+}
+
 /*Review and rating*/
 /* Container chính */
 .reviews-container {
@@ -234,10 +380,30 @@ hr {
     background: #fdfdfd;
 }
 
+/* Responsive reviews container */
+@media (max-width: 768px) {
+    .reviews-container {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .reviews-container {
+        padding: 10px;
+    }
+}
+
 /* Mỗi đánh giá */
 .review-item {
     border-bottom: 1px solid #eee;
     padding: 16px 0;
+}
+
+/* Responsive review item */
+@media (max-width: 576px) {
+    .review-item {
+        padding: 12px 0;
+    }
 }
 
 /* Phần header của đánh giá: tên + ngày */
@@ -246,6 +412,15 @@ hr {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
+}
+
+/* Responsive review header */
+@media (max-width: 576px) {
+    .review-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
 }
 
 /* Thông tin người dùng */
@@ -261,9 +436,24 @@ hr {
     margin-right: 8px;
 }
 
+/* Responsive user avatar */
+@media (max-width: 576px) {
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+    }
+}
+
 .user-name {
     font-weight: 600;
     color: #333;
+}
+
+/* Responsive user name */
+@media (max-width: 576px) {
+    .user-name {
+        font-size: 14px;
+    }
 }
 
 /* Ngày đánh giá */
@@ -272,23 +462,43 @@ hr {
     color: #999;
 }
 
+/* Responsive review date */
+@media (max-width: 576px) {
+    .review-date {
+        font-size: 12px;
+    }
+}
+
 /* Nội dung đánh giá */
 .review-body {
-    padding-left: 48px; /* Tạo khoảng cách so với avatar */
+    padding-left: 48px;
+}
+
+/* Responsive review body */
+@media (max-width: 576px) {
+    .review-body {
+        padding-left: 32px;
+    }
 }
 
 /* Phần sao rating trong đánh giá */
 .review-rating {
-    color: #f1c40f; /* Màu sao (vàng) */
-    font-size: 30px; /* Tăng kích thước sao */
+    color: #f1c40f;
+    font-size: 30px;
     margin-top: 4px;
     line-height: 1;
 }
 
-    .review-rating .star-empty {
-        color: #ccc; /* Màu xám cho sao trống */
+/* Responsive review rating */
+@media (max-width: 576px) {
+    .review-rating {
+        font-size: 20px;
     }
+}
 
+    .review-rating .star-empty {
+        color: #ccc;
+    }
 
 /* Form thêm đánh giá */
 .review-form {
@@ -299,11 +509,34 @@ hr {
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
+/* Responsive review form */
+@media (max-width: 768px) {
+    .review-form {
+        padding: 12px;
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .review-form {
+        padding: 10px;
+        margin-top: 15px;
+    }
+}
+
     /* Tiêu đề form */
     .review-form h3 {
         margin-bottom: 12px;
         font-size: 18px;
     }
+
+/* Responsive review form title */
+@media (max-width: 576px) {
+    .review-form h3 {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+}
 
 /* Textarea nhập bình luận */
 .review-textarea {
@@ -315,6 +548,14 @@ hr {
     font-size: 15px;
 }
 
+/* Responsive textarea */
+@media (max-width: 576px) {
+    .review-textarea {
+        font-size: 14px;
+        padding: 6px;
+    }
+}
+
 /* Đánh giá - star */
 .rating {
     display: flex;
@@ -322,6 +563,13 @@ hr {
     gap: 0.3rem;
     transform-style: preserve-3d;
     perspective: 1000px;
+}
+
+/* Responsive rating stars */
+@media (max-width: 576px) {
+    .rating {
+        gap: 0.2rem;
+    }
 }
 
     .rating input {
@@ -422,7 +670,6 @@ hr {
     }
 }
 
-
 /* Nút gửi đánh giá */
 .review-submit-btn {
     background: #a370f0;
@@ -445,6 +692,15 @@ hr {
     cursor: pointer;
 }
 
+/* Responsive submit button */
+@media (max-width: 576px) {
+    .review-submit-btn {
+        font-size: 14px;
+        height: 2.5em;
+        padding-right: 2.8em;
+    }
+}
+
     .review-submit-btn .icon {
         background: white;
         margin-left: 1em;
@@ -459,6 +715,15 @@ hr {
         right: 0.3em;
         transition: all 0.3s;
     }
+
+/* Responsive submit button icon */
+@media (max-width: 576px) {
+    .review-submit-btn .icon {
+        height: 1.9em;
+        width: 1.9em;
+        right: 0.2em;
+    }
+}
 
     .review-submit-btn:hover .icon {
         width: calc(100% - 0.6em);
@@ -478,11 +743,18 @@ hr {
         transform: scale(0.95);
     }
 
-
 .empty-comment {
     font-family: Phantomsans, sans-serif;
     font-size: 20px;
     margin-top: 20px;
+}
+
+/* Responsive empty comment */
+@media (max-width: 576px) {
+    .empty-comment {
+        font-size: 16px;
+        margin-top: 15px;
+    }
 }
 
 .first-cmt {
@@ -491,16 +763,30 @@ hr {
     font-weight: bold;
 }
 
+/* Responsive first comment */
+@media (max-width: 576px) {
+    .first-cmt {
+        font-size: 20px;
+    }
+}
+
 .must-login {
     font-family: Phantomsans, sans-serif;
     font-size: 20px;
     text-decoration: none;
     color: #20C70A;
 }
+
+/* Responsive must login */
+@media (max-width: 576px) {
+    .must-login {
+        font-size: 16px;
+    }
+}
+
     .must-login:hover {
         color: black;
     }
-
 
 /* Áp dụng hiệu ứng tối màu chỉ cho thẻ ảnh nếu sản phẩm hết hàng */
 .img-container.out-of-stock-filter {
@@ -520,4 +806,12 @@ hr {
     padding: 0.5em 1em;
     border-radius: 5px;
     z-index: 1;
+}
+
+/* Responsive out of stock label */
+@media (max-width: 576px) {
+    .out-of-stock-label {
+        font-size: 1.2em;
+        padding: 0.4em 0.8em;
+    }
 }

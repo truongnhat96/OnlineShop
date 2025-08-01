@@ -5,12 +5,12 @@ namespace Infrastructure.SqlServer.DataContext
 {
     public class ShopContext : DbContext
     {
-        private readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=OnlineShop;Trusted_Connection=True;TrustServerCertificate=True;";
+       // private readonly string _connectionString = "Server=localhost,1433;Database=OnlineShop;User Id=sa;Password=Tr1234@1234;TrustServerCertificate=True;";
 
         //Use to run command add migrations and update database
-        public ShopContext()
-        {
-        }
+        // public ShopContext()
+        // {
+        // }
 
         public ShopContext(DbContextOptions<ShopContext> options) : base(options)
         {
@@ -26,10 +26,10 @@ namespace Infrastructure.SqlServer.DataContext
         public DbSet<ItemInfor> ItemInfors { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Review> Reviews { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(_connectionString).UseLazyLoadingProxies();
-        }
+        // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        // {
+        //     optionsBuilder.UseSqlServer(_connectionString).UseLazyLoadingProxies();
+        // }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>(entity =>

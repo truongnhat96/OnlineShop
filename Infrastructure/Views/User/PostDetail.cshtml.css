@@ -9,6 +9,24 @@
     padding-bottom: 200px;
 }
 
+/* Responsive main */
+@media (max-width: 768px) {
+    .main {
+        margin: 10px;
+        padding-top: 10px;
+        padding-bottom: 100px;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 576px) {
+    .main {
+        margin: 5px;
+        padding-top: 5px;
+        padding-bottom: 80px;
+    }
+}
+
 .image-title {
     display: flex;
     justify-content: space-between;
@@ -17,15 +35,54 @@
     margin-top: 50px;
 }
 
+/* Responsive image title */
+@media (max-width: 768px) {
+    .image-title {
+        margin-bottom: 15px;
+        margin-top: 30px;
+    }
+}
+
+@media (max-width: 576px) {
+    .image-title {
+        margin-bottom: 10px;
+        margin-top: 20px;
+    }
+}
+
 .head {
     flex: 3;
     margin-right: 20px;
+}
+
+/* Responsive head */
+@media (max-width: 768px) {
+    .head {
+        flex: 1;
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
 }
 
 .content {
     margin-top: 20px;
     font-size: 25px;
     line-height: 1.6;
+}
+
+/* Responsive content */
+@media (max-width: 768px) {
+    .content {
+        font-size: 20px;
+        line-height: 1.5;
+    }
+}
+
+@media (max-width: 576px) {
+    .content {
+        font-size: 16px;
+        line-height: 1.4;
+    }
 }
 
 .category {
@@ -41,6 +98,21 @@
     text-decoration: none;
 }
 
+/* Responsive category */
+@media (max-width: 768px) {
+    .category {
+        padding: 4px 8px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    .category {
+        padding: 3px 6px;
+        font-size: 12px;
+    }
+}
+
     .category:hover {
         color: #2DD100;
         background-color: white;
@@ -53,10 +125,41 @@
     margin-bottom: 10px;
 }
 
+/* Responsive title */
+@media (max-width: 768px) {
+    .title {
+        font-size: 32px;
+        margin-bottom: 8px;
+    }
+}
+
+@media (max-width: 576px) {
+    .title {
+        font-size: 24px;
+        margin-bottom: 6px;
+        line-height: 1.3;
+    }
+}
+
 .date {
     color: gray;
     font-size: 14px;
     margin-top: 10px;
+}
+
+/* Responsive date */
+@media (max-width: 768px) {
+    .date {
+        font-size: 13px;
+        margin-top: 8px;
+    }
+}
+
+@media (max-width: 576px) {
+    .date {
+        font-size: 12px;
+        margin-top: 6px;
+    }
 }
 
 .comments {
@@ -64,6 +167,12 @@
     font-size: 14px;
 }
 
+/* Responsive comments */
+@media (max-width: 576px) {
+    .comments {
+        font-size: 12px;
+    }
+}
 
 .sidebar {
     flex: 1;
@@ -71,12 +180,23 @@
     border-radius: 8px;
 }
 
-
-.ad-link {
-    text-decoration: none; /* Xóa gạch chân khỏi liên kết */
-    color: inherit; /* Giữ nguyên màu chữ */
+/* Responsive sidebar */
+@media (max-width: 768px) {
+    .sidebar {
+        padding: 15px;
+    }
 }
 
+@media (max-width: 576px) {
+    .sidebar {
+        padding: 10px;
+    }
+}
+
+.ad-link {
+    text-decoration: none;
+    color: inherit;
+}
 
 .advertisement {
     background-color: #fff;
@@ -87,6 +207,21 @@
     text-align: center;
 }
 
+/* Responsive advertisement */
+@media (max-width: 768px) {
+    .advertisement {
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .advertisement {
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+}
+
     .advertisement .ad-title {
         font-size: 18px;
         font-weight: bold;
@@ -94,11 +229,39 @@
         margin: 10px 0;
     }
 
+/* Responsive ad title */
+@media (max-width: 768px) {
+    .advertisement .ad-title {
+        font-size: 16px;
+        margin: 8px 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .advertisement .ad-title {
+        font-size: 14px;
+        margin: 6px 0;
+    }
+}
+
     .advertisement .advertisement-price {
         font-size: 16px;
         color: #d9534f;
         font-weight: bold;
     }
+
+/* Responsive advertisement price */
+@media (max-width: 768px) {
+    .advertisement .advertisement-price {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    .advertisement .advertisement-price {
+        font-size: 12px;
+    }
+}
 
 .advertisement-image {
     width: 100%;
@@ -109,9 +272,8 @@
 }
 
     .advertisement-image:hover {
-        transform: scale(1.05); /* Hiệu ứng khi hover vào ảnh */
+        transform: scale(1.05);
     }
-
 
 /* Like */
 #heart {
@@ -132,6 +294,22 @@
     box-shadow: inset -2px -2px 5px rgba(255, 255, 255, 0.2), inset 2px 2px 5px rgba(0, 0, 0, 0.1), 4px 4px 10px rgba(0, 0, 0, 0.4), -2px -2px 8px rgba(255, 255, 255, 0.1);
 }
 
+/* Responsive like button */
+@media (max-width: 768px) {
+    .like-button {
+        height: 40px;
+        width: 120px;
+    }
+}
+
+@media (max-width: 576px) {
+    .like-button {
+        height: 36px;
+        width: 100px;
+        min-height: 44px;
+    }
+}
+
 .like {
     width: 70%;
     height: 100%;
@@ -147,10 +325,38 @@
     width: 28px;
 }
 
+/* Responsive like icon */
+@media (max-width: 768px) {
+    .like-icon {
+        height: 24px;
+        width: 24px;
+    }
+}
+
+@media (max-width: 576px) {
+    .like-icon {
+        height: 20px;
+        width: 20px;
+    }
+}
+
 .like-text {
     color: #fcfcfc;
     font-size: 16px;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Responsive like text */
+@media (max-width: 768px) {
+    .like-text {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    .like-text {
+        font-size: 12px;
+    }
 }
 
 .like-count {
@@ -167,9 +373,35 @@
     transition: all 0.5s ease-out;
 }
 
+/* Responsive like count */
+@media (max-width: 768px) {
+    .like-count {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    .like-count {
+        font-size: 12px;
+    }
+}
+
     .like-count.two {
         transform: translateY(40px);
     }
+
+/* Responsive like count two */
+@media (max-width: 768px) {
+    .like-count.two {
+        transform: translateY(32px);
+    }
+}
+
+@media (max-width: 576px) {
+    .like-count.two {
+        transform: translateY(28px);
+    }
+}
 
 .on:checked ~ .like .like-icon {
     fill: #fc4e4e;
@@ -186,6 +418,19 @@
     transform: translateY(-40px);
 }
 
+/* Responsive checked states */
+@media (max-width: 768px) {
+    .on:checked ~ .like-count.one {
+        transform: translateY(-32px);
+    }
+}
+
+@media (max-width: 576px) {
+    .on:checked ~ .like-count.one {
+        transform: translateY(-28px);
+    }
+}
+
 @keyframes enlarge {
     0% {
         transform: scale(0.5);
@@ -193,5 +438,35 @@
 
     100% {
         transform: scale(1.2);
+    }
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 576px) {
+    /* Improve touch targets */
+    .like-button {
+        min-height: 44px;
+    }
+    
+    /* Better spacing */
+    .content {
+        margin-top: 15px;
+    }
+    
+    /* Improve readability */
+    .title {
+        line-height: 1.3;
+    }
+    
+    /* Better image sizing */
+    .image-title img {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    /* Improve content readability */
+    .content {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
 }

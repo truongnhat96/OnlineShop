@@ -4,16 +4,59 @@
     background-color: #f9f9f9;
 }
 
+/* Responsive body */
+@media (max-width: 768px) {
+    body {
+        margin: 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    body {
+        margin: 5px;
+    }
+}
+
 .search-title {
     font-size: 23px;
     padding: 10px;
     margin-bottom: 20px;
 }
 
+/* Responsive search title */
+@media (max-width: 768px) {
+    .search-title {
+        font-size: 20px;
+        padding: 8px;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .search-title {
+        font-size: 18px;
+        padding: 6px;
+        margin-bottom: 10px;
+    }
+}
+
 .product-list {
     display: flex;
     flex-direction: column;
     padding-bottom: 80px;
+}
+
+/* Responsive product list */
+@media (max-width: 768px) {
+    .product-list {
+        padding-bottom: 60px;
+    }
+}
+
+@media (max-width: 576px) {
+    .product-list {
+        padding-bottom: 40px;
+    }
 }
 
 .product-item {
@@ -29,11 +72,52 @@
     align-items: center;
 }
 
+/* Responsive product item */
+@media (max-width: 1200px) {
+    .product-item {
+        width: 90%;
+        margin-left: 5%;
+        height: auto;
+        min-height: 600px;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-item {
+        width: 95%;
+        margin-left: 2.5%;
+        padding: 12px;
+        min-height: 500px;
+    }
+}
+
+@media (max-width: 576px) {
+    .product-item {
+        width: 98%;
+        margin-left: 1%;
+        padding: 10px;
+        min-height: 400px;
+    }
+}
+
 .image-container {
     position: relative;
     display: inline-block;
     width: 100%;
-    overflow: hidden; /* Đảm bảo không có khoảng trống nào */
+    overflow: hidden;
+}
+
+/* Responsive image container */
+@media (max-width: 768px) {
+    .image-container {
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 576px) {
+    .image-container {
+        max-width: 250px;
+    }
 }
 
     .image-container img {
@@ -44,9 +128,8 @@
     }
 
     .image-container:hover img {
-        filter: brightness(50%); /* Làm tối ảnh khi hover */
+        filter: brightness(50%);
     }
-
 
 .product-name {
     font-weight: bold;
@@ -55,6 +138,22 @@
     color: black;
     text-align: center;
     text-decoration: none;
+}
+
+/* Responsive product name */
+@media (max-width: 768px) {
+    .product-name {
+        font-size: 20px;
+        margin-top: 8px;
+    }
+}
+
+@media (max-width: 576px) {
+    .product-name {
+        font-size: 16px;
+        margin-top: 6px;
+        line-height: 1.3;
+    }
 }
 
     .product-name:hover {
@@ -68,11 +167,41 @@
     margin-top: 5px;
 }
 
+/* Responsive product description */
+@media (max-width: 768px) {
+    .product-description {
+        font-size: 13px;
+        margin-top: 4px;
+    }
+}
+
+@media (max-width: 576px) {
+    .product-description {
+        font-size: 12px;
+        margin-top: 3px;
+    }
+}
+
 .read-more {
     margin-top: 10px;
     color: #0073e6;
     text-decoration: none;
     font-size: 14px;
+}
+
+/* Responsive read more */
+@media (max-width: 768px) {
+    .read-more {
+        margin-top: 8px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 576px) {
+    .read-more {
+        margin-top: 6px;
+        font-size: 12px;
+    }
 }
 
     .read-more:hover {
@@ -88,6 +217,35 @@
     padding-bottom: 215px;
 }
 
+/* Responsive pagination */
+@media (max-width: 1200px) {
+    .pagination {
+        margin-left: 5%;
+        margin-top: 60px;
+        padding-bottom: 150px;
+    }
+}
+
+@media (max-width: 768px) {
+    .pagination {
+        margin-left: 2.5%;
+        margin-top: 40px;
+        padding-bottom: 100px;
+        gap: 6px;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .pagination {
+        margin-left: 1%;
+        margin-top: 30px;
+        padding-bottom: 80px;
+        gap: 4px;
+        flex-wrap: wrap;
+    }
+}
+
 .page-btn {
     padding: 8px 12px;
     border: none;
@@ -98,6 +256,25 @@
     text-decoration: none;
     color: black;
     font-weight: bold;
+}
+
+/* Responsive page btn */
+@media (max-width: 768px) {
+    .page-btn {
+        padding: 6px 10px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-btn {
+        padding: 4px 8px;
+        font-size: 14px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }
 
     .page-btn.active {
@@ -114,4 +291,46 @@
 .dots {
     padding: 8px 12px;
     font-size: 16px;
+}
+
+/* Responsive dots */
+@media (max-width: 768px) {
+    .dots {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    .dots {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 576px) {
+    /* Improve touch targets */
+    .page-btn {
+        min-height: 44px;
+    }
+    
+    /* Better spacing */
+    .product-item {
+        margin-bottom: 15px;
+    }
+    
+    /* Improve readability */
+    .product-name {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    /* Better image sizing */
+    .image-container img {
+        max-height: 200px;
+        object-fit: contain;
+    }
 }

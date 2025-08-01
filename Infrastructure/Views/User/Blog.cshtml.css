@@ -2,7 +2,6 @@
     background: #f8f9fa;
 }
 
-
 .form-container {
     background: #fff;
     padding: 2rem;
@@ -11,10 +10,40 @@
     margin-bottom: 100px;
 }
 
+/* Responsive form container */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 1.5rem;
+        margin-bottom: 60px;
+    }
+}
+
+@media (max-width: 576px) {
+    .form-container {
+        padding: 1rem;
+        margin-bottom: 40px;
+    }
+}
+
 .custom-header {
     text-align: center;
     margin-bottom: 1.5rem;
     color: #333;
+}
+
+/* Responsive custom header */
+@media (max-width: 768px) {
+    .custom-header {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .custom-header {
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+    }
 }
 
 /* Cảnh báo lỗi */
@@ -25,9 +54,24 @@
     margin-top: 10px;
 }
 
+/* Responsive warning message */
+@media (max-width: 768px) {
+    #warning-message {
+        font-size: 0.9rem;
+        margin-top: 8px;
+    }
+}
+
+@media (max-width: 576px) {
+    #warning-message {
+        font-size: 0.8rem;
+        margin-top: 6px;
+    }
+}
+
 .invalid-input {
-    border: 2px solid red !important; /* Bôi đỏ viền */
-    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Thêm hiệu ứng shadow */
+    border: 2px solid red !important;
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
 }
 
 .valid-input {
@@ -49,6 +93,24 @@
     box-shadow: 1px 5px 0 0 #0e285d;
 }
 
+/* Responsive save button */
+@media (max-width: 768px) {
+    .save {
+        font-size: 14px;
+        padding: 12px 16px;
+    }
+}
+
+@media (max-width: 576px) {
+    .save {
+        font-size: 12px;
+        padding: 10px 14px;
+        min-height: 44px;
+        width: 100%;
+        max-width: 200px;
+    }
+}
+
     .save:hover {
         transform: translateY(-4px);
         box-shadow: 1px 9px 0 0 #0e285d;
@@ -58,4 +120,41 @@
         transform: translateY(4px);
         box-shadow: 0px 0px 0 0 #0e285d;
     }
+
+/* Mobile-specific improvements */
+@media (max-width: 576px) {
+    /* Improve form spacing */
+    .mb-3 {
+        margin-bottom: 1rem !important;
+    }
+    
+    /* Better form controls */
+    .form-control {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+    
+    /* Improve textarea */
+    textarea.form-control {
+        min-height: 120px;
+    }
+    
+    /* Better file input */
+    input[type="file"].form-control {
+        padding: 6px 8px;
+    }
+    
+    /* Improve labels */
+    .form-label {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Better alert styling */
+    .alert {
+        font-size: 14px;
+        padding: 0.75rem 1rem;
+    }
+}
 

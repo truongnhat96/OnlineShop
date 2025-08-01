@@ -3,6 +3,7 @@ using Infrastructure.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.AspNetCore.RateLimiting;
 using UseCase;
 using UseCase.Business_Logic;
 using UseCase.UnitOfWork;
@@ -26,6 +27,7 @@ namespace Infrastructure.Controllers
         #region Customer
         [HttpGet("/Category/{id}", Name = "category")]
         [HttpGet("/Category/{id}/page/{page}")]
+        [EnableRateLimiting("SlidingWindow")]
         public async Task<IActionResult> Category(int id, [FromQuery] string keyword, [FromQuery] double min_price, [FromQuery] double max_price, [FromQuery] string orderby, int page = 1)
         {
             var products = await _productManager.GetProductsByCategoryAsync(id);
@@ -86,10 +88,15 @@ namespace Infrastructure.Controllers
         }
 
 
+        [EnableRateLimiting("SlidingWindow")]
         [HttpGet("/Product/{id}")]
         public async Task<IActionResult> Detail(int id)
         {
             var product = await _productManager.GetProductDetail(id);
+            if (product == null)
+            {
+                return NotFound("Sản phẩm không tồn tại hoặc đã bị xóa");
+            }
             var reviews = (await _reviewerFinder.GetReview(id)).ToList();
             List<string> reviewerName = [];
             foreach (var review in reviews)
@@ -121,7 +128,7 @@ namespace Infrastructure.Controllers
 
         #region Manager
 
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("/Manage")]
         public async Task<IActionResult> Manage()
         {
@@ -134,7 +141,7 @@ namespace Infrastructure.Controllers
         }
 
 
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("/Product-List")]
         public async Task<IActionResult> ProductList()
         {
@@ -210,7 +217,7 @@ namespace Infrastructure.Controllers
         }
 
 
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("/Edit/{id}")]
         public async Task<IActionResult> Edit(int id)
         {
@@ -240,7 +247,7 @@ namespace Infrastructure.Controllers
         }
 
 
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("/Edit/{id}")]
         public async Task<IActionResult> Edit(ProductModel model, [FromRoute] int id)
         {
@@ -300,7 +307,7 @@ namespace Infrastructure.Controllers
         }
 
 
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("/EditAccountInfor/{productId}")]
         public async Task<IActionResult> AccountInfor(int productId)
         {
@@ -314,7 +321,7 @@ namespace Infrastructure.Controllers
         }
 
 
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("/Infor/{id}/{productId}")]
         public async Task<IActionResult> AddOrUpdateAccount(int id, int productId)
         {
@@ -338,7 +345,7 @@ namespace Infrastructure.Controllers
             return View(newModel);
         }
 
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("/Infor/{id}/{productId}")]
         public async Task<IActionResult> AddOrUpdateAccount(ItemInforModel model, int id, int productId)
         {

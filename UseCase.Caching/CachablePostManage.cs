@@ -3,7 +3,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using UseCase.Business_Logic;
-using UseCase.CachingSupport;
+using UseCase.Caching.CachingSupport;
 using UseCase.Repository;
 
 namespace UseCase.Caching

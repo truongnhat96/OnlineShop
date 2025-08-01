@@ -1,0 +1,43 @@
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "${SA_PASSWORD}"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    restart: always
+    ports:
+      - "1433:1433"
+    healthcheck:
+        test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P ${SA_PASSWORD} -Q 'SELECT 1' || exit 1"]
+        interval: 10s
+        retries: 10
+        start_period: 10s
+        timeout: 3s
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: webapp
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=OnlineShop;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;"
+      MailSettings__Host: "smtp.gmail.com"
+      MailSettings__Port: "587"
+      MailSettings__Username: "noreply.send.identity@gmail.com"
+      MailSettings__Password: "${MAIL_PASSWORD}"
+      MailSettings_Address: "Security@TruongShop.net"
+      MailSettings__DisplayName: "TruongShop"
+    ports:
+      - "8005:3050"
+
+volumes:
+  sqlserver-data:
+    driver: local

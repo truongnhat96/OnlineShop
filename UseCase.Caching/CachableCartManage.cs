@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 using UseCase.Business_Logic;
-using UseCase.CachingSupport;
+using UseCase.Caching.CachingSupport;
 using UseCase.UnitOfWork;
 
 namespace UseCase.Caching
@@ -109,6 +109,8 @@ namespace UseCase.Caching
                     Id = Guid.NewGuid()
                 });
             }
+            var cachekey = _cacheOption.CacheKey;
+            await _cache.SetStringAsync(cachekey, JsonSerializer.Serialize(new List<CartItem>()), _cacheEntryOptions);
         }
 
         public async Task RemoveCartItemAsync(int productId, int userId)

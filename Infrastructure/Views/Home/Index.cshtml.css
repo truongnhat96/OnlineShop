@@ -6,17 +6,17 @@
     box-sizing: border-box;
 }
 
-
 .welcome-hero {
     position: relative;
     background: url(/images/banner.jpg)no-repeat;
     background-position: center;
     background-size: cover;
     text-align: center;
-    max-width: none;
+    max-width: 100%;
     width: 100%;
     height: 800px;
     z-index: 1;
+    overflow: hidden;
 }
 
     .welcome-hero:before {
@@ -30,9 +30,12 @@
         z-index: -1;
     }
 
-
 .welcome-hero-txt {
     padding-top: 155px;
+    padding-left: 20px;
+    padding-right: 20px;
+    max-width: 100%;
+    overflow: hidden;
 }
 
     .welcome-hero-txt h2 {
@@ -42,6 +45,9 @@
         text-transform: uppercase;
         letter-spacing: 2.4px;
         line-height: 1.4;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        max-width: 100%;
     }
 
     .welcome-hero-txt h3 {
@@ -49,6 +55,9 @@
         color: #fff;
         font-weight: 500;
         margin-top: 20px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        max-width: 100%;
     }
 
     .welcome-hero-txt p {
@@ -56,8 +65,86 @@
         color: #fcfcfc;
         margin-top: 25px;
         font-weight: 300;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        max-width: 100%;
     }
 
+/* Responsive hero section */
+@media (max-width: 768px) {
+    .welcome-hero {
+        height: 600px;
+    }
+    
+    .welcome-hero-txt {
+        padding-top: 100px;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .welcome-hero-txt h2 {
+        font-size: 32px;
+        letter-spacing: 1.5px;
+    }
+    
+    .welcome-hero-txt h3 {
+        font-size: 20px;
+    }
+    
+    .welcome-hero-txt p {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 576px) {
+    .welcome-hero {
+        height: 500px;
+    }
+    
+    .welcome-hero-txt {
+        padding-top: 80px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    .welcome-hero-txt h2 {
+        font-size: 24px;
+        letter-spacing: 1px;
+    }
+    
+    .welcome-hero-txt h3 {
+        font-size: 16px;
+    }
+    
+    .welcome-hero-txt p {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .welcome-hero {
+        height: 400px;
+    }
+    
+    .welcome-hero-txt {
+        padding-top: 60px;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+    
+    .welcome-hero-txt h2 {
+        font-size: 20px;
+        letter-spacing: 0.5px;
+    }
+    
+    .welcome-hero-txt h3 {
+        font-size: 14px;
+    }
+    
+    .welcome-hero-txt p {
+        font-size: 12px;
+    }
+}
 
 p {
     margin: 0;
@@ -67,12 +154,27 @@ p {
     text-transform: initial;
 }
 
-
 .container-main {
     margin-top: 50px;
-    max-width: 1300px;
+    max-width: 100%;
     margin-right: auto;
     margin-left: auto;
+    overflow: hidden;
+}
+
+/* Responsive container */
+@media (max-width: 768px) {
+    .container-main {
+        margin-top: 30px;
+        padding: 0 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .container-main {
+        margin-top: 20px;
+        padding: 0 10px;
+    }
 }
 
 .feature-box {
@@ -81,11 +183,34 @@ p {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease-in-out;
+    height: 100%;
+    margin-bottom: 20px;
+    max-width: 100%;
+    overflow: hidden;
 }
 
     .feature-box:hover {
         transform: translateY(-15px);
     }
+
+/* Responsive feature boxes */
+@media (max-width: 768px) {
+    .feature-box {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .feature-box:hover {
+        transform: translateY(-5px);
+    }
+}
+
+@media (max-width: 576px) {
+    .feature-box {
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+}
 
 .icon {
     margin-bottom: 10px;
@@ -95,18 +220,56 @@ h2 {
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 10px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
 }
 
 h3 {
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 10px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
 }
 
 p {
     font-size: 17px;
     color: #666;
-    font-family: Verdana
+    font-family: Verdana;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+
+/* Responsive typography */
+@media (max-width: 768px) {
+    h2 {
+        font-size: 20px;
+    }
+    
+    h3 {
+        font-size: 16px;
+    }
+    
+    p {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    h2 {
+        font-size: 18px;
+    }
+    
+    h3 {
+        font-size: 14px;
+    }
+    
+    p {
+        font-size: 12px;
+    }
 }
 
 /*Q&A*/
@@ -116,7 +279,7 @@ body {
     font-size: 14px;
     color: #a09e9c;
     text-transform: initial;
-    max-width: 1920px;
+    max-width: 100%;
     margin: 0 auto;
     overflow-x: hidden;
 }
@@ -126,16 +289,50 @@ body {
     border-bottom: 1px dotted #ccc;
     padding: 17px;
     text-align: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+
+/* Responsive FAQ header */
+@media (max-width: 768px) {
+    .faq-header {
+        font-size: 28px;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .faq-header {
+        font-size: 22px;
+        padding: 10px;
+    }
 }
 
 .faq-content {
     margin: auto;
-    max-width: 1200px;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+/* Responsive FAQ content */
+@media (max-width: 768px) {
+    .faq-content {
+        padding: 0 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .faq-content {
+        padding: 0 10px;
+    }
 }
 
 .faq-question {
     padding: 20px 0;
     border-bottom: 1px dotted #ccc;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .panel-title {
@@ -146,6 +343,24 @@ body {
     padding: 10px 10px 0 48px;
     display: block;
     cursor: pointer;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+
+/* Responsive panel title */
+@media (max-width: 768px) {
+    .panel-title {
+        font-size: 20px;
+        padding: 8px 8px 0 40px;
+    }
+}
+
+@media (max-width: 576px) {
+    .panel-title {
+        font-size: 16px;
+        padding: 6px 6px 0 35px;
+    }
 }
 
 .panel-content {
@@ -161,6 +376,24 @@ body {
     -moz-transition: .4s ease;
     -o-transition: .4s ease;
     transition: .4s ease;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+
+/* Responsive panel content */
+@media (max-width: 768px) {
+    .panel-content {
+        font-size: 16px;
+        margin: 0 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .panel-content {
+        font-size: 14px;
+        margin: 0 10px;
+    }
 }
 
 .panel:checked ~ .panel-content {
@@ -186,6 +419,21 @@ body {
     transition: .2s ease;
 }
 
+/* Responsive plus icon */
+@media (max-width: 768px) {
+    .plus {
+        font-size: 32px;
+        margin-left: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .plus {
+        font-size: 24px;
+        margin-left: 10px;
+    }
+}
+
 .panel:checked ~ .plus {
     -webkit-transform: rotate(45deg);
     -moz-transform: rotate(45deg);
@@ -202,8 +450,24 @@ body {
     padding-bottom: 175px;
     width: 100%;
     justify-content: center;
+    max-width: 100%;
+    overflow: hidden;
 }
 
+/* Responsive map */
+@media (max-width: 768px) {
+    .map-address {
+        margin-top: 30px;
+        padding-bottom: 100px;
+    }
+}
+
+@media (max-width: 576px) {
+    .map-address {
+        margin-top: 20px;
+        padding-bottom: 80px;
+    }
+}
 
 .animated {
     -webkit-animation-duration: 1s;
@@ -221,7 +485,6 @@ body {
         -webkit-animation-duration: 2s;
         animation-duration: 2s;
     }
-
 
 @keyframes fadeInUp {
     0% {
@@ -244,7 +507,6 @@ body {
     animation-name: fadeInUp;
 }
 
-
 @keyframes fadeInDown {
     0% {
         opacity: 0;
@@ -265,7 +527,6 @@ body {
     -webkit-animation-name: fadeInDown;
     animation-name: fadeInDown;
 }
-
 
 @keyframes fadeInLeftBig {
     0% {
@@ -309,21 +570,18 @@ body {
     animation-name: fadeInRightBig;
 }
 
-
 .statistics {
     position: relative;
-    /* chiều cao tối thiểu để ảnh nền đủ hiển thị */
     min-height: 300px;
     background: url("/images/counter-banner.jpg") no-repeat center center fixed;
     background-size: cover;
-    /* Để con cháu text hiển thị trắng */
     color: #fff;
-    /* Canh giữa dọc (flex container) */
     display: flex;
     align-items: center;
+    max-width: 100%;
+    overflow: hidden;
 }
 
-    /* Lớp mờ phủ lên ảnh nếu cần */
     .statistics:before {
         position: absolute;
         content: '';
@@ -334,44 +592,121 @@ body {
         bottom: 0;
     }
 
-    /* container sẽ cần "vượt" lớp :before => position relative + z-index */
     .statistics .container {
         position: relative;
         z-index: 1;
     }
 
-    /* Để canh giữa nội dung theo chiều dọc trong .statistics */
     .statistics .statistics-counter {
         width: 100%;
-        /* Tạo không gian dọc nếu cần */
         padding: 40px 0;
     }
 
-/* single-ststistics-box */
+/* Responsive statistics */
+@media (max-width: 768px) {
+    .statistics {
+        min-height: 250px;
+    }
+    
+    .statistics .statistics-counter {
+        padding: 30px 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .statistics {
+        min-height: 200px;
+    }
+    
+    .statistics .statistics-counter {
+        padding: 20px 0;
+    }
+}
+
 .single-ststistics-box {
     text-align: center;
     margin-bottom: 30px;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .statistics-content {
     display: inline-flex;
-    align-items: baseline; /* canh đường cơ sở giữa số và chữ K+ */
+    align-items: baseline;
     font-size: 60px;
     color: #fff;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
 }
 
-    /* Khoảng cách giữa số và hậu tố K+ */
     .statistics-content span {
         margin-left: 5px;
         font-size: 47px; 
         align-self: flex-start; 
     }
 
-/* Tiêu đề h3 */
+/* Responsive statistics content */
+@media (max-width: 768px) {
+    .statistics-content {
+        font-size: 40px;
+    }
+    
+    .statistics-content span {
+        font-size: 32px;
+    }
+}
+
+@media (max-width: 576px) {
+    .statistics-content {
+        font-size: 32px;
+    }
+    
+    .statistics-content span {
+        font-size: 24px;
+    }
+}
+
 .single-ststistics-box h3 {
     color: #fff;
     font-size: 24px;
     text-transform: capitalize;
     font-weight: 500;
     margin-top: 10px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+
+/* Responsive statistics title */
+@media (max-width: 768px) {
+    .single-ststistics-box h3 {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 576px) {
+    .single-ststistics-box h3 {
+        font-size: 14px;
+    }
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 480px) {
+    /* Better text handling */
+    .welcome-hero-txt h2,
+    .welcome-hero-txt h3,
+    .welcome-hero-txt p {
+        line-height: 1.3;
+    }
+    
+    /* Improve readability */
+    .panel-title {
+        line-height: 1.4;
+    }
+    
+    /* Better spacing */
+    .feature-box {
+        margin-bottom: 15px;
+    }
 }

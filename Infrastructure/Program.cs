@@ -1,12 +1,15 @@
 using AutoMapper;
 using Infrastructure.Models.Caching;
 using Infrastructure.PaymentSupport;
+using Infrastructure.Seed;
 using Infrastructure.SqlServer;
 using Infrastructure.SqlServer.AutoMapper;
 using Infrastructure.SqlServer.DataContext;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using System.Threading.RateLimiting;
 using UseCase;
 using UseCase.Business_Logic;
 using UseCase.Caching;
@@ -17,12 +20,14 @@ namespace Infrastructure
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            System.Console.WriteLine("Database connection string: " + builder.Configuration.GetConnectionString("DefaultConnection"));
 
             builder.Services.AddSession(config =>
                     config.IdleTimeout = TimeSpan.FromHours(10));
@@ -34,12 +39,31 @@ namespace Infrastructure
                     options.AccessDeniedPath = "/Forbidden";
                 });
 
+            builder.Services.AddSeedData();
 
             builder.Services.AddMailService(builder.Configuration);
             builder.Services.AddPaymentService(builder.Configuration);
 
+            builder.Services.AddRateLimiter(rateLimiterOptions =>
+            {
+                rateLimiterOptions.AddSlidingWindowLimiter("SlidingWindow", options =>
+                {
+                    options.PermitLimit = 1000;
+                    options.Window = TimeSpan.FromMinutes(20);
+                    options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    options.QueueLimit = 150;
+                    options.SegmentsPerWindow = 4;
+                }).AddConcurrencyLimiter("Concurrency", options =>
+                {
+                    options.PermitLimit = 50;
+                    options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    options.QueueLimit = 25;
+                });
+            });
 
-            RegisterServicesForDatabase(builder.Services, builder.Configuration);
+          //  builder.Configuration.AddUserSecrets<Program>(true, true);
+
+            await RegisterServicesForDatabase(builder.Services, builder.Configuration);
 
             var app = builder.Build();
 
@@ -51,15 +75,28 @@ namespace Infrastructure
                 app.UseHsts();
             }
 
+            if (app.Environment.IsDevelopment())
+            {
+                var application = app.Services.CreateScope().ServiceProvider.GetRequiredService<ShopContext>();
+
+                var pendingMigrations = await application.Database.GetPendingMigrationsAsync();
+                if (pendingMigrations != null)
+                {
+                    await application.Database.MigrateAsync();
+                }
+            }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSession();
 
             app.UseRouting();
 
+            app.UseRateLimiter();
+
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseSeedData(); 
 
             app.MapStaticAssets();
             app.MapControllerRoute(
@@ -70,14 +107,13 @@ namespace Infrastructure
             app.Run();
         }
 
-        private static void RegisterServicesForDatabase(IServiceCollection services, ConfigurationManager configuration)
+        private static Task RegisterServicesForDatabase(IServiceCollection services, ConfigurationManager configuration)
         {
             services.AddAutoMapper(typeof(EntityMapper));
             services.AddDbContext<ShopContext>(option =>
-                 option.UseSqlServer(configuration.GetConnectionString("OnlineShopDatabase"))
+                 option.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), sqlOpt => sqlOpt.EnableRetryOnFailure())
                        .UseLazyLoadingProxies());
-
-            var cacheOption = configuration.GetSection("Cache").Get<CacheOption>() ?? throw new("");
+            var cacheOption = new CacheOption(); //configuration.GetSection("Cache").Get<CacheOption>() ?? throw new("");
             InitCache(services, configuration, cacheOption);
 
             services.AddTransient<IUserRepository>(service => new UserRepository(service.GetRequiredService<ShopContext>(), service.GetRequiredService<IMapper>()));
@@ -99,12 +135,14 @@ namespace Infrastructure
             services.AddTransient<IHomeManage>(service => new HomeManage(service.GetRequiredService<IProductRepository>()));
             services.AddTransient<IReviewerFinder>(service => new ReviewerFinder(service.GetRequiredService<IReviewUnitOfWork>() /*, service.GetRequiredService<IReviewUnitOfWork>(), service.GetRequiredService<IDistributedCache>()*/));
             services.AddTransient<IUserManage>(service => new UserManage(service.GetRequiredService<IUserUnitOfWork>()));
+            services.AddTransient<ICategoryManage>(service => new CachableCategoryManage(service.GetRequiredService<IProductUnitOfWork>(), service.GetRequiredService<IDistributedCache>(), new(), service.GetRequiredService<ILogger<CachableCategoryManage>>()));
             services.AddTransient<IPostManage>(service => new CachablePostManage(service.GetRequiredService<IPostRepository>(), service.GetRequiredService<IDistributedCache>(), new(), service.GetRequiredService<ILogger<CachablePostManage>>()));
             services.AddTransient<IProductManage>(service => new ProductManage(service.GetRequiredService<IProductUnitOfWork>()));
             services.AddTransient<ICartManage>(service => new CachableCartManage(service.GetRequiredService<ICartItemUnitOfWork>(), service.GetRequiredService<IDistributedCache>(), new()));
+            return Task.CompletedTask;
         }
 
-        private static void InitCache(IServiceCollection services, ConfigurationManager configuration, CacheOption cacheOption)
+        private static Task InitCache(IServiceCollection services, ConfigurationManager configuration, CacheOption cacheOption)
         {
             switch (cacheOption.Type)
             {
@@ -124,6 +162,7 @@ namespace Infrastructure
                 default:
                     throw new("Cache type not supported");
             }
+            return Task.CompletedTask;
         }
     }
 }

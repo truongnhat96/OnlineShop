@@ -6,10 +6,9 @@ body {
     background-color: #f4f4f4;
 }
 
-
 .logo-title {
     margin: 0;
-    color: #4caf50; /* Đổi màu chữ thành xanh */
+    color: #4caf50;
 }
 
 .main-box {
@@ -18,15 +17,53 @@ body {
     padding-top: 20px;
 }
 
+/* Responsive main box */
+@media (max-width: 768px) {
+    .main-box {
+        margin: 10px;
+        padding-top: 10px;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 576px) {
+    .main-box {
+        margin: 5px;
+        padding-top: 5px;
+    }
+}
+
 .content {
     flex: 3;
     margin-right: 20px;
+}
+
+/* Responsive content */
+@media (max-width: 768px) {
+    .content {
+        flex: 1;
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
 }
 
 .posts {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
+}
+
+/* Responsive posts */
+@media (max-width: 768px) {
+    .posts {
+        gap: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .posts {
+        gap: 10px;
+    }
 }
 
 .post {
@@ -40,10 +77,32 @@ body {
     padding-bottom: 30px;
 }
 
+/* Responsive post */
+@media (max-width: 992px) {
+    .post {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .post {
+        margin-bottom: 10px;
+        padding-bottom: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .post {
+        margin-bottom: 8px;
+        padding-bottom: 15px;
+    }
+}
+
 /* Dòng chữ "Thủ Thuật Máy Tính" */
 .category-label {
-    background-color: #2DD100; /* Nền xanh khi hover */
-    color: #fff; /* Màu chữ trắng khi hover */
+    background-color: #2DD100;
+    color: #fff;
     padding: 10px 15px;
     text-align: center;
     font-size: 16px;
@@ -55,15 +114,32 @@ body {
     z-index: 2;
     max-width: 80%;
     word-wrap: break-word;
-    transition: background-color 0.3s, color 0.3s; /* Thêm hiệu ứng chuyển đổi */
+    transition: background-color 0.3s, color 0.3s;
 }
 
-    /* Hiệu ứng khi hover vào dòng chữ */
-    .category-label:hover {
-        background-color: #fff; /* Nền trắng mặc định */
-        color: #2DD100; /* Màu chữ xanh */
+/* Responsive category label */
+@media (max-width: 768px) {
+    .category-label {
+        padding: 8px 12px;
+        font-size: 14px;
+        bottom: 8px;
+        left: 8px;
     }
+}
 
+@media (max-width: 576px) {
+    .category-label {
+        padding: 6px 10px;
+        font-size: 12px;
+        bottom: 6px;
+        left: 6px;
+    }
+}
+
+    .category-label:hover {
+        background-color: #fff;
+        color: #2DD100;
+    }
 
 .post-title {
     font-size: 18px;
@@ -71,14 +147,31 @@ body {
     margin: 15px 10px;
     text-align: center;
     display: block;
-    color: #000; /* Màu chữ ban đầu */
-    text-decoration: none; /* Bỏ gạch chân */
-    transition: color 0.3s ease; /* Thêm hiệu ứng chuyển màu */
+    color: #000;
+    text-decoration: none;
+    transition: color 0.3s ease;
     padding-bottom: 10px;
 }
 
+/* Responsive post title */
+@media (max-width: 768px) {
+    .post-title {
+        font-size: 16px;
+        margin: 12px 8px;
+        padding-bottom: 8px;
+    }
+}
+
+@media (max-width: 576px) {
+    .post-title {
+        font-size: 14px;
+        margin: 10px 6px;
+        padding-bottom: 6px;
+    }
+}
+
     .post-title:hover {
-        color: #4caf50; /* Màu xanh khi hover vào tiêu đề */
+        color: #4caf50;
     }
 
 .post-meta {
@@ -88,10 +181,33 @@ body {
     padding-left: 10px;
 }
 
+/* Responsive post meta */
+@media (max-width: 576px) {
+    .post-meta {
+        margin: 0 6px;
+        padding-left: 6px;
+    }
+}
+
 .date-created {
     font-size: 14px;
     display: flex;
     margin-top: 30px;
+}
+
+/* Responsive date created */
+@media (max-width: 768px) {
+    .date-created {
+        font-size: 12px;
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .date-created {
+        font-size: 11px;
+        margin-top: 15px;
+    }
 }
 
 .post-image-container {
@@ -104,6 +220,19 @@ body {
     height: 400px;
     transition: transform 0.3s ease;
     border-bottom: 2px solid #f4f4f4;
+}
+
+/* Responsive post image */
+@media (max-width: 768px) {
+    .post-image {
+        height: 300px;
+    }
+}
+
+@media (max-width: 576px) {
+    .post-image {
+        height: 200px;
+    }
 }
 
 .post-image-container:hover .post-image {
@@ -122,11 +251,10 @@ body {
 }
 
 .post-link {
-    display: block; /* Đảm bảo thẻ a chiếm toàn bộ diện tích */
-    text-decoration: none; /* Bỏ gạch chân */
-    color: inherit; /* Giữ màu chữ mặc định */
+    display: block;
+    text-decoration: none;
+    color: inherit;
 }
-
 
 .post-image-container:hover .overlay {
     visibility: visible;
@@ -139,15 +267,43 @@ body {
     border-radius: 8px;
 }
 
+/* Responsive sidebar */
+@media (max-width: 768px) {
+    .sidebar {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .sidebar {
+        padding: 10px;
+    }
+}
+
 /* Thanh tìm kiếm */
 .search-bars {
     display: flex;
     align-items: center;
-    background-color: #f2f6fc; /* Màu nền sáng như trong ảnh */
-    border-radius: 5px; /* Bo tròn các góc */
+    background-color: #f2f6fc;
+    border-radius: 5px;
     border: 1px solid #f2f6fc;
     padding: 5px 15px;
     margin-bottom: 20px;
+}
+
+/* Responsive search bars */
+@media (max-width: 768px) {
+    .search-bars {
+        padding: 4px 12px;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .search-bars {
+        padding: 3px 10px;
+        margin-bottom: 10px;
+    }
 }
 
 .search-inp {
@@ -155,36 +311,75 @@ body {
     padding: 10px;
     font-size: 16px;
     border: none;
-    outline: none; /* Bỏ viền khi focus */
+    outline: none;
     border-radius: 5px;
     background-color: transparent;
-    color: #333; /* Màu chữ đen như trong ảnh */
+    color: #333;
+}
+
+/* Responsive search input */
+@media (max-width: 768px) {
+    .search-inp {
+        padding: 8px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    .search-inp {
+        padding: 6px;
+        font-size: 12px;
+    }
 }
 
 .search-button {
-    background-color: transparent; /* Nền trong suốt */
+    background-color: transparent;
     padding: 5px;
     border: none;
-    border-radius: 50%; /* Nút tròn */
-    color: #333; /* Màu đen cho biểu tượng */
+    border-radius: 50%;
+    color: #333;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+/* Responsive search button */
+@media (max-width: 768px) {
+    .search-button {
+        padding: 4px;
+    }
+}
+
+@media (max-width: 576px) {
+    .search-button {
+        padding: 3px;
+        min-height: 44px;
+    }
+}
+
     .search-btn i {
-        font-size: 18px; /* Kích thước icon */
+        font-size: 18px;
     }
 
+/* Responsive search icon */
+@media (max-width: 768px) {
+    .search-btn i {
+        font-size: 16px;
+    }
+}
 
+@media (max-width: 576px) {
+    .search-btn i {
+        font-size: 14px;
+    }
+}
 
 /* Liên kết */
 .ad-link {
-    text-decoration: none; /* Xóa gạch chân khỏi liên kết */
-    color: inherit; /* Giữ nguyên màu chữ */
+    text-decoration: none;
+    color: inherit;
 }
-
 
 .advertisement {
     background-color: #fff;
@@ -195,6 +390,21 @@ body {
     text-align: center;
 }
 
+/* Responsive advertisement */
+@media (max-width: 768px) {
+    .advertisement {
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .advertisement {
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+}
+
     .advertisement .ad-title {
         font-size: 18px;
         font-weight: bold;
@@ -202,11 +412,39 @@ body {
         margin: 10px 0;
     }
 
+/* Responsive ad title */
+@media (max-width: 768px) {
+    .advertisement .ad-title {
+        font-size: 16px;
+        margin: 8px 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .advertisement .ad-title {
+        font-size: 14px;
+        margin: 6px 0;
+    }
+}
+
     .advertisement .advertisement-price {
         font-size: 16px;
         color: #d9534f;
         font-weight: bold;
     }
+
+/* Responsive advertisement price */
+@media (max-width: 768px) {
+    .advertisement .advertisement-price {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    .advertisement .advertisement-price {
+        font-size: 12px;
+    }
+}
 
 .advertisement-image {
     width: 100%;
@@ -217,5 +455,37 @@ body {
 }
 
     .advertisement-image:hover {
-        transform: scale(1.05); /* Hiệu ứng khi hover vào ảnh */
+        transform: scale(1.05);
     }
+
+/* Mobile-specific improvements */
+@media (max-width: 576px) {
+    /* Improve touch targets */
+    .search-button {
+        min-height: 44px;
+    }
+    
+    /* Better spacing */
+    .post {
+        margin-bottom: 10px;
+    }
+    
+    /* Improve readability */
+    .post-title {
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    /* Better image sizing */
+    .post-image {
+        object-fit: cover;
+    }
+    
+    /* Improve category label */
+    .category-label {
+        max-width: 90%;
+    }
+}

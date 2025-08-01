@@ -1,6 +1,7 @@
 ﻿using Infrastructure.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
 using UseCase.Business_Logic;
 using UseCase.UnitOfWork;
@@ -31,6 +32,7 @@ namespace Infrastructure.Controllers
 
 
         [HttpGet("/Posts")]
+        [EnableRateLimiting("Concurrency")]
         public async Task<IActionResult> PostView([FromQuery]string keyword)
         {
             var posts = await _postMange.GetPostsAsync();
@@ -47,6 +49,7 @@ namespace Infrastructure.Controllers
 
 
         [HttpGet("/Post/{id}")]
+        [EnableRateLimiting("Concurrency")]
         public async Task<IActionResult> PostDetail(string id)
         {
             var post = await _postMange.GetPostDetailAsync(Guid.Parse(id));
@@ -64,7 +67,7 @@ namespace Infrastructure.Controllers
 
         #region Manager
 
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("/Article")]
         [HttpGet("/Article/{id}")]
         public async Task<IActionResult> Blog(string id)
@@ -83,7 +86,7 @@ namespace Infrastructure.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("/Article")]
         [HttpPost("/Article/{id}")]
         public async Task<IActionResult> Blog(PostModel model, string id)
@@ -127,7 +130,7 @@ namespace Infrastructure.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("/BlogList")]
         public async Task<IActionResult> BlogManage()
         {

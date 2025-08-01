@@ -27,7 +27,7 @@ namespace Infrastructure.SqlServer
 
         public async Task<IEnumerable<Entities.CartItem>> GetCartItemsAsync(int userId)
         {
-            var itemsDb = await _context.CartItems.Where(item => item.UserId == userId).ToListAsync() ?? [];
+            var itemsDb = await _context.CartItems.AsNoTracking().Where(item => item.UserId == userId).ToListAsync() ?? [];
             return _mapper.Map<IEnumerable<CartItem>, IEnumerable<Entities.CartItem>>(itemsDb);
         }
 

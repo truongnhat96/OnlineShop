@@ -11,13 +11,13 @@
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(20, 60, 90, 0.4);
     padding: 15px;
-    width: 300px; /* Chiều rộng cố định */
-    height: 560px; /* Chiều cao cố định */
+    width: 300px;
+    height: 560px;
     text-align: center;
-    font-family: 'Arial', sans-serif; /* Hoặc phông chữ bạn mong muốn */
+    font-family: 'Arial', sans-serif;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Ẩn nội dung tràn ra ngoài */
+    overflow: hidden;
 }
 
 .main-container {
@@ -35,12 +35,144 @@
 }
 
 .product-name {
-    display: -webkit-box; /* Sử dụng flexbox của webkit */
-    -webkit-box-orient: vertical; /* Sắp xếp theo chiều dọc */
-    -webkit-line-clamp: 2; /* Giới hạn tối đa 2 dòng */
-    overflow: hidden; /* Ẩn phần vượt */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
     text-overflow: ellipsis;
     font-weight: bold;
+}
+
+/* Responsive design for product list */
+@media (max-width: 1200px) {
+    .form-card {
+        width: 280px;
+        height: 540px;
+        padding: 12px;
+    }
+    
+    .product-img {
+        width: 160px;
+        height: 160px;
+    }
+}
+
+@media (max-width: 992px) {
+    .form-container {
+        padding: 15px;
+    }
+    
+    .form-card {
+        width: 260px;
+        height: 520px;
+        padding: 10px;
+    }
+    
+    .product-img {
+        width: 140px;
+        height: 140px;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-container {
+        margin-top: 30px;
+    }
+    
+    .form-container {
+        padding: 10px;
+    }
+    
+    .form-card {
+        width: 240px;
+        height: 500px;
+        padding: 8px;
+    }
+    
+    .product-img {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .product-name {
+        font-size: 14px;
+    }
+    
+    .form-card h4,
+    .form-card h5,
+    .form-card p {
+        font-size: 12px;
+    }
+    
+    .form-card .btn {
+        font-size: 11px;
+        padding: 6px 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .main-container {
+        margin-top: 20px;
+    }
+    
+    .form-container {
+        padding: 5px;
+    }
+    
+    .form-card {
+        width: 200px;
+        height: 450px;
+        padding: 6px;
+    }
+    
+    .product-img {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .product-name {
+        font-size: 12px;
+        -webkit-line-clamp: 3;
+    }
+    
+    .form-card h4,
+    .form-card h5,
+    .form-card p {
+        font-size: 10px;
+    }
+    
+    .form-card .btn {
+        font-size: 10px;
+        padding: 4px 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-card {
+        width: 180px;
+        height: 420px;
+        padding: 5px;
+    }
+    
+    .product-img {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .product-name {
+        font-size: 11px;
+    }
+    
+    .form-card h4,
+    .form-card h5,
+    .form-card p {
+        font-size: 9px;
+    }
+    
+    .form-card .btn {
+        font-size: 9px;
+        padding: 3px 6px;
+    }
 }
 
 

@@ -87,6 +87,7 @@
     <div class="modal-content">
         <span class="close" id="closeModal">&times;</span>
         <h2>Chọn Phương Thức Thanh Toán</h2>
+        <p style="color: #E31B23">Lưu ý: Chức năng thanh toán online chỉ hoạt động trên môi trường kiểm thử</p>
         <form method="post" asp-action="PayByMomo">
             <input type="hidden" name="FullName" value="@User.Identity?.Name"/>
             <input type="hidden" name="Amount" value="@totalAmount" />
