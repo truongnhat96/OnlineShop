@@ -67,6 +67,28 @@ namespace Infrastructure
 
             var app = builder.Build();
 
+
+	
+	    // 1. Khởi EF Migrations *luôn luôn*, bất kể môi trường
+		using (var scope = app.Services.CreateScope())
+		{
+		    var db = scope.ServiceProvider.GetRequiredService<ShopContext>();
+
+		    var pending = await db.Database.GetPendingMigrationsAsync();
+		    if (pending.Any())
+		    {
+		        Console.WriteLine($"Applying {pending.Count()} pending migrations...");
+		        await db.Database.MigrateAsync();
+		        Console.WriteLine("Migrations applied.");
+		    }
+		    else
+		    {
+		        Console.WriteLine("No pending migrations.");
+		    }
+		}
+
+
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -74,17 +96,9 @@ namespace Infrastructure
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+	    
 
-            if (app.Environment.IsDevelopment())
-            {
-                var application = app.Services.CreateScope().ServiceProvider.GetRequiredService<ShopContext>();
 
-                var pendingMigrations = await application.Database.GetPendingMigrationsAsync();
-                if (pendingMigrations != null)
-                {
-                    await application.Database.MigrateAsync();
-                }
-            }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSession();
