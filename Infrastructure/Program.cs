@@ -39,7 +39,6 @@ namespace Infrastructure
                     options.AccessDeniedPath = "/Forbidden";
                 });
 
-            builder.Services.AddSeedData();
 
             builder.Services.AddMailService(builder.Configuration);
             builder.Services.AddPaymentService(builder.Configuration);
@@ -87,6 +86,21 @@ namespace Infrastructure
 		    }
 		}
 
+            // 2. Khởi tạo dữ liệu mẫu, chỉ chạy một lần khi ứng dụng khởi động
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<ShopContext>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                // Seed initial data
+                try
+                {
+                    await SeedData.InitializeAsync(context);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogWarning(message: ex.Message);
+                }
+            }
 
 
             // Configure the HTTP request pipeline.
@@ -110,7 +124,6 @@ namespace Infrastructure
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseSeedData(); 
 
             app.MapStaticAssets();
             app.MapControllerRoute(
