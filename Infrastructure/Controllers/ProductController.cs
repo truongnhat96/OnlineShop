@@ -293,7 +293,8 @@ namespace Infrastructure.Controllers
                 {
                     var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "products");
                     Directory.CreateDirectory(uploadsFolder);
-
+			
+		    Console.WriteLine($"Lấy ra thư mục uploads: {uploadsFolder}");
                     var originalName = Path.GetFileName(model.ImageUrl.FileName);
                     // loại bỏ khoảng trắng, ký tự không an toàn
                     var safeName = Regex.Replace(originalName, @"[^\w\-.]", "_");
@@ -304,10 +305,12 @@ namespace Infrastructure.Controllers
                         // chưa có mới copy lên
                         using var stream = new FileStream(fullPath, FileMode.Create);
                         await model.ImageUrl.CopyToAsync(stream);
+			Console.WriteLine($"Thêm ảnh thành công. Đường dẫn: {fullPath}");
                     }
 
                     // Gán lại tên file (đã sanitize) cho product
                     product.ImageUrl = safeName;
+		    Console.WriteLine($"Đã cập nhật. Thư mục làm việc hiện tại {Directory.GetCurrentDirectory()}");
                 }
                 model.Image = product.ImageUrl ?? string.Empty;
 
