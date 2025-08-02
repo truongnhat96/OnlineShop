@@ -22,7 +22,7 @@ WORKDIR /src/Infrastructure
 RUN dotnet tool install --global dotnet-ef 
 ENV PATH="$PATH:/root/.dotnet/tools"
 RUN dotnet build ./Infrastructure.csproj -c $BUILD_CONFIGURATION -o /app/build
-CMD ["dotnet", "ef", "database", "update", "--environment", "Development", "--project", "src/Repositories"]
+CMD ["dotnet", "ef", "database", "update", "--environment", "Production", "--project", "src/Repositories"]
 
 # Stage 2: Publish ứng dụng
 # Biên dịch mã nguồn và tạo ra các tệp cần thiết để chạy ứng dụng

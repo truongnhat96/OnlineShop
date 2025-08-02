@@ -39,7 +39,6 @@ namespace Infrastructure
                     options.AccessDeniedPath = "/Forbidden";
                 });
 
-            builder.Services.AddSeedData();
 
             builder.Services.AddMailService(builder.Configuration);
             builder.Services.AddPaymentService(builder.Configuration);
@@ -67,6 +66,43 @@ namespace Infrastructure
 
             var app = builder.Build();
 
+
+	
+	    // 1. Khởi EF Migrations *luôn luôn*, bất kể môi trường
+		using (var scope = app.Services.CreateScope())
+		{
+		    var db = scope.ServiceProvider.GetRequiredService<ShopContext>();
+
+		    var pending = await db.Database.GetPendingMigrationsAsync();
+		    if (pending.Any())
+		    {
+		        Console.WriteLine($"Applying {pending.Count()} pending migrations...");
+		        await db.Database.MigrateAsync();
+		        Console.WriteLine("Migrations applied.");
+		    }
+		    else
+		    {
+		        Console.WriteLine("No pending migrations.");
+		    }
+		}
+
+            // 2. Khởi tạo dữ liệu mẫu, chỉ chạy một lần khi ứng dụng khởi động
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<ShopContext>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                // Seed initial data
+                try
+                {
+                    await SeedData.InitializeAsync(context);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogWarning(message: ex.Message);
+                }
+            }
+
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -74,17 +110,9 @@ namespace Infrastructure
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+	    
 
-            if (app.Environment.IsDevelopment())
-            {
-                var application = app.Services.CreateScope().ServiceProvider.GetRequiredService<ShopContext>();
 
-                var pendingMigrations = await application.Database.GetPendingMigrationsAsync();
-                if (pendingMigrations != null)
-                {
-                    await application.Database.MigrateAsync();
-                }
-            }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSession();
@@ -96,7 +124,6 @@ namespace Infrastructure
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseSeedData(); 
 
             app.MapStaticAssets();
             app.MapControllerRoute(

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.RateLimiting;
+using System.Text.RegularExpressions;
 using UseCase;
 using UseCase.Business_Logic;
 using UseCase.UnitOfWork;
@@ -15,12 +16,14 @@ namespace Infrastructure.Controllers
         private readonly IProductManage _productManager;
         private readonly IReviewerFinder _reviewerFinder;
         private readonly ILogger<ProductController> _logger;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductController(IProductManage productManager, ILogger<ProductController> logger, IReviewerFinder reviewerFinder)
+        public ProductController(IProductManage productManager, ILogger<ProductController> logger, IReviewerFinder reviewerFinder, IWebHostEnvironment webHostEnvironment)
         {
             _productManager = productManager;
             _logger = logger;
             _reviewerFinder = reviewerFinder;
+            _webHostEnvironment = webHostEnvironment;
         }
 
 
@@ -170,20 +173,28 @@ namespace Infrastructure.Controllers
                     Quantity = model.Quantity,
                 };
 
-                if (model.ImageUrl != null)
+                if (model.ImageUrl != null && model.ImageUrl.Length > 0)
                 {
-                    var fileName = model.ImageUrl.FileName;
-                    if (!System.IO.File.Exists(fileName))
+                    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "products");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    var originalName = Path.GetFileName(model.ImageUrl.FileName);
+                    // loại bỏ khoảng trắng, ký tự không an toàn
+                    var safeName = Regex.Replace(originalName, @"[^\w\-.]", "_");
+
+                    var fullPath = Path.Combine(uploadsFolder, safeName);
+                    if (!System.IO.File.Exists(fullPath))
                     {
-                        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/products", fileName);
-                        using (var stream = new FileStream(path, FileMode.Create))
-                        {
-                            await model.ImageUrl.CopyToAsync(stream);
-                        }
+                        // chưa có mới copy lên
+                        using var stream = new FileStream(fullPath, FileMode.Create);
+                        await model.ImageUrl.CopyToAsync(stream);
                     }
-                    product.ImageUrl = fileName;
+
+                    // Gán lại tên file (đã sanitize) cho product
+                    product.ImageUrl = safeName;
                 }
                 await _productManager.AddProductAsync(product);
+
                 if (!string.IsNullOrEmpty(model.Coupon))
                 {
                     var newProduct = await _productManager.GetProductsByCategoryAsync(model.CategoryId);
@@ -278,20 +289,28 @@ namespace Infrastructure.Controllers
                     model.oldPrice = oldPrice;
                 }
 
-                if (model.ImageUrl != null)
+                if (model.ImageUrl != null && model.ImageUrl.Length > 0)
                 {
-                    var fileName = model.ImageUrl.FileName;
-                    if (!System.IO.File.Exists(fileName))
+                    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "products");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    var originalName = Path.GetFileName(model.ImageUrl.FileName);
+                    // loại bỏ khoảng trắng, ký tự không an toàn
+                    var safeName = Regex.Replace(originalName, @"[^\w\-.]", "_");
+
+                    var fullPath = Path.Combine(uploadsFolder, safeName);
+                    if (!System.IO.File.Exists(fullPath))
                     {
-                        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/products", fileName);
-                        using (var stream = new FileStream(path, FileMode.Create))
-                        {
-                            await model.ImageUrl.CopyToAsync(stream);
-                        }
+                        // chưa có mới copy lên
+                        using var stream = new FileStream(fullPath, FileMode.Create);
+                        await model.ImageUrl.CopyToAsync(stream);
                     }
-                    product.ImageUrl = fileName;
+
+                    // Gán lại tên file (đã sanitize) cho product
+                    product.ImageUrl = safeName;
                 }
                 model.Image = product.ImageUrl ?? string.Empty;
+
                 await _productManager.UpdateProductAsync(product);
                 if (!string.IsNullOrEmpty(model.Coupon))
                 {

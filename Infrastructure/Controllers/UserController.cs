@@ -1,8 +1,10 @@
 ﻿using Infrastructure.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using UseCase.Business_Logic;
 using UseCase.UnitOfWork;
 
@@ -13,12 +15,14 @@ namespace Infrastructure.Controllers
         private readonly IUserManage _userManage;
         private readonly IReviewerFinder _reviewerFinder;
         private readonly IPostManage _postMange;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UserController(IUserManage userManage, IReviewerFinder reviewerFinder, IPostManage postMange)
+        public UserController(IUserManage userManage, IReviewerFinder reviewerFinder, IPostManage postMange, IWebHostEnvironment webHostEnvironment)
         {
             _userManage = userManage;
             _reviewerFinder = reviewerFinder;
             _postMange = postMange;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpPost]
@@ -93,17 +97,23 @@ namespace Infrastructure.Controllers
         {
             var userId = HttpContext.User.FindFirstValue(ClaimTypes.Sid);
 
-            if(model.ImageUrl != null)
+            if(model.ImageUrl != null && model.ImageUrl.Length > 0)
             {
-                var imageFile = model.ImageUrl.FileName;
-                if (!System.IO.File.Exists(imageFile))
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "posts");
+                Directory.CreateDirectory(uploadsFolder);
+
+                var originalName = Path.GetFileName(model.ImageUrl.FileName);
+                // loại bỏ khoảng trắng, ký tự không an toàn
+                var safeName = Regex.Replace(originalName, @"[^\w\-.]", "_");
+
+                var fullPath = Path.Combine(uploadsFolder, safeName);
+                if (!System.IO.File.Exists(fullPath))
                 {
-                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/posts", imageFile);
-                    using (var stream = new FileStream(path, FileMode.Create))
-                    {
-                        await model.ImageUrl.CopyToAsync(stream);
-                    }
+                    // chưa có mới copy lên
+                    using var stream = new FileStream(fullPath, FileMode.Create);
+                    await model.ImageUrl.CopyToAsync(stream);
                 }
+
 
                 if (!string.IsNullOrEmpty(id))
                 {
@@ -113,13 +123,13 @@ namespace Infrastructure.Controllers
                         UserId = Convert.ToInt32(userId),
                         Title = model.Title,
                         Content = model.Content,
-                        ImageUrl = imageFile
+                        ImageUrl = safeName
                     });
                     TempData["submit"] = "Cập nhật bài viết thành công!";
                 }
                 else
                 {
-                    await _postMange.AddPostAsync(Convert.ToInt32(userId), model.Title, model.Content, imageFile);
+                    await _postMange.AddPostAsync(Convert.ToInt32(userId), model.Title, model.Content, safeName);
                     TempData["submit"] = "Đăng bài viết thành công!";
                 }
             }
