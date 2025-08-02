@@ -102,7 +102,7 @@ namespace Infrastructure.Controllers
                 var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "posts");
                 Directory.CreateDirectory(uploadsFolder);
 
-                var originalName = Path.GetFileName(model.ImageUrl.FileName);
+                var originalName = Path.GetFileName(model.ImageUrl.FileName.ToLower());
                 // loại bỏ khoảng trắng, ký tự không an toàn
                 var safeName = Regex.Replace(originalName, @"[^\w\-.]", "_");
 
