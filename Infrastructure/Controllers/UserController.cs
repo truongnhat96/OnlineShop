@@ -104,7 +104,7 @@ namespace Infrastructure.Controllers
 
                 var originalName = Path.GetFileName(model.ImageUrl.FileName.ToLower());
                 // loại bỏ khoảng trắng, ký tự không an toàn
-                var safeName = Regex.Replace(originalName, @"[^\w\-.]", "_");
+                var safeName = Regex.Replace(originalName, @"[^\w\.]", "_");
 
                 var fullPath = Path.Combine(uploadsFolder, safeName);
                 if (!System.IO.File.Exists(fullPath))
