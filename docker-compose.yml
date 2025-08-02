@@ -10,6 +10,7 @@ services:
       - /root/OnlineShop/sqlserver-data:/var/opt/mssql/data:Z
     ports:
       - "1433:1433"
+    restart: always
     healthcheck:
       test: >
         CMD-SHELL /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "${SA_PASSWORD}"
