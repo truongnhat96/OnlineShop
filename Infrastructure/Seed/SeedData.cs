@@ -1,18 +1,15 @@
-﻿
-using Infrastructure.SqlServer.DataContext;
+﻿using Infrastructure.SqlServer.DataContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Seed
 {
-    public class SeedDataMiddleware : IMiddleware
+    public static class SeedData
     {
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        public static async Task InitializeAsync(ShopContext context)
         {
-            var dbContext = context.RequestServices.GetRequiredService<ShopContext>();
-            var logger = context.RequestServices.GetRequiredService<ILogger<SeedDataMiddleware>>();
-            var adminRole = await dbContext.Roles.FindAsync(1);
-            var userRole = await dbContext.Roles.FindAsync(2);
-            var productCategory = await dbContext.Categories.ToListAsync();
+            var adminRole = await context.Roles.FindAsync(1);
+            var userRole = await context.Roles.FindAsync(2);
+            var productCategory = await context.Categories.ToListAsync();
             if (productCategory.Count == 0)
             {
                 productCategory.Add(new Category { Name = "Diệt Virus" });
@@ -25,20 +22,20 @@ namespace Infrastructure.Seed
                 productCategory.Add(new Category { Name = "IDM" });
                 productCategory.Add(new Category { Name = "VPN" });
                 productCategory.Add(new Category { Name = "Thủ Thuật" });
-                await dbContext.Categories.AddRangeAsync(productCategory);
+                await context.Categories.AddRangeAsync(productCategory);
             }
             if (adminRole == null)
             {
                 adminRole = new Role { Name = "Admin" };
-                await dbContext.Roles.AddAsync(adminRole);
+                await context.Roles.AddAsync(adminRole);
             }
             if (userRole == null)
             {
                 userRole = new Role { Name = "User" };
-                await dbContext.Roles.AddAsync(userRole);
+                await context.Roles.AddAsync(userRole);
             }
-            await dbContext.SaveChangesAsync();
-            var superUser = await dbContext.Users.FindAsync(1);
+            await context.SaveChangesAsync();
+            var superUser = await context.Users.FindAsync(1);
             if (superUser == null)
             {
                 superUser = new User
@@ -49,17 +46,12 @@ namespace Infrastructure.Seed
                     Password = "@1TruongShop02k4",
                     RoleId = 1
                 };
-                await dbContext.Users.AddAsync(superUser);
+                await context.Users.AddAsync(superUser);
             }
-            if (await dbContext.SaveChangesAsync() > 0)
+            if (await context.SaveChangesAsync() == 0)
             {
-                logger.LogInformation("Database has been seeded with initial data.");
+                throw new Exception("Data has existed or failed to seed initial data.");
             }
-            else
-            {
-                logger.LogInformation("Database already has initial data, no changes made.");
-            }
-            await next(context);
         }
     }
 }

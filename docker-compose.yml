@@ -1,16 +1,19 @@
+version: "3.8"
 
-services:
+services:  
   db:
     image: mcr.microsoft.com/azure-sql-edge
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: "${SA_PASSWORD}"
     volumes:
-      - ./sqlserver-data:/var/opt/mssql/data:Z
+      - /root/OnlineShop/sqlserver-data:/var/opt/mssql/data:Z
     ports:
       - "1433:1433"
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P \"${SA_PASSWORD}\" -Q \"SELECT 1\" || exit 1"]
+      test: >
+        CMD-SHELL /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "${SA_PASSWORD}"
+        -Q "SELECT 1" || exit 1
       start_period: 60s
       interval: 15s
       retries: 20
@@ -20,22 +23,23 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: webapp
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     environment:
-      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_URLS: "http://+:3050"
       ConnectionStrings__DefaultConnection: "Server=db,1433;Database=OnlineShop;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;"
       MailSettings__Host: "smtp.gmail.com"
       MailSettings__Port: "587"
       MailSettings__Username: "noreply.send.identity@gmail.com"
       MailSettings__Password: "${MAIL_PASSWORD}"
-      MailSettings_Address: "Security@TruongShop.net"
+      MailSettings__Address: "Security@truongshop.id.vn"
       MailSettings__DisplayName: "TruongShop"
     ports:
       - "8005:3050"
+    restart: always
 
 volumes:
   sqlserver-data:
     driver: local
+
