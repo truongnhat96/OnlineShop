@@ -25,9 +25,9 @@ namespace UseCase
             }); 
         }
 
-        public async Task<Post> DeletePostAsync(Guid id)
+        public async Task<Post> DeletePostAsync(Guid id, string? uploadsPath = default)
         {
-            return await _postRepository.DeletePostAsync(id);
+            return await _postRepository.DeletePostAsync(id, uploadsPath);
         }
 
         public async Task<Post> GetPostDetailAsync(Guid id)

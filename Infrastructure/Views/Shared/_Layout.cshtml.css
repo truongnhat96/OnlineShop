@@ -1,23 +1,30 @@
 ﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
-a.navbar-brand {
-    white-space: normal;
-    text-align: center;
-    word-break: break-all;
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-a {
-    color: #0077cc;
+.layout-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
 }
 
 .main-container {
-    max-width: none; 
+    max-width: none;
     width: 100%;
-    margin: 0;  
+    margin: 0;
     padding: 0;
-    padding-bottom: 100px;
+    padding-bottom: 16px;
 }
+
 
 .btn-primary {
   color: #fff;
@@ -140,4 +147,365 @@ li {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+
+/* FOOTER AND SOCIAL */
+.footer {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin-top: 50px;
+    position: relative;
+    overflow: hidden;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 20px 40px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    position: relative;
+    z-index: 2;
+    justify-content: center;
+}
+
+.footer-info a {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    background: linear-gradient(45deg, #ff6b6b, #feca57);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.footer-info p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+.social-links h4,
+.footer-links h4 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    color: #fff;
+    font-weight: 500;
+}
+
+.social-icons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.social-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: white;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    .social-icon::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        transform: scale(0);
+        transition: transform 0.3s ease;
+        z-index: -1;
+    }
+
+    .social-icon:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+        .social-icon:hover::before {
+            transform: scale(1);
+        }
+
+    .social-icon.facebook {
+        background: rgba(59, 89, 152, 0.2);
+        border: 2px solid #3b5998;
+    }
+
+        .social-icon.facebook::before {
+            background: #3b5998;
+        }
+
+    .social-icon.tiktok {
+        background: rgba(254, 44, 85, 0.2);
+        border: 2px solid #fe2c55;
+    }
+
+        .social-icon.tiktok::before {
+            background: linear-gradient(45deg, #ff0050, #00f2ea);
+        }
+
+    .social-icon.github {
+        background: rgba(51, 51, 51, 0.2);
+        border: 2px solid #333;
+    }
+
+        .social-icon.github::before {
+            background: #333;
+        }
+
+    .social-icon.youtube {
+        background: rgba(255, 0, 0, 0.2);
+        border: 2px solid #ff0000;
+    }
+
+        .social-icon.youtube::before {
+            background: #ff0000;
+        }
+
+/* Enhanced Footer Right Section Styling */
+.footer-right {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 0 15px;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 350px;
+}
+
+@media (max-width: 992px) {
+    .footer-right {
+        border-left: none;
+        padding: 20px 0 0 0;
+        max-width: 100%;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+}
+
+.footer-right h2 {
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+    .footer-right h2::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -3px;
+        width: 40px;
+        height: 2px;
+        background: linear-gradient(90deg, #ffd700, #ffa500);
+    }
+
+.footer-right p {
+    color: #f0f0f0;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+    position: relative;
+    padding-left: 28px; /* Space for the icon */
+}
+
+    .footer-right p:before {
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        left: 0;
+        top: 2px;
+        color: #ffeb99;
+        font-size: 1rem;
+    }
+
+.footer-right a {
+    color: #ffeb99;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+    .footer-right a:hover {
+        color: #ffffff;
+        text-decoration: underline;
+    }
+
+
+.footer-right h2:nth-of-type(1) + p:before {
+    content: '\f3c5'; /* Map marker icon */
+}
+
+.footer-right h2:nth-of-type(2) + p:before {
+    content: '\f0e0'; /* Envelope icon */
+}
+
+.footer-right h2:nth-of-type(3) + p:before {
+    content: '\f095'; /* Phone icon */
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .footer-right {
+        align-items: center;
+        text-align: center;
+        padding-top: 15px;
+    }
+
+        .footer-right h2::after {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .footer-right p {
+            padding-left: 0;
+        }
+
+        .footer-right h2 + p::before {
+            position: static;
+            margin-right: 5px;
+        }
+
+        .footer-right a:hover {
+            transform: translateX(0) scale(1.05);
+        }
+}
+
+@media (max-width: 576px) {
+    .footer-right {
+        gap: 10px;
+    }
+
+        .footer-right h2 {
+            font-size: 1rem;
+        }
+
+        .footer-right p {
+            font-size: 0.85rem;
+        }
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 25px;
+    background: rgba(0, 0, 0, 0.2);
+    gap: 30px;
+}
+
+    .footer-bottom a {
+        color: #ffeb99;
+        text-decoration: none;
+        transition: color 0.2s;
+        margin-right: 20px;
+        font-weight: 500;
+    }
+
+        .footer-bottom a:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+
+/* Responsive adjustments for footer bottom */
+
+@media (min-width: 769px) and (max-width: 992px) {
+    .footer-bottom {
+        padding: 15px;
+    }
+
+        .footer-bottom p {
+            font-size: 0.85rem;
+        }
+
+        .footer-bottom a {
+            font-size: 0.85rem;
+            margin-right: 15px;
+        }
+}
+
+
+.footer-wave {
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    overflow: hidden;
+}
+
+    .footer-wave svg {
+        width: 100%;
+        height: 100%;
+        fill: rgba(255, 255, 255, 0.1);
+    }
+
+.footer-bottom p {
+    margin: 0;
+    color: #f0f0f0;
+}
+
+.footer-bottom .fa-heart {
+    color: #ff6b6b;
+    animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.footer-bottom .highlight {
+    background: linear-gradient(45deg, #ff6b6b, #feca57);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 600;
+}
+
+@keyframes heartbeat {
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 30px;
+        padding: 40px 20px 30px;
+    }
+
+    .social-icons {
+        justify-content: center;
+    }
+
+    .footer-info a {
+        font-size: 1.8rem;
+        text-decoration: none;
+    }
+
+    .footer-wave {
+        height: 80px;
+    }
+
+    .footer-bottom {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
 }

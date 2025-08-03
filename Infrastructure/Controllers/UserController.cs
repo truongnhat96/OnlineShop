@@ -37,10 +37,10 @@ namespace Infrastructure.Controllers
 
         [HttpGet("/Posts")]
         [EnableRateLimiting("Concurrency")]
-        public async Task<IActionResult> PostView([FromQuery]string keyword)
+        public async Task<IActionResult> PostView([FromQuery] string keyword)
         {
             var posts = await _postMange.GetPostsAsync();
-            if(!string.IsNullOrEmpty(keyword))
+            if (!string.IsNullOrEmpty(keyword))
             {
                 posts = await _postMange.GetPostsAsync(keyword);
             }
@@ -97,27 +97,26 @@ namespace Infrastructure.Controllers
         {
             var userId = HttpContext.User.FindFirstValue(ClaimTypes.Sid);
 
-            if(model.ImageUrl != null && model.ImageUrl.Length > 0)
+            if (model.ImageUrl != null && model.ImageUrl.Length > 0)
             {
                 var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "posts");
                 Directory.CreateDirectory(uploadsFolder);
 
-                var originalName = Path.GetFileName(model.ImageUrl.FileName.ToLower());
-                // loại bỏ khoảng trắng, ký tự không an toàn
-                var safeName = Regex.Replace(originalName, @"[^\w\.]", "_");
+                var ext = Path.GetExtension(model.ImageUrl.FileName);
+
+                // Sinh GUID không dấu gạch ngang và thêm timestamp
+                var guidPart = Guid.NewGuid().ToString("N");
+                var timePart = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+                var safeName = $"{guidPart}_{timePart}{ext}";
 
                 var fullPath = Path.Combine(uploadsFolder, safeName);
-                if (!System.IO.File.Exists(fullPath))
-                {
-                    // chưa có mới copy lên
-                    using var stream = new FileStream(fullPath, FileMode.Create);
-                    await model.ImageUrl.CopyToAsync(stream);
-                }
+                using var stream = new FileStream(fullPath, FileMode.Create);
+                await model.ImageUrl.CopyToAsync(stream);
 
 
                 if (!string.IsNullOrEmpty(id))
                 {
-                    await _postMange.UpdatePostAsync(new Entities.Post 
+                    await _postMange.UpdatePostAsync(new Entities.Post
                     {
                         Id = Guid.Parse(id),
                         UserId = Convert.ToInt32(userId),
@@ -155,8 +154,16 @@ namespace Infrastructure.Controllers
         [HttpGet("/Delete/{id}")]
         public async Task<IActionResult> DeletePost(string id)
         {
-            await _postMange.DeletePostAsync(Guid.Parse(id));
-            TempData["delete"] = "Xóa bài viết thành công!";
+            var uploadsPath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "posts");
+            try
+            {
+                await _postMange.DeletePostAsync(Guid.Parse(id), uploadsPath);
+                TempData["delete"] = "Xóa bài viết thành công!";
+            }
+            catch (Exception ex)
+            {
+                TempData["delete"] = $"Xóa bài viết thất bại: {ex.Message}";
+            }
             return RedirectToAction("BlogManage");
         }
 

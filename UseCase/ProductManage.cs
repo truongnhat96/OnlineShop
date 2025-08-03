@@ -46,9 +46,9 @@ namespace UseCase
             return await _productUnitOfWork.ProductRepository.AddProductAsync(product);
         }
 
-        public async Task<Product> DeleteProductAsync(int id)
+        public async Task<Product> DeleteProductAsync(int id, string? uploadsPath = default)
         {
-            return await _productUnitOfWork.ProductRepository.DeleteProductAsync(id);
+            return await _productUnitOfWork.ProductRepository.DeleteProductAsync(id, uploadsPath);
         }
 
         public async Task<IEnumerable<Product>> Filter(SortingType type, int id)

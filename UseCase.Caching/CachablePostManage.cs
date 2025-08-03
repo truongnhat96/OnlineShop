@@ -46,9 +46,9 @@ namespace UseCase.Caching
         }
 
 
-        public async Task<Post> DeletePostAsync(Guid id)
+        public async Task<Post> DeletePostAsync(Guid id, string? uploadsPath = default)
         {
-            var post = await _postRepository.DeletePostAsync(id);
+            var post = await _postRepository.DeletePostAsync(id, uploadsPath);
             var cacheKey = _option.CacheKey;
             var Posts = await _postRepository.GetPostsAsync();
             _logger.LogInformation("Storing data to cache...");

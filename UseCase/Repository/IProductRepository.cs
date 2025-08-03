@@ -24,6 +24,6 @@ namespace UseCase.Repository
         /// <param name="quantity"></param>
         /// <returns></returns>
         Task UpdateQuantityAsync(int id, int quantity);
-        Task<Product> DeleteProductAsync(int id);
+        Task<Product> DeleteProductAsync(int id, string? uploadsPath = default);
     }
 }

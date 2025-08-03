@@ -24,6 +24,8 @@ namespace Infrastructure.Controllers
             _logger = logger;
             _reviewerFinder = reviewerFinder;
             _webHostEnvironment = webHostEnvironment;
+            
+            _logger.LogInformation("Environment: {EnvironmentName}", _webHostEnvironment.EnvironmentName);
         }
 
 
@@ -178,17 +180,16 @@ namespace Infrastructure.Controllers
                     var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "products");
                     Directory.CreateDirectory(uploadsFolder);
 
-                    var originalName = Path.GetFileName(model.ImageUrl.FileName.ToLower());
-                    // loại bỏ khoảng trắng, ký tự không an toàn
-                    var safeName = Regex.Replace(originalName, @"[^\w\.]", "_");
+                    var ext = Path.GetExtension(model.ImageUrl.FileName); 
+
+                    // Sinh GUID không dấu gạch ngang và thêm timestamp
+                    var guidPart = Guid.NewGuid().ToString("N");            
+                    var timePart = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+                    var safeName = $"{guidPart}_{timePart}{ext}"; 
 
                     var fullPath = Path.Combine(uploadsFolder, safeName);
-                    if (!System.IO.File.Exists(fullPath))
-                    {
-                        // chưa có mới copy lên
-                        using var stream = new FileStream(fullPath, FileMode.Create);
-                        await model.ImageUrl.CopyToAsync(stream);
-                    }
+                    using var stream = new FileStream(fullPath, FileMode.Create);
+                    await model.ImageUrl.CopyToAsync(stream);
 
                     // Gán lại tên file (đã sanitize) cho product
                     product.ImageUrl = safeName;
@@ -214,9 +215,10 @@ namespace Infrastructure.Controllers
         [HttpGet("/Remove/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            var uploadsPath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "products");
             try
             {
-                await _productManager.DeleteProductAsync(id);
+                await _productManager.DeleteProductAsync(id, uploadsPath);
                 TempData["Message"] = "Xóa sản phẩm thành công!";
             }
             catch (Exception ex)
@@ -293,20 +295,17 @@ namespace Infrastructure.Controllers
                 {
                     var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "products");
                     Directory.CreateDirectory(uploadsFolder);
-			
-		            _logger.LogInformation("Thư mục uploads {d}", uploadsFolder);
-                    var originalName = Path.GetFileName(model.ImageUrl.FileName.ToLower());
-                    Console.WriteLine($"Original file name: {originalName}");
-                    // loại bỏ khoảng trắng, ký tự không an toàn
-                    var safeName = Regex.Replace(originalName, @"[^\w\.]", "_");
+
+                    var ext = Path.GetExtension(model.ImageUrl.FileName);
+
+                    // Sinh GUID không dấu gạch ngang và thêm timestamp
+                    var guidPart = Guid.NewGuid().ToString("N");
+                    var timePart = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+                    var safeName = $"{guidPart}_{timePart}{ext}";
 
                     var fullPath = Path.Combine(uploadsFolder, safeName);
-                    if (!System.IO.File.Exists(fullPath))
-                    {
-                        // chưa có mới copy lên
-                        using var stream = new FileStream(fullPath, FileMode.Create);
-                        await model.ImageUrl.CopyToAsync(stream);
-                    }
+                    using var stream = new FileStream(fullPath, FileMode.Create);
+                    await model.ImageUrl.CopyToAsync(stream);
 
                     // Gán lại tên file (đã sanitize) cho product
                     product.ImageUrl = safeName;
