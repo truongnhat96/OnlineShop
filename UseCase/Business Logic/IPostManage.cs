@@ -11,7 +11,7 @@ namespace UseCase.Business_Logic
     {
         Task<Post> AddPostAsync(int userId, string title, string content, string image);
         Task<Post> UpdatePostAsync(Post post);
-        Task<Post> DeletePostAsync(Guid id);
+        Task<Post> DeletePostAsync(Guid id, string? uploadsPath = default);
         Task<IEnumerable<Post>> GetPostsAsync(string keyword);
         Task<IEnumerable<Post>> GetPostsAsync();
         Task<Post> GetPostDetailAsync(Guid id);

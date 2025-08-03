@@ -13,7 +13,7 @@ namespace UseCase.Business_Logic
         Task<ItemInfor> AddInforAsync(ItemInfor item);
         Task UpdateInforAsync(ItemInfor item);
         Task<Product> UpdateProductAsync(Product product);
-        Task<Product> DeleteProductAsync(int id);
+        Task<Product> DeleteProductAsync(int id, string? uploadsPath = default);
         Task<IEnumerable<Product>> GetProductsByCategoryAsync(int categoryId);
         Task<IEnumerable<Product>> GetProductsAsync();
         Task<IEnumerable<Product>> GetProductsAsync(string keyword);

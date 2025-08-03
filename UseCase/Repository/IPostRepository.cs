@@ -13,7 +13,7 @@ namespace UseCase.Repository
         Task<IEnumerable<Post>> FindPostsAsync(string keyword);
         Task<Post> AddPostAsync(Post post);
         Task<Post> UpdatePostAsync(Post post);
-        Task<Post> DeletePostAsync(Guid id);
+        Task<Post> DeletePostAsync(Guid id, string? uploadsPath = default);
         Task<Post?> GetPostAsync(Guid id);
     }
 }

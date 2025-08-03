@@ -21,9 +21,25 @@ namespace Infrastructure.SqlServer
             return post;
         }
 
-        public async Task<Entities.Post> DeletePostAsync(Guid id)
+        public async Task<Entities.Post> DeletePostAsync(Guid id, string? uploadsPath = default)
         {
             var postDb = await _context.Posts.FindAsync(id) ?? throw new("This Post is Not Exist");
+
+            if (!string.IsNullOrEmpty(postDb.ImageUrl) && uploadsPath != null)
+            {
+                var fullPath = Path.Combine(uploadsPath, postDb.ImageUrl);
+                if (File.Exists(fullPath))
+                {
+                    try
+                    {
+                        File.Delete(fullPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"Cannot delete post image: {ex.Message}");
+                    }
+                }
+            }
             _context.Posts.Remove(postDb);
             await _context.SaveChangesAsync();
             return _mapper.Map<Entities.Post>(postDb);

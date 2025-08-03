@@ -26,12 +26,34 @@ namespace Infrastructure.SqlServer
             return product;
         }
 
-        public async Task<Entities.Product> DeleteProductAsync(int id)
+        public async Task<Entities.Product> DeleteProductAsync(int id, string? uploadsPath = default)
         {
             var productDb = await _context.Products.FindAsync(id) ?? throw new ArgumentNullException("Sản phẩm không tồn tại");
-            _context.Products.Remove(productDb);
-            await _context.SaveChangesAsync();
-            return _mapper.Map<Entities.Product>(productDb);
+
+            if (!string.IsNullOrEmpty(productDb.ImageUrl) && uploadsPath != null)
+            {
+                var fullPath = Path.Combine(uploadsPath, productDb.ImageUrl);
+
+                if (File.Exists(fullPath))
+                {
+                    try
+                    {
+                        File.Delete(fullPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"Không thể xóa ảnh sản phẩm: {ex.Message}");
+                    }
+                }
+
+                _context.Products.Remove(productDb);
+                await _context.SaveChangesAsync();
+                return _mapper.Map<Entities.Product>(productDb);
+            }
+            else
+            {
+                throw new ArgumentNullException("Sản phẩm không tồn tại");
+            }
         }
 
         public async Task<IEnumerable<Entities.Product>> FilterBy(SortingType type, int id)
@@ -109,7 +131,7 @@ namespace Infrastructure.SqlServer
         public async Task UpdateQuantityAsync(int id, int quantity)
         {
             var productDb = await _context.Products.FindAsync(id) ?? throw new("Nullable");
-            productDb.Quantity-=quantity;
+            productDb.Quantity -= quantity;
             productDb.Sold += quantity;
             if (productDb.Quantity < 0)
             {

@@ -1,0 +1,30 @@
+﻿/* Tuỳ chỉnh cho policy page */
+.policy-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 2rem 1rem;
+}
+
+    .policy-container h1,
+    .policy-container h2 {
+        font-weight: 600;
+    }
+
+    .policy-container p,
+    .policy-container li {
+        line-height: 1.6;
+    }
+
+    .policy-container .section {
+        margin-bottom: 2rem;
+    }
+/* Responsive: thu nhỏ padding trên mobile */
+@media (max-width: 576px) {
+    .policy-container {
+        padding: 1rem 0.5rem;
+    }
+
+        .policy-container h1 {
+            font-size: 1.75rem;
+        }
+}
