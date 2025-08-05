@@ -23,6 +23,12 @@
     <div class="alert alert-info" role="alert">
         @TempData["Message"]
     </div>
+    @section AddProductQuantityInLocal {
+        <script>
+            localStorage.removeItem(quantityKey)
+            updateNewQuantity()
+        </script>
+    }
 }
 <!-- Form Thêm Sản phẩm -->
 <div id="addProductForm" style="padding-bottom:250px; display:none; margin-top:20px;">

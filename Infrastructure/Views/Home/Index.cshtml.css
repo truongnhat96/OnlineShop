@@ -447,11 +447,13 @@ body {
 
 .map-address {
     margin-top: 50px;
-    padding-bottom: 175px;
     width: 100%;
     justify-content: center;
     max-width: 100%;
     overflow: hidden;
+    background: #4568DC; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #B06AB3, #4568DC); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #B06AB3, #4568DC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 /* Responsive map */

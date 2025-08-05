@@ -33,7 +33,6 @@
     padding: 20px;
     box-shadow: 0 0 5px rgba(0,0,0,0.1);
     border-radius: 6px;
-    padding-bottom: 200px;
 }
 
     /* Tiêu đề chung */
@@ -55,6 +54,10 @@
         display: block;
         font-weight: 600;
         margin-bottom: 5px;
+    }
+
+    .form-group span {
+        color: #E31B23; /*hiển thị trường bắt buộc*/
     }
 
     .form-group input,

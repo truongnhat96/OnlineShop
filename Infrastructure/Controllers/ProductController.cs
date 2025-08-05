@@ -398,5 +398,25 @@ namespace Infrastructure.Controllers
             }
         }
         #endregion
+
+
+        [HttpGet("/api/get/products")]
+        public async Task<IActionResult> ProductsApi()
+        {
+            try
+            {
+                var products = (await _productManager.GetProductsAsync()).ToList();
+                return Ok(products.Select(p => new
+                {
+                    p.Id,
+                    p.Quantity
+                }).ToList());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching products from API");
+                return StatusCode(500, "Internal server error while fetching products.");
+            }
+        }
     }
 }

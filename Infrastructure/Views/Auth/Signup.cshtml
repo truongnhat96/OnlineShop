@@ -3,7 +3,7 @@
     ViewData["Title"] = "Đăng ký";
 }
 
-<form method="post" style="padding-bottom:250px; border:1px solid #ccc">
+<form method="post" style="border:1px solid #ccc">
     <div class="container">
         <h1>Đăng ký</h1>
         <p>Vui lòng điền vào biểu mẫu để tạo tài khoản mới.</p>
@@ -39,7 +39,7 @@
             @Html.ViewContext.ModelState["ConfirmPassword"]?.Errors.FirstOrDefault()?.ErrorMessage
         </span>
 
-        <p>Khi đăng ký, bạn đã đồng ý với <a href="/home/privacy" style="color:dodgerblue">Điều khoản dịch vụ và chính sách Quyền riêng tư</a>.</p>
+        <p>Khi đăng ký, bạn đã đồng ý với <a href="/home/privacy" style="color:dodgerblue; text-decoration:none">Điều khoản dịch vụ và chính sách Quyền riêng tư</a>.</p>
 
         <div class="clearfix">
             <button type="submit" class="signupbtn">ĐĂNG KÝ</button>

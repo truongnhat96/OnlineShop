@@ -34,86 +34,97 @@
 
 
 <div class="container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <form action="@Url.RouteUrl("category")" method="get">
-            <div class="price-filter">
-                <h3>Lọc theo giá</h3>
-                <div class="slider-container">
-                    <div class="slider-track" id="slider-track"></div>
-                    <input name="min_price" type="range" id="minSlider" class="slider" min="25000" max="9000000" step="1000" value="25000">
-                    <input name="max_price" type="range" id="maxSlider" class="slider" min="25000" max="9000000" step="1000" value="9000000">
+    <div class="main-content-row" style="display: flex; gap: 100px; width: 100%;">
+        <aside class="sidebar">
+            <form action="@Url.RouteUrl("category")" method="get">
+                <div class="price-filter">
+                    <h3>Lọc theo giá</h3>
+                    <div class="slider-container">
+                        <div class="slider-track" id="slider-track"></div>
+                        <input name="min_price" type="range" id="minSlider" class="slider" min="25000" max="9000000" step="1000" value="25000">
+                        <input name="max_price" type="range" id="maxSlider" class="slider" min="25000" max="9000000" step="1000" value="9000000">
+                    </div>
+                    <div class="price-values">
+                        <span id="minPriceLabel">25.000₫</span> —
+                        <span id="maxPriceLabel">9.000.000₫</span>
+                    </div>
+                    <button class="filter-button">LỌC</button>
                 </div>
-                <div class="price-values">
-                    <span id="minPriceLabel">25.000₫</span> —
-                    <span id="maxPriceLabel">9.000.000₫</span>
-                </div>
-                <button class="filter-button">LỌC</button>
-            </div>
-        </form>
-
-        <h3>Sản Phẩm Mua Nhiều</h3>
-        <ul>
-            <li><a href="/Product/34" class="link"><img src="/uploads/products/chatgpt-plus-3.jpg" alt="ChatGPT Plus"> ChatGPT Plus <span class="price">129.000₫</span></a></li>
-            <li><a href="/Product/35" class="link"><img src="/uploads/products/tai-khoan-office-365-gia-re-ban-chinh-hang.jpg" alt="Office 365">Office 365 Chính Hãng <span class="price">290.000₫</span></a></li>
-        </ul>
-    </aside>
-
-    <!-- Danh sách sản phẩm -->
-    <section class="products">
-        @for (int i = 0; i < Model.ProductList.Count; i++)
-        {
-            var product = Model.ProductList[i];
-            bool outOfStock = product.Quantity <= 0;
-            <div class="product">
-                @if (product.OldPrice > product.Price)
+            </form>
+            <h3>Sản Phẩm Mua Nhiều</h3>
+            @await Html.PartialAsync("_ProductPartial")
+        </aside>
+        <div class="products-wrapper">
+            <section class="products">
+                @for (int i = 0; i < Model.ProductList.Count; i++)
                 {
-                    <span class="discount">GIẢM GIÁ!</span>
-                }
-                <a href="/Product/@product.Id" class="product-link">
-                    <div class="product-image-container">
-                        <img src="/uploads/products/@product.ImageUrl" class="product-image @(outOfStock ? "out-of-stock-filter" : "")">
-                        @if (outOfStock)
+                    var product = Model.ProductList[i];
+                    bool outOfStock = product.Quantity <= 0;
+                    <div class="product">
+                        @if (product.OldPrice > product.Price)
                         {
-                            <div class="out-of-stock-label">HẾT HÀNG</div>
+                            <span class="discount">GIẢM GIÁ!</span>
+                        }
+                        <a href="/Product/@product.Id" class="product-link">
+                            <div class="product-image-container">
+                                <img src="/uploads/products/@product.ImageUrl" class="product-image @(outOfStock ? "out-of-stock-filter" : "")">
+                                @if (outOfStock)
+                                {
+                                    <div class="out-of-stock-label">HẾT HÀNG</div>
+                                }
+                            </div>
+                        </a>
+                        <a href="/Product/@product.Id" class="product-name">@product.Name</a>
+                        @for (int j = 0; j < Model.ProductListReview[i]; j++)
+                        {
+                            <span class="star">⭐</span>
+                        }
+                        @if (product.OldPrice > product.Price)
+                        {
+                            <p class="old-price">@product.OldPrice.ToString("c0", new CultureInfo("vi-VN"))</p>
+                        }
+                        <p class="new-price">@product.Price.ToString("c0", new CultureInfo("vi-VN"))</p>
+                        @if (!outOfStock)
+                        {
+                            <a href="/Cart-Add/@(product.Id)/@(product.Name)?quantity=1" role="button" class="btn-cart">THÊM VÀO GIỎ HÀNG</a>
                         }
                     </div>
-                </a>
-                <a href="/Product/@product.Id" class="product-name">@product.Name</a>
-                @for (int j = 0; j < Model.ProductListReview[i]; j++)
-                {
-                    <span class="star">⭐</span>
                 }
-                @if (product.OldPrice > product.Price)
+            </section>
+            @if(Model.totalPage > 1) {
+            <div class="pagination-desktop">
+                @if (Model.currentPage > 1)
                 {
-                    <p class="old-price">@product.OldPrice.ToString("c0", new CultureInfo("vi-VN"))</p>
+                    <a class="page-btn" href="@(Url.Action("Category", new { id = Model.CategoryId, page = Model.currentPage - 1 }) + Url.ActionContext.HttpContext.Request.QueryString.ToString())">◀</a>
                 }
-                <p class="new-price">@product.Price.ToString("c0", new CultureInfo("vi-VN"))</p>
-                @if (!outOfStock)
+                @for (int i = 1; i <= Model.totalPage; i++)
                 {
-                    <a href="/Cart-Add/@(product.Id)/@(product.Name)?quantity=1" role="button" class="btn-cart">THÊM VÀO GIỎ HÀNG</a>
+                    <a href="@(Url.Action("Category", new { id = Model.CategoryId, page = i }) + Url.ActionContext.HttpContext.Request.QueryString.ToString())" class="page-btn @(i == Model.currentPage ? "active" : "")">@i</a>
+                }
+                @if (Model.currentPage < Model.totalPage)
+                {
+                    <a class="page-btn" href="@(Url.Action("Category", new { id = Model.CategoryId, page = Model.currentPage + 1 }) + Url.ActionContext.HttpContext.Request.QueryString.ToString())">▶</a>
                 }
             </div>
+            }
+        </div>
+        @if(Model.totalPage > 1) {
+        <div class="pagination-mobile">
+            @if (Model.currentPage > 1)
+            {
+                <a class="page-btn" href="@(Url.Action("Category", new { id = Model.CategoryId, page = Model.currentPage - 1 }) + Url.ActionContext.HttpContext.Request.QueryString.ToString())">◀</a>
+            }
+            @for (int i = 1; i <= Model.totalPage; i++)
+            {
+                <a href="@(Url.Action("Category", new { id = Model.CategoryId, page = i }) + Url.ActionContext.HttpContext.Request.QueryString.ToString())" class="page-btn @(i == Model.currentPage ? "active" : "")">@i</a>
+            }
+            @if (Model.currentPage < Model.totalPage)
+            {
+                <a class="page-btn" href="@(Url.Action("Category", new { id = Model.CategoryId, page = Model.currentPage + 1 }) + Url.ActionContext.HttpContext.Request.QueryString.ToString())">▶</a>
+            }
+        </div>
         }
-    </section>
-</div>
-<div class="pagination" style="padding-bottom: @(pb)px;">
-    @if(Model.totalPage > 1) {
-        @if (Model.currentPage > 1)
-        {
-            <a class="page-btn" href="@(Url.Action("Category", new { id = Model.CategoryId, page = Model.currentPage - 1 }) + Url.ActionContext.HttpContext.Request.QueryString.ToString())">◀</a>
-        }
-
-        @for (int i = 1; i <= Model.totalPage; i++)
-        {
-            <a href="@(Url.Action("Category", new { id = Model.CategoryId, page = i }) + Url.ActionContext.HttpContext.Request.QueryString.ToString())" class="page-btn @(i == Model.currentPage ? "active" : "")">@i</a>
-        }
-
-        @if (Model.currentPage < Model.totalPage)
-        {
-            <a class="page-btn" href="@(Url.Action("Category", new { id = Model.CategoryId, page = Model.currentPage + 1 }) + Url.ActionContext.HttpContext.Request.QueryString.ToString())">▶</a>
-        }
-    }
+    </div>
 </div>
 
 

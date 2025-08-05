@@ -1,9 +1,9 @@
 ﻿@model PostModel
 @{
-    int pb = 150 + (10 * Model.Posts.Count);
+    ViewData["Title"] = "Bài viết - Thủ Thuật Máy Tính";
 }
 
-<div class="main-box" style="padding-bottom: @(pb)px;">
+<div class="main-box">
     <section class="content">
         <div class="posts">
             @if (Model.Posts.Count == 0)

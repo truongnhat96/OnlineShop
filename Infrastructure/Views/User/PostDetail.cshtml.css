@@ -470,3 +470,118 @@
         overflow-wrap: break-word;
     }
 }
+
+
+
+/* 1. Bao toàn bộ nút + popup */
+.share-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* 2. Nút Share */
+.share-button {
+    background: #fff;
+    border: none;
+    padding: 8px;
+    border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 3. Popup chia sẻ */
+.share-popup {
+    position: absolute;
+    bottom: 100%;
+    left: 60%; /* lệch góc phải */
+    transform: translateX(-20%);
+    background: #fff;
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    gap: 18px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease-in-out;
+    z-index: 10;
+}
+
+    /* 4. Mũi tên hướng về nút Share */
+    .share-popup .arrow {
+        content: "";
+        position: absolute;
+        bottom: -6px;
+        left: 24px; /* lệch đúng về phía nút share */
+        width: 12px;
+        height: 12px;
+        background: #fff;
+        transform: rotate(45deg);
+        box-shadow: -1px 1px 2px rgba(0,0,0,0.05);
+        z-index: -1;
+    }
+
+/* 5. Hiển thị khi hover toàn vùng (rất quan trọng!) */
+.share-container:hover .share-popup,
+.share-container:focus-within .share-popup {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* 6. Icon mạng xã hội */
+.share-popup a {
+    display: inline-block;
+    text-decoration: none;
+}
+
+    .share-popup a i {
+        font-size: 1.4rem;
+        transition: transform .2s ease-in-out;
+    }
+
+    .share-popup a.twitter i {
+        color: #1DA1F2;
+    }
+
+    .share-popup a.facebook i {
+        color: #1877F2;
+    }
+
+    .share-popup a.pinterest i {
+        color: #E60023;
+    }
+
+    .share-popup a.linkedin i {
+        color: #0077B5;
+    }
+
+    .share-popup a:hover i {
+        transform: scale(1.3);
+    }
+
+/* 7. Responsive (mobile nhỏ gọn) */
+@media (max-width: 576px) {
+    .share-popup {
+        left: 50%;
+        transform: translateX(-10%);
+        padding: 8px 12px;
+        gap: 14px;
+    }
+
+        .share-popup .arrow {
+            left: 18px;
+        }
+
+        .share-popup a i {
+            font-size: 1.2rem;
+        }
+}
+
+
+
+

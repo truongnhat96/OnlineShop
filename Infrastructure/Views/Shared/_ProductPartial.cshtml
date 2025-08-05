@@ -1,0 +1,24 @@
+﻿@inject IProductManage ProductManage
+@{
+            <ul class="product-partial-list">
+            @{
+                var popularProducts = (await ProductManage.GetProductsAsync()).OrderByDescending(p => p.Sold).Take(5).ToList();
+                foreach (var product in popularProducts)
+                {
+                    <li class="product-partial-item">
+                        <a href="/Product/@product.Id" class="product-partial-link">
+                            <img src="/uploads/products/@product.ImageUrl" alt="@product.Name" class="product-partial-img">
+                            <div class="product-partial-info">
+                                <span class="product-partial-name">@product.Name</span>
+                                @if (product.OldPrice > product.Price)
+                                {
+                                    <span class="product-partial-oldprice">@product.OldPrice.ToString("c0", new CultureInfo("vi-VN"))</span>
+                                }
+                                <span class="product-partial-price">@product.Price.ToString("c0", new CultureInfo("vi-VN"))</span>
+                            </div>
+                        </a>
+                    </li>
+                }
+            }
+        </ul>
+}
