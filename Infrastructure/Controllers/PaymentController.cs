@@ -13,6 +13,7 @@ namespace Infrastructure.Controllers
 {
     public class PaymentController : Controller
     {
+        public const string adminEmail = "luongnhattruong2004@gmail.com";
         private readonly IVnPayService _vnPayService;
         private readonly IMomoService _momoService;
         private readonly ICartManage _cartManage;
@@ -27,7 +28,7 @@ namespace Infrastructure.Controllers
         }
 
         [HttpPost("/CF-Order")]
-        public async Task<IActionResult> Order(string name, string phone, string email, double totalAmount)
+        public async Task<IActionResult> Order(string name, string phone, string email, string? note, double totalAmount)
         {
             int userId = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.Sid) ?? "0");
             var couponSTR = HttpContext.Session.GetString(CartController.CouponSessionKey);
@@ -40,8 +41,8 @@ namespace Infrastructure.Controllers
                     var productName = (await _cartManage.GetProductInCartAsync(item.ProductId)).Name;
                     productNames.Add(productName + $" x {item.Quantity}");
                 }
-                
-                if(!string.IsNullOrEmpty(couponSTR) && JsonSerializer.Deserialize<List<CouponModel>>(couponSTR)!.Count > 0)
+
+                if (!string.IsNullOrEmpty(couponSTR) && JsonSerializer.Deserialize<List<CouponModel>>(couponSTR)!.Count > 0)
                 {
                     var couponEntered = JsonSerializer.Deserialize<List<CouponModel>>(couponSTR)!;
                     foreach (var item in couponEntered)
@@ -59,6 +60,13 @@ namespace Infrastructure.Controllers
                     To = email,
                     Subject = "XÁC NHẬN ĐƠN HÀNG",
                     Body = HtmlHelper.GenerateHTMLContent(productNames, false)
+                });
+
+                await _mailSender.SendMailAsync(new MailContent
+                {
+                    To = adminEmail,
+                    Subject = "ĐƠN HÀNG MỚI",
+                    Body = HtmlHelper.GenerateHTMLContent(productNames, name, phone, email, note)
                 });
             }
             else
@@ -78,6 +86,13 @@ namespace Infrastructure.Controllers
                         To = email,
                         Subject = "XÁC NHẬN ĐƠN HÀNG",
                         Body = HtmlHelper.GenerateHTMLContent(productNames, false)
+                    });
+
+                    await _mailSender.SendMailAsync(new MailContent
+                    {
+                        To = adminEmail,
+                        Subject = "ĐƠN HÀNG MỚI",
+                        Body = HtmlHelper.GenerateHTMLContent(productNames, name, phone, email, note)
                     });
                 }
             }

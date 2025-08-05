@@ -1,6 +1,11 @@
 ﻿@model PostModel
 @{
+    // Tạo URL đầy đủ của trang post, dùng cho share links
+    var postUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
+    var encodedUrl = Uri.EscapeDataString(postUrl);
+    var encodedTitle = Uri.EscapeDataString(Model.Title);
     int rdLike = new Random().Next(0, 100);
+    Console.WriteLine("Post URL: " + postUrl);
 }
 
 <div class="main">
@@ -27,6 +32,22 @@
             <span class="like-count one">@rdLike</span>
             <span class="like-count two">@(rdLike + 1)</span>
         </div>
+
+        <div class="share-container">
+            <div class="share-button">
+                <i class="fa-solid fa-share-nodes"></i>
+            </div>
+            <div class="share-popup">
+                <span class="arrow"></span>
+                <a href="https://twitter.com/intent/tweet?url=@encodedUrl&text=@encodedTitle" class="twitter" target="_blank" title="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=@encodedUrl&quote=@encodedTitle" target="_blank" title="Facebook" class="facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://pinterest.com/pin/create/button/?url=@encodedUrl&description=@encodedTitle" target="_blank" title="Pinterest" class="pinterest"><i class="fa-brands fa-pinterest-p"></i></a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=@encodedUrl&title=@encodedTitle" target="_blank" title="LinkedIn" class="linkedin"><i class="fa-brands fa-linkedin-in"></i></a>
+            </div>
+        </div>
+
+
+
         <hr />
     </div>
 

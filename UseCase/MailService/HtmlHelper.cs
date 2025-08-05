@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -291,6 +292,72 @@ namespace UseCase.MailService
   </div>
 </body>
 </html>");
+
+            return sb.ToString();
+        }
+
+        public static string GenerateHTMLContent(List<string> products, string name, string phone, string email, string? note)
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine("<!DOCTYPE html>");
+            sb.AppendLine("<html lang=\"vi\">");
+            sb.AppendLine("<head>");
+            sb.AppendLine("  <meta charset=\"UTF-8\" />");
+            sb.AppendLine("  <title>Thông báo đơn hàng mới</title>");
+            sb.AppendLine("</head>");
+            sb.AppendLine("<body style=\"margin:0;padding:0;background-color:#f2f4f6;\">");
+            sb.AppendLine("  <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\">");
+            sb.AppendLine("    <tr><td align=\"center\">");
+            sb.AppendLine("      <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"margin:40px 0;background:#fff;border-radius:8px;overflow:hidden;\">");
+
+            // Header
+            sb.AppendLine("        <tr><td style=\"background:#004aac;padding:20px;text-align:center;\">");
+            sb.AppendLine("          <h1 style=\"color:#fff;font-family:Arial,sans-serif;font-size:24px;margin:0;\">TruongShop</h1>");
+            sb.AppendLine("        </td></tr>");
+
+            // Title
+            sb.AppendLine("        <tr><td style=\"padding:30px 40px 0;\">");
+            sb.AppendLine("          <h2 style=\"font-family:Arial,sans-serif;font-size:20px;color:#333;margin:0;\">📣 Đơn hàng mới vừa được đặt</h2>");
+            sb.AppendLine("        </td></tr>");
+
+            // Body
+            sb.AppendLine("        <tr><td style=\"padding:20px 40px;\">");
+            sb.AppendLine("          <p style=\"font-family:Arial,sans-serif;font-size:16px;color:#555;line-height:1.5;\">Chào bạn,</p>");
+            sb.AppendLine("          <p style=\"font-family:Arial,sans-serif;font-size:16px;color:#555;line-height:1.5;\">Khách hàng vừa đặt hàng với thông tin:</p>");
+
+            // Customer info
+            sb.AppendLine("          <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"border-collapse:collapse;margin:20px 0;\">");
+            sb.AppendLine($"            <tr><td style=\"font-family:Arial,sans-serif;font-size:15px;color:#333;width:120px;\"><strong>Họ & tên:</strong></td><td style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;\">{WebUtility.HtmlEncode(name)}</td></tr>");
+            sb.AppendLine($"            <tr><td style=\"font-family:Arial,sans-serif;font-size:15px;color:#333;\"><strong>Điện thoại:</strong></td><td style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;\">{WebUtility.HtmlEncode(phone)}</td></tr>");
+            sb.AppendLine($"            <tr><td style=\"font-family:Arial,sans-serif;font-size:15px;color:#333;\"><strong>Email:</strong></td><td style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;\">{WebUtility.HtmlEncode(email)}</td></tr>");
+            sb.AppendLine($"            <tr><td style=\"font-family:Arial,sans-serif;font-size:15px;color:#333;vertical-align:top;\"><strong>Ghi chú:</strong></td><td style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;\">{(string.IsNullOrWhiteSpace(note) ? "– Không có –" : WebUtility.HtmlEncode(note))}</td></tr>");
+            sb.AppendLine("          </table>");
+
+            // Order details
+            sb.AppendLine("          <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"border-collapse:collapse;\">");
+            sb.AppendLine("            <tr><td style=\"font-family:Arial,sans-serif;font-size:16px;color:#333;padding-bottom:8px;\"><strong>🛒 Chi tiết đơn hàng</strong></td></tr>");
+            foreach (var prod in products)
+            {
+                sb.AppendLine("            <tr>");
+                sb.AppendLine($"              <td style=\"font-family:Arial,sans-serif;font-size:15px;color:#555;padding:6px 0;\">{WebUtility.HtmlEncode(prod)}</td>");
+                sb.AppendLine("            </tr>");
+            }
+            sb.AppendLine("          </table>");
+
+            // Footer
+            sb.AppendLine("        <tr><td style=\"background:#f2f4f6;padding:20px 40px;text-align:center;\">");
+            sb.AppendLine("          <p style=\"font-family:Arial,sans-serif;font-size:12px;color:#888;line-height:1.4;margin:0;\">");
+            sb.AppendLine("            © 2025 TRUONGSHOP. Địa chỉ: 33 Nguyễn Thái Học, Yết Kiêu, Hà Đông.<br/>");
+            sb.AppendLine("            Hotline: 0358223929 | Email: luongnhattruong2004@gmail.com");
+            sb.AppendLine("          </p>");
+            sb.AppendLine("        </td></tr>");
+
+            sb.AppendLine("      </table>");
+            sb.AppendLine("    </td></tr>");
+            sb.AppendLine("  </table>");
+            sb.AppendLine("</body>");
+            sb.AppendLine("</html>");
 
             return sb.ToString();
         }

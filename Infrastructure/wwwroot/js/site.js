@@ -3,6 +3,9 @@
 
 // Write your JavaScript code.
 
+window.quantityKey = 'productQuantity';
+window.apiEndpoint = '/api/get/products';
+
 window.addEventListener("scroll", function () {
     const header = document.getElementById("site-header");
     // Khi cuộn vượt quá 50px, giảm chiều cao header
@@ -22,8 +25,29 @@ window.addEventListener("scroll", function () {
         link.classList.add('active');
       }
     });
-  });
+    });
 
+
+
+
+async function updateNewQuantity() {
+    if (!localStorage.getItem(quantityKey)) {
+        const response = await fetch(apiEndpoint);
+        if (response.ok) {
+            const products = await response.json();
+            let initialQuantity = {}
+            products.forEach(product => {
+                initialQuantity['Id' + product.id] = product.quantity || 0;
+            });
+            localStorage.setItem(quantityKey, JSON.stringify(initialQuantity));
+        } else {
+            console.error('Failed to fetch products from API');
+        }
+    }
+}
+
+
+window.addEventListener('DOMContentLoaded', updateNewQuantity)
 
 
 

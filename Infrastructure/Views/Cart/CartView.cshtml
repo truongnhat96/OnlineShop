@@ -10,13 +10,12 @@
         totalItems += item.Quantity;
         totalPrice += item.Product.Price * item.Quantity;
     }
-    int pt = 0;
-    int mb = 300 + (Model.Count * 150);
+    int mt = 0;
 }
 
 @if (TempData["CartMessage"] != null)
 {
-    pt = 100;
+    mt = 140;
     <div class="alert" id="alertBox">
         <span class="alert-icon">✔</span>
         <span class="alert-text">@TempData["CartMessage"]</span>
@@ -26,8 +25,8 @@
 
 @if (Model.Count != 0)
 {
-    <section class="h-100 h-custom" style="margin-bottom: @(mb)px; margin-top: @(pt)px;">
-        <div class="container py-5 h-100">
+    <section class="h-custom" style="margin-top: @(mt)px">
+        <div class="container py-5">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-12">
                     <div class="card card-registration card-registration-2" style="border-radius: 15px;">
@@ -72,6 +71,13 @@
                                             <hr class="my-4">
                                         }
 
+                                        <!-- Cảnh báo số lượng tồn kho -->
+                                        <div style="display:none;" class="cart-warning">
+                                            <span class="cart-warning-icon">&#9888;</span>
+                                            <span class="cart-warning-text">
+                                                  Số lượng bạn muốn mua vượt quá số hàng hiện có!
+                                            </span>
+                                        </div>
 
                                         <div class="pt-5 d-flex justify-content-between">
                                             <h6 class="mb-0">
@@ -159,14 +165,45 @@ else
         const quantityInputs = document.querySelectorAll('.quantity-input');
         const updateCartButton = document.getElementById('button-update');
         const wrap = document.querySelector('#wrapper');
+        const cartWarning = document.querySelector('.cart-warning');
 
         let initialQuantities = {}; // Lưu giá trị ban đầu của các ô nhập số lượng
 
-        // Lưu giá trị ban đầu cho mỗi ô nhập số lượng
+        let storageQuantity = JSON.parse(localStorage.getItem(quantityKey));
+
+        // Lưu giá trị ban đầu cho mỗi ô nhập số lượng (dùng key 'Id' + productId)
         quantityInputs.forEach(input => {
             const productId = input.getAttribute('data-product-id');
-            initialQuantities[productId] = input.value;
+            initialQuantities['Id' + productId] = input.value;
+
+            input.addEventListener('input', e => {
+                let isExceedQuantity = false; // Biến để kiểm tra nếu có ô nhập nào vượt quá số lượng tồn kho
+                let remainValue
+                for (let x in storageQuantity) {
+                    const Id = 'Id' + e.target.getAttribute('data-product-id');
+                    if (x === Id) {
+                        let currentValue = parseInt(e.target.value);
+                        let previousValue = parseInt(storageQuantity[x]);
+                        // Nếu số lượng hiện tại vượt quá số lượng lưu trữ thì cảnh báo
+                        if (currentValue > previousValue) {
+                            isExceedQuantity = true;
+                            remainValue = previousValue; // Lưu lại số lượng tồn kho để hiển thị
+                            break;
+                        }
+                    }
+                }
+
+                if (isExceedQuantity) {
+                    cartWarning.style.display = 'flex';
+                    const warningText = cartWarning.querySelector('.cart-warning-text');
+                    warningText.textContent = `Số lượng bạn muốn mua vượt quá số hàng hiện có! (còn lại ${remainValue})`;
+                }
+                else {
+                    cartWarning.style.display = 'none';
+                }
+            })
         });
+
 
         // Hàm kiểm tra nếu số lượng thay đổi so với giá trị ban đầu
         function checkQuantityChange() {
@@ -176,9 +213,8 @@ else
             quantityInputs.forEach(input => {
                 const productId = input.getAttribute('data-product-id');
                 const currentValue = input.value;
-
                 // Nếu giá trị hiện tại khác giá trị ban đầu thì đánh dấu là có thay đổi
-                if (currentValue !== initialQuantities[productId]) {
+                if (currentValue !== initialQuantities['Id' + productId]) {
                     isModified = true;
                 }
             });
@@ -187,14 +223,14 @@ else
             if (isModified) {
                 updateCartButton.disabled = false;
                 updateCartButton.classList.add('active');
+                updateCartButton.classList.remove('disabled');
                 updateCartButton.classList = 'btn-update';
                 wrap.classList.remove('cursor-disable');
-                updateCartButton.classList.remove('disabled');
             } else {
                 updateCartButton.disabled = true;
                 updateCartButton.classList.add('disabled');
-                updateCartButton.classList = 'btn btn-dark btn-lg';
                 updateCartButton.classList.remove('active');
+                updateCartButton.classList = 'btn btn-dark btn-lg';
                 wrap.classList.add('cursor-disable');
             }
         }
@@ -206,7 +242,6 @@ else
 
         // Kiểm tra lần đầu khi trang load
         checkQuantityChange();
-
     });
 </script>
 
@@ -215,6 +250,7 @@ else
     document.addEventListener('DOMContentLoaded', function () {
         const updateCartButton = document.getElementById('button-update');
         const quantityInputs = document.querySelectorAll('.quantity-input');
+
 
         // Hàm thu thập dữ liệu số lượng sản phẩm
         function gatherQuantities() {

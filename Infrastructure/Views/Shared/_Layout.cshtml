@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="~/lib/summernote/summernote-bs5.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Infrastructure.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/_ProductPartial.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -262,7 +263,9 @@
                 </div>
                 <a href="/Home/Privacy">Chính Sách Bảo Mật</a>
                 <p>Copyright &copy; 2025 truongshop.id.vn&nbsp; All Rights Reserved.</p>
-                <p>Made with <i class="fas fa-heart"></i> by <span class="highlight">Lương Nhật Trường</span></p>
+                <p>
+                    Developed by <span class="highlight">Lương Nhật Trường</span> <i class="fas fa-heart"></i>
+                </p>
             </div>
         </footer>
     </div>
@@ -270,6 +273,8 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/summernote/summernote-bs5.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("AddProductQuantityInLocal", required: false)
+    @await RenderSectionAsync("UpdateQuantityProductInLocal", required: false)
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

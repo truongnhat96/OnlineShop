@@ -121,8 +121,20 @@ namespace Infrastructure.SqlServer
 
         public async Task<Entities.Product> UpdateProductAsync(Entities.Product product)
         {
-            var productDb = _mapper.Map<Entities.Product, Product>(product);
-            _context.Products.Update(productDb);
+            var productDb = _context.Products.Find(product.Id) ?? throw new ArgumentNullException("Sản phẩm không tồn tại");
+            productDb.Name = product.Name;
+            productDb.Brand = product.Brand;
+            productDb.Quantity = product.Quantity;
+            productDb.Date_Import = product.Date_Import;
+            productDb.Price = product.Price;
+            productDb.Sold = product.Sold;
+            productDb.CategoryId = product.CategoryId;
+            productDb.Description = product.Description;
+            productDb.OldPrice = product.OldPrice;
+            if (!string.IsNullOrEmpty(product.ImageUrl))
+            {
+                productDb.ImageUrl = product.ImageUrl;
+            }
             await _context.SaveChangesAsync();
             return product;
         }

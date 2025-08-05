@@ -7,19 +7,19 @@
 
 body {
     background-color: #fff;
-    padding: 20px;
+    padding: 8px 0 0 0;
 }
 
 /* Responsive body padding */
 @media (max-width: 768px) {
     body {
-        padding: 10px;
+        padding: 4px 0 0 0;
     }
 }
 
 @media (max-width: 576px) {
     body {
-        padding: 5px;
+        padding: 2px 0 0 0;
     }
 }
 
@@ -27,7 +27,8 @@ body {
     display: flex;
     align-items: center;
     gap: 15px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
+    margin-top: 8px;
 }
 
 /* Responsive main feature */
@@ -35,14 +36,16 @@ body {
     .main-feature {
         flex-direction: column;
         gap: 10px;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
+        margin-top: 4px;
     }
 }
 
 @media (max-width: 576px) {
     .main-feature {
         gap: 8px;
-        margin-bottom: 10px;
+        margin-bottom: 6px;
+        margin-top: 2px;
     }
 }
 
@@ -189,7 +192,11 @@ body {
 /* Bố cục chính */
 .container {
     display: flex;
-    gap: 20px;
+    gap: 36px;
+    margin-top: 0;
+    padding-top: 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Responsive container */
@@ -197,21 +204,52 @@ body {
     .container {
         flex-direction: column;
         gap: 15px;
+        margin-top: 0;
+        padding-top: 0;
     }
 }
 
 @media (max-width: 576px) {
     .container {
+        flex-direction: column;
         gap: 10px;
+    }
+    .products {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        width: 100%;
+        margin-left: 0;
+    }
+    .product {
+        margin: 0 auto;
+    }
+    .pagination {
+        width: 100%;
+        margin: 20px 0 0 0;
+        display: flex;
+        justify-content: center;
+        position: static;
+        left: unset;
+        right: unset;
     }
 }
 
 /* Sidebar */
 .sidebar {
-    width: 280px;
+    width: 315px;
+    min-width: 180px;
+    max-width: 350px;
 }
 
 /* Responsive sidebar */
+@media (max-width: 992px) {
+    .sidebar {
+        width: 100%;
+        min-width: unset;
+        max-width: unset;
+    }
+}
+
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;
@@ -452,20 +490,48 @@ ul {
 
 /* Sản phẩm */
 .products {
+    width: 100%;
+    box-sizing: border-box;
+    flex: 1 1 0%;
+    min-width: 0;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-    row-gap: 50px;
-    margin-left: 30px;
+    grid-template-columns: repeat(3, minmax(260px, 1fr));
+    gap: 36px;
+    row-gap: 44px;
+    margin-left: 0 !important;
 }
 
 /* Responsive products grid */
-@media (max-width: 992px) {
+@media (max-width: 1200px) {
     .products {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-        row-gap: 30px;
-        margin-left: 0;
+        grid-template-columns: repeat(2, minmax(260px, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+        gap: 0;
+    }
+    .main-content-row {
+        flex-direction: column !important;
+        gap: 0 !important;
+        width: 100% !important;
+    }
+    .sidebar {
+        width: 100% !important;
+        min-width: unset !important;
+        max-width: unset !important;
+        margin-bottom: 20px;
+    }
+    .products {
+        width: 100% !important;
+        grid-template-columns: 1fr !important;
+        justify-items: center;
+        margin-left: 0 !important;
+    }
+    .product {
+        margin: 0 auto;
     }
 }
 
@@ -488,7 +554,9 @@ ul {
 }
 
 .product {
-    width: 285px;
+    width: 100%;
+    max-width: 320px;
+    min-width: 0;
     height: 490px;
     border: 1px solid #ddd;
     padding: 10px;
@@ -736,31 +804,41 @@ ul {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-    .product:hover .btn-cart,
-    .btn-cart:hover {
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: auto;
-    }
+.product:hover .btn-cart,
+.btn-cart:hover {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
 
-        .btn-cart:hover::before {
-            opacity: 1;
-        }
+.btn-cart:hover::before {
+    opacity: 1;
+}
 
-        .btn-cart:hover::after {
-            transform: translateX(100%);
-        }
+.btn-cart:hover::after {
+    transform: translateX(100%);
+}
 
 .product:hover .product-name {
     color: green;
 }
 
+.product-image-container:hover .product-image {
+    transform: scale(1.1);
+}
+
 .pagination {
+    width: 100%;
+    max-width: unset;
+    margin: 40px 0 0 0;
+    position: static;
+    left: unset;
+    right: unset;
     display: flex;
-    align-items: start;
-    gap: 8px;
-    margin-top: 80px;
-    margin-left: 330px;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    z-index: 1;
 }
 
 /* Responsive pagination */
@@ -917,5 +995,77 @@ ul {
     .price {
         font-size: 14px;
         font-weight: bold;
+    }
+
+    /* Đưa phân trang lên trên khu vực lọc sản phẩm */
+    .mobile-pagination {
+        order: -1;
+        margin-bottom: 16px;
+        margin-top: 0;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .main-feature {
+        flex-direction: column;
+    } 
+    .page-btn {
+        margin: 0 4px 4px 0;
+        min-width: 36px;
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        border-radius: 6px;
+    }
+}
+
+/* Đảm bảo style cho partial trong sidebar */
+.sidebar .price {
+    font-size: 14px;
+    font-weight: bold;
+}
+.sidebar .link {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Phân trang desktop */
+.products-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+.pagination-desktop {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    align-self: flex-start;
+    width: auto;
+    margin-top: 32px;
+    margin-bottom: 48px;
+    gap: 14px;
+    z-index: 1;
+}
+@media (max-width: 900px) {
+    .pagination-desktop {
+        display: none !important;
+    }
+}
+/* Phân trang mobile */
+.pagination-mobile {
+    display: none;
+}
+@media (max-width: 900px) {
+    .pagination-mobile {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        margin: 20px 0 0 0;
+        gap: 10px;
+        position: static;
     }
 }

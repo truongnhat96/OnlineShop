@@ -26,6 +26,18 @@
             <div class="alert alert-success" role="alert">
                 @TempData["Notify"]
             </div>
+            @section UpdateQuantityProductInLocal {
+              <script>
+                console.log(quantityKey);
+                let products = JSON.parse(localStorage.getItem(quantityKey))
+                if (products) {
+                    products['Id' + '@(Model.Id)'] = @(Model.Quantity)
+                    localStorage.setItem(quantityKey, JSON.stringify(products));
+                } else {
+                    console.error('No products found in localStorage');
+                }
+              </script>
+            }
         }
         <div class="form-group">
             @Html.Label("Tên sản phẩm")
@@ -75,9 +87,9 @@
         </div>
 
         <div class="form-group">
-            @Html.Label("Ảnh sản phẩm - ")
-            <label>Url hiện tại: @Model.Image</label>
-            <input asp-for=@(Model.ImageUrl) type="file" class="form-control" accept="image/*" required/>
+            @Html.Label("Ảnh sản phẩm: ")
+            <label>@(!string.IsNullOrEmpty(Model.Image) ? "đã thêm ảnh" : "chưa thêm ảnh")</label>
+            <input asp-for=@(Model.ImageUrl) type="file" class="form-control" accept="image/*"/>
         </div>
         <br />
         <button type="submit" class="btn btn-success">Cập nhật</button>
