@@ -6,7 +6,24 @@
     var encodedTitle = Uri.EscapeDataString(Model.Title);
     int rdLike = new Random().Next(0, 100);
     Console.WriteLine("Post URL: " + postUrl);
+    var postTitle = Model.Title;
+    var postImageUrl = Url.Content($"~/uploads/posts/{Model.Image}");
 }
+
+
+<head>
+    <!-- Các thẻ meta khác... -->
+    <!-- Open Graph -->
+    <meta property="og:title" content="@postTitle" />
+    <meta property="og:image" content="@postImageUrl" />
+    <meta property="og:url" content="@postUrl" />
+    <meta property="og:type" content="article" />
+
+    <!-- Twitter Card (nếu muốn) -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@postTitle" />
+    <meta name="twitter:image" content="@postImageUrl" />
+</head>
 
 <div class="main">
     <div class="head">
