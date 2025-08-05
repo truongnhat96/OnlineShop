@@ -112,7 +112,6 @@ namespace Infrastructure
             }
 	    
 
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSession();
