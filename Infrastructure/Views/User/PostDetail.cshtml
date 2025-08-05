@@ -7,7 +7,8 @@
     int rdLike = new Random().Next(0, 100);
     Console.WriteLine("Post URL: " + postUrl);
     var postTitle = Model.Title;
-    var postImageUrl = Url.Content($"~/uploads/posts/{Model.Image}");
+    var postImageUrl = postUrl.Replace(Context.Request.Path, $"/uploads/posts/{Model.Image}");
+    Console.WriteLine("Post Image URL: " + postImageUrl);
 }
 
 
