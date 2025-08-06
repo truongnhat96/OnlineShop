@@ -27,7 +27,7 @@ services:
     depends_on:
       - db
     volumes:
-      - uploads_data:/app/wwwroot/uploads/posts
+      - uploads_data:/app/wwwroot/uploads
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
       ASPNETCORE_URLS: "http://+:3050"
