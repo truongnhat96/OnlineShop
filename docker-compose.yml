@@ -27,8 +27,7 @@ services:
     depends_on:
       - db
     volumes:
-      # Mount host wwwroot/uploads/posts → container /app/wwwroot/uploads/posts
-      - ./Infrastructure/wwwroot/uploads/posts:/app/wwwroot/uploads/posts
+      - uploads_data:/app/wwwroot/uploads/posts
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
       ASPNETCORE_URLS: "http://+:3050"
@@ -45,5 +44,7 @@ services:
 
 volumes:
   sqlserver-data:
+    driver: local
+  uploads_data:
     driver: local
 
