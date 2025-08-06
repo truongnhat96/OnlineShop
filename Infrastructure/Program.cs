@@ -6,6 +6,7 @@ using Infrastructure.SqlServer;
 using Infrastructure.SqlServer.AutoMapper;
 using Infrastructure.SqlServer.DataContext;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -110,7 +111,11 @@ namespace Infrastructure
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-	    
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedFor
+            });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
