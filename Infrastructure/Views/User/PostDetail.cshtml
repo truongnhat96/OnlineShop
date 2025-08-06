@@ -1,4 +1,5 @@
-﻿@model PostModel
+﻿@using System.Text.RegularExpressions
+@model PostModel
 @{
     // Tạo URL đầy đủ của trang post, dùng cho share links
     var postUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
@@ -9,11 +10,25 @@
     var postTitle = Model.Title;
     var postImageUrl = postUrl.Replace(Context.Request.Path, $"/uploads/posts/{Model.Image}");
     Console.WriteLine("Post Image URL: " + postImageUrl);
+
+    var rawHtml = Model.Content;
+
+    // 1) Xóa bỏ tất cả tag HTML
+    var plainText = Regex.Replace(rawHtml, "<.*?>", string.Empty).Trim();
+
+    // 2) Nếu quá dài, truncate về 150 ký tự + "..."
+    const int maxDescLen = 150;
+    var description =
+        plainText.Length <= maxDescLen
+            ? plainText
+            : plainText.Substring(0, maxDescLen).TrimEnd() + "...";
+    Console.WriteLine("Post Description: " + description);
 }
 
 @section MetaTags {
     <!-- Open Graph -->
     <meta property="og:title" content="@postTitle" />
+    <meta property="og:description" content="@description" />
     <meta property="og:image" content="@postImageUrl" />
     <meta property="og:image:secure_url" content="@postImageUrl" />
     <meta property="og:url" content="@postUrl" />
