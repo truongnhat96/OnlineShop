@@ -1,11 +1,12 @@
 ﻿@using System.Text.RegularExpressions
 @model PostModel
 @{
+    int rdLike = new Random().Next(0, 100);
     // Tạo URL đầy đủ của trang post, dùng cho share links
     var postUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
     var encodedUrl = Uri.EscapeDataString(postUrl);
     var encodedTitle = Uri.EscapeDataString(Model.Title);
-    int rdLike = new Random().Next(0, 100);
+
     Console.WriteLine("Post URL: " + postUrl);
     var postTitle = Model.Title;
     var postImageUrl = postUrl.Replace(Context.Request.Path, $"/uploads/posts/{Model.Image}");
@@ -13,10 +14,10 @@
 
     var rawHtml = Model.Content;
 
-    // 1) Xóa bỏ tất cả tag HTML
+    // Xóa bỏ tất cả tag HTML
     var plainText = Regex.Replace(rawHtml, "<.*?>", string.Empty).Trim();
 
-    // 2) Nếu quá dài, truncate về 150 ký tự + "..."
+    // Nếu quá dài, truncate về 150 ký tự + "..."
     const int maxDescLen = 150;
     var description =
         plainText.Length <= maxDescLen
