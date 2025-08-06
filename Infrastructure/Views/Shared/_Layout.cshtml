@@ -10,6 +10,16 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Infrastructure.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/_ProductPartial.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="@ViewData["Title"]" />
+    <meta property="og:description" content="TruongShop - chuyên cung cấp Key bản quyền windows và các phần mềm văn phòng chuyên nghiệp" />
+    <meta property="og:image" content="@($"{Context.Request.Scheme}://{Context.Request.Host}/images/banner.jpg")" />
+    <meta property="og:image:secure_url" content="@($"{Context.Request.Scheme}://{Context.Request.Host}/images/banner.jpg")" />
+
+    <!-- Twitter Card chung -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@ViewData["Title"]" />
+    <meta name="twitter:image" content="@($"{Context.Request.Scheme}://{Context.Request.Host}/images/banner.jpg")" />
     @RenderSection("MetaTags", required: false)
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">

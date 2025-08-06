@@ -26,6 +26,9 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - db
+    volumes:
+      # Mount host wwwroot/uploads/posts → container /app/wwwroot/uploads/posts
+      - ./Infrastructure/wwwroot/uploads/posts:/app/wwwroot/uploads/posts
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
       ASPNETCORE_URLS: "http://+:3050"
