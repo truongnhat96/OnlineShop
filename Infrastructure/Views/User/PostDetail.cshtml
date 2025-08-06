@@ -9,7 +9,6 @@
     var encodedTitle = Uri.EscapeDataString(Model.Title);
 
     Console.WriteLine("Post URL: " + postUrl);
-    var postTitle = Model.Title;
     var postImageUrl = postUrl.Replace(Context.Request.Path, $"/uploads/posts/{Model.Image}");
     Console.WriteLine("Post Image URL: " + postImageUrl);
 
