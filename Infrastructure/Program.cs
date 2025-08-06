@@ -112,10 +112,6 @@ namespace Infrastructure
                 app.UseHsts();
             }
 
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedFor
-            });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

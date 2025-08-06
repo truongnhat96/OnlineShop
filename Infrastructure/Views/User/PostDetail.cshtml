@@ -4,7 +4,7 @@
     ViewData["Title"] = Model.Title;
     int rdLike = new Random().Next(0, 100);
     // Tạo URL đầy đủ của trang post, dùng cho share links
-    var postUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
+    var postUrl = $"https://{Context.Request.Host}{Context.Request.Path}";
     var encodedUrl = Uri.EscapeDataString(postUrl);
     var encodedTitle = Uri.EscapeDataString(Model.Title);
 
