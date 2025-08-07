@@ -215,7 +215,7 @@
         </header>
 
         <main class="flex-grow-1">
-            @if(ViewData["Title"] != null && ViewData["Title"]!.ToString() == "TruongShop")
+            @if(ViewData["Title"] != null && (Context.Request.Path.Value == "/" || string.Equals(Context.Request.Path.Value, "/home/index", StringComparison.OrdinalIgnoreCase)))
             {
                 <div class="main-container">
                     <div class="pb-3">
