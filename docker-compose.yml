@@ -1,6 +1,16 @@
 version: "3.8"
 
-services:  
+services:
+  db-init:
+    image: busybox
+    user: root
+    command: >
+      sh -c "chown -R 10001:0 /var/opt/mssql/data && \
+             chmod -R g+rwX     /var/opt/mssql/data"
+    volumes:
+      - sqlserver-data:/var/opt/mssql/data
+
+
   db:
     image: mcr.microsoft.com/azure-sql-edge
     environment:
@@ -11,19 +21,6 @@ services:
     ports:
       - "1433:1433"
     restart: always
-    # --- CHẠY CHOWN DƯỚI ROOT ---
-    user: root
-
-    # Dùng list form để tránh lỗi cú pháp
-    command:
-      - bash
-      - -c
-      - |
-        # 1) sửa quyền thư mục data
-        chown -R 10001:0 /var/opt/mssql/data && \
-        chmod -R g+rwX     /var/opt/mssql/data && \
-        # 2) chuyển về user mssql và exec SQL Server
-        exec su-exec mssql /opt/mssql/bin/sqlservr
     healthcheck:
       test: >
         CMD-SHELL /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "${SA_PASSWORD}"
