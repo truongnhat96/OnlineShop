@@ -11,10 +11,19 @@ services:
     ports:
       - "1433:1433"
     restart: always
-    command: >
-      bash -c "chown -R 10001:0 /var/opt/mssql/data \
-               && chmod -R g+rwX /var/opt/mssql/data \
-               && exec /opt/mssql/bin/sqlservr"
+    # --- CHẠY CHOWN DƯỚI ROOT ---
+    user: root
+
+    # Dùng list form để tránh lỗi cú pháp
+    command:
+      - bash
+      - -c
+      - |
+        # 1) sửa quyền thư mục data
+        chown -R 10001:0 /var/opt/mssql/data && \
+        chmod -R g+rwX     /var/opt/mssql/data && \
+        # 2) chuyển về user mssql và exec SQL Server
+        exec su-exec mssql /opt/mssql/bin/sqlservr
     healthcheck:
       test: >
         CMD-SHELL /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "${SA_PASSWORD}"
