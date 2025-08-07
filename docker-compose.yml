@@ -7,7 +7,7 @@ services:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: "${SA_PASSWORD}"
     volumes:
-      - /root/OnlineShop/sqlserver-data:/var/opt/mssql/data:Z
+      - sqlserver-data:/var/opt/mssql/data:Z
     ports:
       - "1433:1433"
     restart: always
