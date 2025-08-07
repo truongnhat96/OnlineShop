@@ -26,8 +26,8 @@
                         Nội dung quá lớn. Vui lòng giảm kích thước trước khi tiếp tục!
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Chọn ảnh bìa:  @(Model != null ? $"Url: {Model.Image}" : string.Empty)</label>
-                        <input type="file" id="images" name="ImageUrl" class="form-control" accept="image/*" required>
+                        <label class="form-label">Ảnh bìa:  @(Model != null ? "Đã thêm ảnh" : "Chưa chọn ảnh nào")</label>
+                        <input type="file" id="images" name="ImageUrl" class="form-control" accept="image/*" @(Model != null ? "" : "required")>
                     </div>
                     <div class="text-center">
                         <button id="submit-button" type="submit" class="save">Lưu bài viết</button>
