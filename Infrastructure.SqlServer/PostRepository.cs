@@ -66,8 +66,14 @@ namespace Infrastructure.SqlServer
 
         public async Task<Entities.Post> UpdatePostAsync(Entities.Post post)
         {
-            var postDb = _mapper.Map<Entities.Post, Post>(post);
-            _context.Posts.Update(postDb);
+            var postDb = await _context.Posts.FindAsync(post.Id) ?? throw new("This Post is Not Exist");
+            postDb.Title = post.Title;
+            postDb.Content = post.Content;
+
+            if (!string.IsNullOrEmpty(post.ImageUrl))
+            {
+                postDb.ImageUrl = post.ImageUrl;
+            }
             await _context.SaveChangesAsync();
             return post;
         }

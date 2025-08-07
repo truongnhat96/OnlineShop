@@ -113,28 +113,25 @@ namespace Infrastructure.Controllers
                 using var stream = new FileStream(fullPath, FileMode.Create);
                 await model.ImageUrl.CopyToAsync(stream);
 
+                model.Image = safeName; // Cập nhật tên ảnh trong mô hình
+            }
 
-                if (!string.IsNullOrEmpty(id))
+            if (!string.IsNullOrEmpty(id))
+            {
+                await _postMange.UpdatePostAsync(new Entities.Post
                 {
-                    await _postMange.UpdatePostAsync(new Entities.Post
-                    {
-                        Id = Guid.Parse(id),
-                        UserId = Convert.ToInt32(userId),
-                        Title = model.Title,
-                        Content = model.Content,
-                        ImageUrl = safeName
-                    });
-                    TempData["submit"] = "Cập nhật bài viết thành công!";
-                }
-                else
-                {
-                    await _postMange.AddPostAsync(Convert.ToInt32(userId), model.Title, model.Content, safeName);
-                    TempData["submit"] = "Đăng bài viết thành công!";
-                }
+                    Id = Guid.Parse(id),
+                    UserId = Convert.ToInt32(userId),
+                    Title = model.Title,
+                    Content = model.Content,
+                    ImageUrl = model.Image
+                });
+                TempData["submit"] = "Cập nhật bài viết thành công!";
             }
             else
             {
-                throw new("Image is required");
+                await _postMange.AddPostAsync(Convert.ToInt32(userId), model.Title, model.Content, model.Image);
+                TempData["submit"] = "Đăng bài viết thành công!";
             }
             return View();
         }
