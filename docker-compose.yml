@@ -11,6 +11,10 @@ services:
     ports:
       - "1433:1433"
     restart: always
+    command: >
+      bash -c "chown -R 10001:0 /var/opt/mssql/data \
+               && chmod -R g+rwX /var/opt/mssql/data \
+               && exec /opt/mssql/bin/sqlservr"
     healthcheck:
       test: >
         CMD-SHELL /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "${SA_PASSWORD}"
