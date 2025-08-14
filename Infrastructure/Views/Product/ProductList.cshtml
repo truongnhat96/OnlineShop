@@ -1,7 +1,6 @@
 ﻿@model ProductModel
 @{
     ViewData["Title"] = "Cập nhật";
-    int padding = 300 + (Model.ProductList.Count * 10);
 }
 
 @if (TempData["Message"] != null)
@@ -10,7 +9,7 @@
         @TempData["Message"]
     </div>
 }
-<div class="main-container" style="padding-bottom: @(padding)px">
+<div class="main-container">
     @if (Model.ProductList.Count == 0)
     {
         <div class="justify-content-center">

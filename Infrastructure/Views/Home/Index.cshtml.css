@@ -155,11 +155,12 @@ p {
 }
 
 .container-main {
-    margin-top: 50px;
+    padding-top: 50px;
     max-width: 100%;
     margin-right: auto;
     margin-left: auto;
     overflow: hidden;
+    padding-bottom: 30px;
 }
 
 /* Responsive container */

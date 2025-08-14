@@ -212,25 +212,19 @@
     display: flex;
     align-items: start;
     gap: 8px;
-    margin-top: 80px;
     margin-left: 100px;
-    padding-bottom: 215px;
 }
 
 /* Responsive pagination */
 @media (max-width: 1200px) {
     .pagination {
         margin-left: 5%;
-        margin-top: 60px;
-        padding-bottom: 150px;
     }
 }
 
 @media (max-width: 768px) {
     .pagination {
         margin-left: 2.5%;
-        margin-top: 40px;
-        padding-bottom: 100px;
         gap: 6px;
         justify-content: center;
     }
@@ -239,8 +233,6 @@
 @media (max-width: 576px) {
     .pagination {
         margin-left: 1%;
-        margin-top: 30px;
-        padding-bottom: 80px;
         gap: 4px;
         flex-wrap: wrap;
     }
