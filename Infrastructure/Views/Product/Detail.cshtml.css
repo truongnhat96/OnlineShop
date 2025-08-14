@@ -256,7 +256,6 @@ hr {
 
 /* Tab điều hướng (Mô tả - Đánh giá) */
 .description-container {
-    padding-bottom: 135px;
     margin-left: 20px;
     margin-top: 80px;
 }
@@ -266,14 +265,13 @@ hr {
     .description-container {
         margin-left: 0;
         margin-top: 40px;
-        padding-bottom: 150px;
+        padding-bottom: 15px;
     }
 }
 
 @media (max-width: 576px) {
     .description-container {
         margin-top: 30px;
-        padding-bottom: 100px;
     }
 }
 

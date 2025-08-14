@@ -218,17 +218,13 @@
             @if(ViewData["Title"] != null && (Context.Request.Path.Value == "/" || string.Equals(Context.Request.Path.Value, "/home/index", StringComparison.OrdinalIgnoreCase)))
             {
                 <div class="main-container">
-                    <div class="pb-3">
                         @RenderBody()
-                    </div>
                 </div>
             }
             else
             {
                 <div class="container">
-                    <div class="pb-3">
                         @RenderBody()
-                    </div>
                 </div>
             }
         </main>
@@ -236,8 +232,8 @@
         <div class="align-bottom">
             <ul class="fixed-buttons">
                 <li><a href="tel:0358223929" rel="nofollow"><img src="~/images/call.png" class="ico-contact" /></a></li>
-                <li><a href="https://www.messenger.com/t/100031933698842" rel="nofollow"><img src="~/images/messenger.png" class="ico-contact" /></a></li>
-                <li><a href="https://zalo.me/0358223929" rel="nofollow"><img src="~/images/icon-zalo.png" class="ico-contact" /></a></li>
+                <li><a target="_blank" href="https://www.messenger.com/t/100031933698842" rel="nofollow"><img src="~/images/messenger.png" class="ico-contact" /></a></li>
+                <li><a target="_blank" href="https://zalo.me/0358223929" rel="nofollow"><img src="~/images/icon-zalo.png" class="ico-contact" /></a></li>
             </ul>
         </div>
         <!-- Footer -->
@@ -255,16 +251,16 @@
                 <div class="social-links">
                     <h4>Follow Us</h4>
                     <div class="social-icons">
-                        <a href="https://www.facebook.com/truong.luong.386820/" class="social-icon facebook" title="Facebook">
+                        <a target="_blank" href="https://www.facebook.com/truong.luong.386820/" class="social-icon facebook" title="Facebook">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="https://www.tiktok.com/@@truongnhat9604?is_from_webapp=1&sender_device=pc" class="social-icon tiktok" title="TikTok">
+                        <a target="_blank" href="https://www.tiktok.com/@@truongnhat9604?is_from_webapp=1&sender_device=pc" class="social-icon tiktok" title="TikTok">
                             <i class="fab fa-tiktok"></i>
                         </a>
-                        <a href="https://github.com/truongnhat96" class="social-icon github" title="GitHub">
+                        <a target="_blank" href="https://github.com/truongnhat96" class="social-icon github" title="GitHub">
                             <i class="fab fa-github"></i>
                         </a>
-                        <a href="https://www.youtube.com/@@nhattruong9604" class="social-icon youtube" title="YouTube">
+                        <a target="_blank" href="https://www.youtube.com/@@nhattruong9604" class="social-icon youtube" title="YouTube">
                             <i class="fab fa-youtube"></i>
                         </a>
                     </div>

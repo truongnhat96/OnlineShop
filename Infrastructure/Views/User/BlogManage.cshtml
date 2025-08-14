@@ -1,10 +1,7 @@
 ﻿@model PostModel
-@{
-    int pb = 200 + (20 * Model.Posts.Count);
-}
 
 
-<div class="container" style="padding-bottom: @(pb)px;">
+<div class="container">
     <div class="content">
         @if (TempData["delete"] != null)
         {
