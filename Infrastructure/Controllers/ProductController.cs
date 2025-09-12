@@ -24,7 +24,7 @@ namespace Infrastructure.Controllers
             _logger = logger;
             _reviewerFinder = reviewerFinder;
             _webHostEnvironment = webHostEnvironment;
-            
+
             _logger.LogInformation("Environment: {EnvironmentName}", _webHostEnvironment.EnvironmentName);
         }
 

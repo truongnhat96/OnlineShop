@@ -9,7 +9,7 @@
         <div class="product-item">
             <div class="image-container">
                 <a href="/product/@product.Id">
-                    <img src="/uploads/products/@product.ImageUrl" alt="Sản phẩm 1">
+                    <img onerror="this.src='/images/not-found.png'" src="/uploads/products/@product.ImageUrl" alt="Sản phẩm 1">
                 </a>
             </div>
             <a href="/product/@product.Id" class="product-name">@product.Name</a>

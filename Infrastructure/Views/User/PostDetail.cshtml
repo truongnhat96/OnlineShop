@@ -48,7 +48,7 @@
         <a href="/Posts" class="category">Thủ Thuật Máy Tính</a>
         <div class="title">@Model.Title</div>
         <div class="date">@Model.CreatedAt.ToShortDateString() - Đăng bởi @Model.Author</div>
-        <div class="image-title"><img src="/uploads/posts/@Model.Image" /></div>
+        <div class="image-title"><img onerror="this.src='/images/error-404.png'" src="/uploads/posts/@Model.Image" /></div>
         <div class="content">
             @(Html.Raw(Model.Content))
         </div>

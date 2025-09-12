@@ -16,7 +16,7 @@
                     <a href="/Post/@post.Id" class="post-link">
                         <div class="post-image-container">
                             <div class="category-label">THỦ THUẬT MÁY TÍNH</div> <!-- Dòng chữ Thủ Thuật Máy Tính -->
-                            <img src="/uploads/posts/@post.ImageUrl" alt="@post.Title" class="post-image">
+                            <img onerror="this.src='/images/error-404.png'" src="/uploads/posts/@post.ImageUrl" alt="@post.Title" class="post-image">
                             <div class="overlay"></div>
                         </div>
                     </a>

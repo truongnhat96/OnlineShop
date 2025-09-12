@@ -105,11 +105,23 @@ input[type="number"]::-webkit-outer-spin-button {
     transition: all 0.3s;
 }
 
+
+.ico-box {
+    width: 50px;
+    height: 50px;
+}
+
+
 /* Responsive update button */
 @media (max-width: 768px) {
     .btn-update {
         font-size: 16px;
         min-width: 120px;
+    }
+
+    .ico-box {
+        width: 30px;
+        height: 30px;
     }
 }
 

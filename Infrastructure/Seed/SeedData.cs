@@ -48,6 +48,7 @@ namespace Infrastructure.Seed
                 };
                 await context.Users.AddAsync(superUser);
             }
+
             if (await context.SaveChangesAsync() == 0)
             {
                 throw new Exception("Data has existed or failed to seed initial data.");

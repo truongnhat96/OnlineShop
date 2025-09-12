@@ -1,4 +1,5 @@
 using AutoMapper;
+using Infrastructure.AIChat;
 using Infrastructure.Models.Caching;
 using Infrastructure.PaymentSupport;
 using Infrastructure.Seed;
@@ -6,7 +7,6 @@ using Infrastructure.SqlServer;
 using Infrastructure.SqlServer.AutoMapper;
 using Infrastructure.SqlServer.DataContext;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -61,7 +61,9 @@ namespace Infrastructure
                 });
             });
 
-          //  builder.Configuration.AddUserSecrets<Program>(true, true);
+            builder.Services.AddChatbot(builder.Configuration);
+
+            //  builder.Configuration.AddUserSecrets<Program>(true, true);
 
             await RegisterServicesForDatabase(builder.Services, builder.Configuration);
 
