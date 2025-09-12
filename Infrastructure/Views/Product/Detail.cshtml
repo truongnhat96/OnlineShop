@@ -39,7 +39,7 @@
 
 <div class="product-container">
     <div class="product-image">
-        <img src="/uploads/products/@Model.Image" class="img-container @(Model.Quantity <= 0 ? "out-of-stock-filter" : "")">
+        <img onerror="this.src='/images/not-found.png'" src="/uploads/products/@Model.Image" class="img-container @(Model.Quantity <= 0 ? "out-of-stock-filter" : "")">
         @if (Model.Quantity <= 0)
         {
             <div class="out-of-stock-label">Hết Hàng</div>

@@ -7,7 +7,7 @@
                 {
                     <li class="product-partial-item">
                         <a href="/Product/@product.Id" class="product-partial-link">
-                            <img src="/uploads/products/@product.ImageUrl" alt="@product.Name" class="product-partial-img">
+                        <img onerror="this.src='/images/not-found.png'" src="/uploads/products/@product.ImageUrl" alt="@product.Name" class="product-partial-img">
                             <div class="product-partial-info">
                                 <span class="product-partial-name">@product.Name</span>
                                 @if (product.OldPrice > product.Price)

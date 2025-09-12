@@ -107,7 +107,7 @@
                             }
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Phần Mềm Khác +
+                                    Phần Mềm Khác
                                 </a>
                                 <ul class="dropdown-menu">
                                     @foreach (var category in categories.Skip(3).SkipLast(1))
@@ -150,7 +150,7 @@
                         }
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                Phần Mềm Khác +
+                                Phần Mềm Khác
                             </a>
                             <ul class="dropdown-menu">
                                 @foreach (var category in categories.Skip(3).SkipLast(1))
@@ -229,12 +229,45 @@
             }
         </main>
 
-        <div class="align-bottom">
-            <ul class="fixed-buttons">
-                <li><a href="tel:0358223929" rel="nofollow"><img src="~/images/call.png" class="ico-contact" /></a></li>
-                <li><a target="_blank" href="https://www.messenger.com/t/100031933698842" rel="nofollow"><img src="~/images/messenger.png" class="ico-contact" /></a></li>
-                <li><a target="_blank" href="https://zalo.me/0358223929" rel="nofollow"><img src="~/images/icon-zalo.png" class="ico-contact" /></a></li>
-            </ul>
+
+        <ul class="fixed-buttons">
+            <li><a href="tel:0358223929" rel="nofollow"><img src="~/images/call.png" class="ico-contact" /></a></li>
+            <li><a target="_blank" href="https://www.messenger.com/t/100031933698842" rel="nofollow"><img src="~/images/messenger.png" class="ico-contact" /></a></li>
+            <li><a target="_blank" href="https://zalo.me/0358223929" rel="nofollow"><img src="~/images/icon-zalo.png" class="ico-contact" /></a></li>
+        </ul>
+
+                    <!-- Live Chat Button -->
+        <div id="live-chat-toggle" class="live-chat-toggle">
+            <div class="Icon__IconContainer-sc-1013a803-0 eapJlh ButtonBase__ButtonIcon-sc-f9fbfeb2-0 hxtSkw">
+               <div>
+                  <div>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" class="injected-svg" data-src="https://universe-static.elfsightcdn.com/app-static/ai-chatbot/bubble-icons/dialog-4.svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 5.0957C4.10218 5.0957 3.72064 5.25374 3.43934 5.53504C3.15804 5.81635 3 6.19788 3 6.5957V16.5957C3 16.9935 3.15804 17.3751 3.43934 17.6564C3.72064 17.9377 4.10217 18.0957 4.5 18.0957H7C8.24264 18.0957 9.25 19.1031 9.25 20.3457V20.8284L11.957 18.5138C11.9993 18.4776 12.0446 18.445 12.0924 18.4163C12.4421 18.2065 12.8422 18.0957 13.25 18.0957H19.5C19.8978 18.0957 20.2794 17.9377 20.5607 17.6564C20.842 17.3751 21 16.9935 21 16.5957V6.5957C21 6.19788 20.842 5.81635 20.5607 5.53504C20.2794 5.25374 19.8978 5.0957 19.5 5.0957H4.5ZM2.02513 4.12083C2.6815 3.46445 3.57174 3.0957 4.5 3.0957H19.5C20.4283 3.0957 21.3185 3.46445 21.9749 4.12083C22.6313 4.77721 23 5.66744 23 6.5957V16.5957C23 17.524 22.6313 18.4142 21.9749 19.0706C21.3185 19.727 20.4283 20.0957 19.5 20.0957H13.25C13.2221 20.0957 13.1946 20.1004 13.1685 20.1094L8.89986 23.7591C8.60321 24.0128 8.18609 24.0706 7.83159 23.9073C7.47709 23.744 7.25 23.3894 7.25 22.9991V20.3457C7.25 20.2076 7.13807 20.0957 7 20.0957H4.5C3.57174 20.0957 2.6815 19.727 2.02513 19.0706C1.36875 18.4142 1 17.524 1 16.5957V6.5957C1 5.66745 1.36875 4.77721 2.02513 4.12083Z"></path>
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M7.50229 13.1212C8.3309 13.1212 9.00263 12.4385 9.00263 11.5965C9.00263 10.7544 8.3309 10.0718 7.50229 10.0718C6.67368 10.0718 6.00195 10.7544 6.00195 11.5965C6.00195 12.4385 6.67368 13.1212 7.50229 13.1212ZM13.5023 11.5965C13.5023 12.4385 12.8306 13.1212 12.002 13.1212C11.1734 13.1212 10.5017 12.4385 10.5017 11.5965C10.5017 10.7544 11.1734 10.0718 12.002 10.0718C12.8306 10.0718 13.5023 10.7544 13.5023 11.5965ZM16.5016 13.1212C17.3302 13.1212 18.002 12.4385 18.002 11.5965C18.002 10.7544 17.3302 10.0718 16.5016 10.0718C15.673 10.0718 15.0013 10.7544 15.0013 11.5965C15.0013 12.4385 15.673 13.1212 16.5016 13.1212Z"></path>
+                     </svg>
+                  </div>
+               </div>
+            </div>
+        </div>
+
+        <!-- Live Chat Popup -->
+        <div id="live-chat-popup" class="live-chat-popup">
+            <div class="live-chat-header">
+                <img src="/images/assistant.png" alt="Bot Avatar" class="chat-avatar" style="width:32px;height:32px;border-radius:50%;margin-right:10px;object-fit:cover;" />
+                <span class="live-chat-title">Trợ lý TruongShop</span>
+                <button id="live-chat-close" class="live-chat-close">&times;</button>
+            </div>
+            <div class="live-chat-body" id="live-chat-body">
+                <!-- Tin nhắn sẽ được render ở đây -->
+                <div class="chat-message bot">
+                    Xin chào! 👋<br>
+                    Bạn cần hỗ trợ đặt hàng trực tuyến? Mình luôn sẵn sàng hỗ trợ bạn bất cứ lúc nào! 😘
+                </div>
+            </div>
+            <form class="live-chat-input" id="live-chat-form" autocomplete="off">
+                <textarea rows="1" id="live-chat-input" maxlength="1000" placeholder="Viết tin nhắn của bạn..." required></textarea>
+                <button type="submit"><i class="fa fa-paper-plane"></i></button>
+            </form>
         </div>
         <!-- Footer -->
         <footer class="footer">

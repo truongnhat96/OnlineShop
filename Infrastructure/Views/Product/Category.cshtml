@@ -1,7 +1,5 @@
 ﻿@model ProductModel
 @{
-    int pb = 200 + (Model.ProductList.Count * 10);
-
     var ReturnUrl = Url.Action("Category");
     if(!string.IsNullOrEmpty(ReturnUrl) && ReturnUrl.Contains("page"))
     {
@@ -67,7 +65,7 @@
                         }
                         <a href="/Product/@product.Id" class="product-link">
                             <div class="product-image-container">
-                                <img src="/uploads/products/@product.ImageUrl" class="product-image @(outOfStock ? "out-of-stock-filter" : "")">
+                                <img onerror="this.src='/images/not-found.png'" src="/uploads/products/@product.ImageUrl" class="product-image @(outOfStock ? "out-of-stock-filter" : "")">
                                 @if (outOfStock)
                                 {
                                     <div class="out-of-stock-label">HẾT HÀNG</div>
