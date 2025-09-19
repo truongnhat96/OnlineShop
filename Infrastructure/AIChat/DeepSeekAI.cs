@@ -16,14 +16,16 @@ namespace Infrastructure.AIChat
         private readonly DistributedCacheEntryOptions _cacheOption;
         private readonly CacheProductOption _cacheProductOption;
         private readonly string HFToken;
+        private readonly IAHPRecommendationService _ahpRecommendationService;
         private const string BaseUrl = "https://router.huggingface.co/v1/chat/completions";
 
-        public DeepSeekAI(IProductManage productManage, IHttpClientFactory httpClientFactory, IOptions<AuthorizeHFToken> authorizeHFToken, IDistributedCache cache, CacheProductOption cacheProductOption)
+        public DeepSeekAI(IProductManage productManage, IHttpClientFactory httpClientFactory, IOptions<AuthorizeHFToken> authorizeHFToken, IDistributedCache cache, CacheProductOption cacheProductOption, IAHPRecommendationService ahpRecommendationService)
         {
             _productManage = productManage;
             _httpClientFactory = httpClientFactory;
             _cache = cache;
             _cacheProductOption = cacheProductOption;
+            _ahpRecommendationService = ahpRecommendationService;
             _cacheOption = new DistributedCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = _cacheProductOption.CacheLifeTime
@@ -33,6 +35,23 @@ namespace Infrastructure.AIChat
 
         public async Task<AIResponse> AskAsync(string prompt, CancellationToken cancellationToken = default)
         {
+            // AHP recommendation path
+            if (IsProductRecommendationQuery(prompt))
+            {
+                var sessionId = Guid.NewGuid().ToString();
+                var ahpText = await _ahpRecommendationService.GenerateRecommendationResponseAsync(prompt, sessionId);
+                return new AIResponse
+                {
+                    Choices = new List<Choice>
+                    {
+                        new Choice
+                        {
+                            Message = new MessageResponse { Role = "assistant", Content = ahpText }
+                        }
+                    }
+                };
+            }
+
             var client = _httpClientFactory.CreateClient();
 
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {HFToken}");
@@ -54,7 +73,8 @@ namespace Infrastructure.AIChat
                                     Hãy sử dụng dữ liệu được cung cấp để trả lời các câu hỏi của khách hàng một cách chính xác và hữu ích.  
                                     Trong trường hợp câu hỏi của người dùng vượt ngoài phạm vi trang web đồng nghĩa với việc dữ liệu không được cung cấp hoặc không đầy đủ dữ liệu,
                                     hãy cố gắng giải thích rằng bạn chỉ là một trợ lý khách hàng tại truongshop và không có đủ dữ liệu để giải đáp thắc mắc của người dùng, đồng thời hãy giới thiệu người dùng sử dụng AITruongShop 
-                                    (một AI được huấn luyện đầy đủ dữ liệu hơn của TruongShop) để có thể trả lời tất cả các câu hỏi ngoài lề khác, hướng dẫn người dùng hỏi bằng cách thêm từ khóa ""AITruongShop"" vào bất cứ đâu trong câu hỏi, cố gắng sử dụng lời văn thật dễ hiểu và thân thiện hơn để trả lời người dùng nhé"
+                                    (một AI được huấn luyện đầy đủ dữ liệu hơn của TruongShop) để có thể trả lời tất cả các câu hỏi ngoài lề khác, hướng dẫn người dùng hỏi bằng cách thêm từ khóa ""AITruongShop"" vào bất cứ đâu trong câu hỏi, cố gắng sử dụng lời văn thật dễ hiểu và thân thiện hơn để trả lời người dùng nhé.
+                                    Lưu ý: Không chèn phần ""Hình ảnh"" hay liên kết ảnh theo định dạng ""Hình ảnh: [Xem tại đây](...)"" trong câu trả lời.)"
                     },
                     new()
                     {
@@ -82,7 +102,40 @@ namespace Infrastructure.AIChat
             var response = await client.PostAsync(BaseUrl, new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json"));
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadFromJsonAsync<AIResponse>(cancellationToken: cancellationToken) ?? new AIResponse();
+            var ai = await response.Content.ReadFromJsonAsync<AIResponse>(cancellationToken: cancellationToken) ?? new AIResponse();
+            SanitizeImageLinks(ai);
+            return ai;
+        }
+
+        private static void SanitizeImageLinks(AIResponse ai)
+        {
+            if (ai?.Choices == null) return;
+            foreach (var c in ai.Choices)
+            {
+                if (c?.Message?.Content == null) continue;
+                var text = c.Message.Content;
+                // Loại bỏ mẫu: **Hình ảnh**: [Xem tại đây](...)
+                var idx = text.IndexOf("Hình ảnh", StringComparison.OrdinalIgnoreCase);
+                if (idx >= 0)
+                {
+                    // Xóa từng dòng có chứa "Hình ảnh"
+                    var lines = text.Split('\n');
+                    lines = lines.Where(l => l.IndexOf("Hình ảnh", StringComparison.OrdinalIgnoreCase) < 0).ToArray();
+                    c.Message.Content = string.Join('\n', lines).Trim();
+                }
+            }
+        }
+
+        private bool IsProductRecommendationQuery(string prompt)
+        {
+            // Chỉ kích hoạt AHP khi có ý định tư vấn/xếp hạng rõ ràng
+            var strongIntents = new[]
+            {
+                "gợi ý", "tư vấn", "nên mua", "so sánh", "phù hợp", "ưu tiên",
+                "giá rẻ", "rẻ", "sinh viên", "student"
+            };
+            var p = prompt.ToLower();
+            return strongIntents.Any(k => p.Contains(k));
         }
     }
 }
