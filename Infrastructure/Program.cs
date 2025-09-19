@@ -62,6 +62,8 @@ namespace Infrastructure
             });
 
             builder.Services.AddChatbot(builder.Configuration);
+            builder.Services.AddTransient<IAHPService, AHPService>();
+            builder.Services.AddTransient<IAHPRecommendationService, AHPRecommendationService>();
 
             //  builder.Configuration.AddUserSecrets<Program>(true, true);
 
