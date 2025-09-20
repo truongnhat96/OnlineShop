@@ -70,11 +70,10 @@ namespace Infrastructure.AIChat
                         Role = "system",
                         Content = @"Bạn là trợ lý khách hàng tại trang web truongshop.id.vn.
                                     Nhiệm vụ của bạn là trả lời và tư vấn cho khách hàng dựa trên dữ liệu sản phẩm và dịch vụ đã được cung cấp.
-                                    Hãy sử dụng dữ liệu được cung cấp để trả lời các câu hỏi của khách hàng một cách chính xác và hữu ích.  
+                                    Hãy cố gắng sao để trả lời giống với một trợ lý khách hàng nhất có thể,
+                                    đồng thời hãy cố gắng TRÌNH BÀY TÊN MỖI SẢN PHẨM THÀNH MỘT DÒNG THAY VÌ TÊN SẢN PHẨM LẠI BỊ DÍNH CÙNG MỘT DÒNG VỚI MỤC KHÁC MÀ KHÔNG XUỐNG DÒNG (ở đầu tên sản phẩm nên có một icon minh họa sản phầm để dễ hình dung) VÀ IN ĐẬM TÊN SẢN PHẨM ĐỂ LÀM NỔI BẬT, lưu ý: không được dùng ký hiệu ""**"" tại mỗi sản phẩm khi trả lời.
                                     Trong trường hợp câu hỏi của người dùng vượt ngoài phạm vi trang web đồng nghĩa với việc dữ liệu không được cung cấp hoặc không đầy đủ dữ liệu,
-                                    hãy cố gắng giải thích rằng bạn chỉ là một trợ lý khách hàng tại truongshop và không có đủ dữ liệu để giải đáp thắc mắc của người dùng, đồng thời hãy giới thiệu người dùng sử dụng AITruongShop 
-                                    (một AI được huấn luyện đầy đủ dữ liệu hơn của TruongShop) để có thể trả lời tất cả các câu hỏi ngoài lề khác, hướng dẫn người dùng hỏi bằng cách thêm từ khóa ""AITruongShop"" vào bất cứ đâu trong câu hỏi, cố gắng sử dụng lời văn thật dễ hiểu và thân thiện hơn để trả lời người dùng nhé.
-                                    Lưu ý: Không chèn phần ""Hình ảnh"" hay liên kết ảnh theo định dạng ""Hình ảnh: [Xem tại đây](...)"" trong câu trả lời.)"
+                                    hãy cố gắng giải thích rằng bạn chỉ là một trợ lý khách hàng tại truongshop và không có đủ dữ liệu để giải đáp thắc mắc của người dùng"
                     },
                     new()
                     {
@@ -87,21 +86,18 @@ namespace Infrastructure.AIChat
                     }
             ];
 
-            if (prompt.Contains("AITruongShop", StringComparison.OrdinalIgnoreCase))
-            {
-                prompt = prompt.Replace("AITruongShop", string.Empty, StringComparison.OrdinalIgnoreCase);
-                systemMessage.RemoveRange(0, 2);
-            }
-
             var payload = new AIRequest
             {
                 Messages = systemMessage,
-                Model = "deepseek-ai/DeepSeek-V3:together"
+                Model = "openai/gpt-oss-120b:novita"
+                //Orenguteng/Llama-3.1-8B-Lexi-Uncensored-V2:featherless-ai
+                //openai/gpt-oss-120b:novita
             };
 
             var response = await client.PostAsync(BaseUrl, new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json"));
             response.EnsureSuccessStatusCode();
 
+            Console.WriteLine(await response.Content.ReadAsStringAsync(cancellationToken));
             var ai = await response.Content.ReadFromJsonAsync<AIResponse>(cancellationToken: cancellationToken) ?? new AIResponse();
             SanitizeImageLinks(ai);
             return ai;
