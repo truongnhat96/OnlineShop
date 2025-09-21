@@ -1,5 +1,7 @@
 using Infrastructure.Models.AHP;
 using UseCase.Business_Logic;
+using System.Reflection;
+using System.Text;
 
 namespace Infrastructure.AIChat
 {
@@ -25,14 +27,18 @@ namespace Infrastructure.AIChat
         {
             var criteriaWeights = await CalculateCriteriaWeightsAsync(request.Comparisons);
             var products = await GetProductsForRecommendation(request);
-            var productIds = products.Select(p => (int)p.Id).ToList();
+
+            if (products == null || !products.Any())
+                return new List<AHPProductScore>();
+
+            var productIds = products.Select(p => GetIntProperty(p, "Id")).ToList();
             var scores = await CalculateProductScoresAsync(productIds, criteriaWeights);
             return scores.OrderByDescending(s => s.TotalScore).ToList();
         }
 
         public Task<Dictionary<int, double>> CalculateCriteriaWeightsAsync(List<AHPComparisonMatrix> comparisons)
         {
-            if (!comparisons.Any())
+            if (comparisons == null || !comparisons.Any())
             {
                 return Task.FromResult(_defaultCriteria.ToDictionary(c => c.Id, c => c.Weight));
             }
@@ -64,20 +70,26 @@ namespace Infrastructure.AIChat
 
         public async Task<List<AHPProductScore>> CalculateProductScoresAsync(List<int> productIds, Dictionary<int, double> criteriaWeights)
         {
-            var all = await _productManage.GetProductsAsync();
-            var products = all.Where(p => productIds.Contains(p.Id));
+            var allRaw = await _productManage.GetProductsAsync();
+            var all = (allRaw == null) ? new List<object>() : allRaw.Cast<object>().ToList();
+
+            var products = all.Where(p => productIds.Contains(GetIntProperty(p, "Id"))).ToList();
+
+            if (products == null || !products.Any())
+                return new List<AHPProductScore>();
+
             var results = new List<AHPProductScore>();
 
             // Chuẩn hóa theo tập sản phẩm đang so sánh
-            var maxPrice = products.Any() ? products.Max(p => p.Price) : 1.0;
-            var maxSold = products.Any() ? products.Max(p => p.Sold) : 1;
+            var maxPrice = products.Any() ? products.Max(p => GetDoubleProperty(p, "Price")) : 1.0;
+            var maxSold = products.Any() ? products.Max(p => GetIntProperty(p, "Sold")) : 1;
 
             foreach (var p in products)
             {
                 var score = new AHPProductScore
                 {
-                    ProductId = p.Id,
-                    ProductName = p.Name
+                    ProductId = GetIntProperty(p, "Id"),
+                    ProductName = GetStringProperty(p, "Name")
                 };
 
                 double total = 0;
@@ -109,22 +121,35 @@ namespace Infrastructure.AIChat
             return results;
         }
 
-        private async Task<List<dynamic>> GetProductsForRecommendation(AHPRecommendationRequest request)
+        #region -- Private helpers (work with any Product-like object via reflection) --
+
+        private async Task<List<object>> GetProductsForRecommendation(AHPRecommendationRequest request)
         {
+            // Gọi các API của productManage, convert về object list (an toàn compile-time)
+            if (request == null) return new List<object>();
+
             if (request.CategoryId.HasValue)
             {
-                return (await _productManage.GetProductsByCategoryAsync(request.CategoryId.Value)).Cast<dynamic>().ToList();
+                var list = await _productManage.GetProductsByCategoryAsync(request.CategoryId.Value);
+                return (list == null) ? new List<object>() : list.Cast<object>().ToList();
             }
+
             if (!string.IsNullOrEmpty(request.SearchQuery))
             {
-                return (await _productManage.GetProductsAsync(request.SearchQuery)).Cast<dynamic>().ToList();
+                var list = await _productManage.GetProductsAsync(request.SearchQuery);
+                return (list == null) ? new List<object>() : list.Cast<object>().ToList();
             }
+
             var all = await _productManage.GetProductsAsync();
-            if (request.ProductIds.Any()) return all.Where(p => request.ProductIds.Contains(p.Id)).Cast<dynamic>().ToList();
-            return all.Cast<dynamic>().ToList();
+            if (all == null) return new List<object>();
+
+            if (request.ProductIds != null && request.ProductIds.Any())
+                return all.Where(p => request.ProductIds.Contains(GetIntProperty((object)p, "Id"))).Cast<object>().ToList();
+
+            return all.Cast<object>().ToList();
         }
 
-        private double CalculateCriteriaScore(dynamic product, AHPCriteria criteria, double maxPrice, int maxSold)
+        private double CalculateCriteriaScore(object product, AHPCriteria criteria, double maxPrice, int maxSold)
         {
             return criteria.Type switch
             {
@@ -134,56 +159,46 @@ namespace Infrastructure.AIChat
             };
         }
 
-        private double CalculateCostScore(dynamic product, AHPCriteria criteria, double maxPrice)
+        private double CalculateCostScore(object product, AHPCriteria criteria, double maxPrice)
         {
-            return criteria.Name.ToLower() switch
+            var key = (criteria?.Name ?? string.Empty).ToLowerInvariant();
+            return key switch
             {
-                // Giá: thấp hơn tốt hơn (chuẩn hóa theo maxPrice của tập so sánh)
-                "price" or "giá" => maxPrice > 0 ? 1.0 - Math.Min((double)product.Price / maxPrice, 1.0) : 0.5,
+                "price" or "giá" => maxPrice > 0 ? 1.0 - Math.Min(GetDoubleProperty(product, "Price") / maxPrice, 1.0) : 0.5,
                 "delivery_time" or "thời gian giao hàng" => 0.8,
                 _ => 0.5
             };
         }
 
-        private double CalculateBenefitScore(dynamic product, AHPCriteria criteria, double maxPrice, int maxSold)
+        private double CalculateBenefitScore(object product, AHPCriteria criteria, double maxPrice, int maxSold)
         {
-            return criteria.Name.ToLower() switch
+            var key = (criteria?.Name ?? string.Empty).ToLowerInvariant();
+            return key switch
             {
-                "rating" or "đánh giá" => 0.7,
-                // Số lượng bán: cao hơn tốt hơn (chuẩn hóa theo maxSold của tập so sánh)
-                "sales_count" or "số lượng bán" => maxSold > 0 ? Math.Min((double)product.Sold / maxSold, 1.0) : 0.5,
-                // Chất lượng: giả định giá cao tương ứng chất lượng cao hơn; kết hợp với độ phổ biến
+                "rating" or "đánh giá" => GetDoubleProperty(product, "Rating") > 0 ? GetDoubleProperty(product, "Rating") : 0.7,
+                "sales_count" or "số lượng bán" => maxSold > 0 ? Math.Min((double)GetIntProperty(product, "Sold") / maxSold, 1.0) : 0.5,
                 "quality" or "chất lượng" => CalculateQualityScore(product, maxPrice, maxSold),
                 _ => 0.5
             };
         }
 
-        private double CalculateQualityScore(dynamic product, double maxPrice, int maxSold)
+        private double CalculateQualityScore(object product, double maxPrice, int maxSold)
         {
-            var sold = (double)product.Sold;
-            var price = (double)product.Price;
+            var sold = (double)GetIntProperty(product, "Sold");
+            var price = GetDoubleProperty(product, "Price");
 
-            // Độ phổ biến: chuẩn hóa theo maxSold (tránh chia cho 0)
             double popularity = 0.5;
             if (maxSold > 0)
             {
-                // Dùng log để giảm ảnh hưởng khi sold rất lớn
                 var denom = Math.Log(1 + (double)maxSold);
                 popularity = denom > 0 ? Math.Log(1 + sold) / denom : 0.5;
             }
 
-            // Giá càng cao ⇒ chất lượng càng cao (chuẩn hóa theo maxPrice trong tập so sánh)
-            double priceScore = 0.5;
-            if (maxPrice > 0)
-            {
-                priceScore = Math.Min(price / maxPrice, 1.0);
-            }
-
-            // Trung bình hai yếu tố
+            double priceScore = maxPrice > 0 ? Math.Min(price / maxPrice, 1.0) : 0.5;
             return (popularity + priceScore) / 2.0;
         }
 
-        private double[] CalculateEigenvector(double[,] matrix)
+        private static double[] CalculateEigenvector(double[,] matrix)
         {
             int n = matrix.GetLength(0);
             var v = new double[n];
@@ -209,18 +224,49 @@ namespace Infrastructure.AIChat
             return v;
         }
 
+        // Reflection helpers
+        private static object? GetPropertyValue(object? obj, string propName)
+        {
+            if (obj == null) return null;
+            var prop = obj.GetType().GetProperty(propName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
+            if (prop == null) return null;
+            return prop.GetValue(obj);
+        }
+
+        private static int GetIntProperty(object? obj, string propName)
+        {
+            var v = GetPropertyValue(obj, propName);
+            if (v == null) return 0;
+            try { return Convert.ToInt32(v); }
+            catch { return 0; }
+        }
+
+        private static double GetDoubleProperty(object? obj, string propName)
+        {
+            var v = GetPropertyValue(obj, propName);
+            if (v == null) return 0.0;
+            try { return Convert.ToDouble(v); }
+            catch { return 0.0; }
+        }
+
+        private static string GetStringProperty(object? obj, string propName)
+        {
+            var v = GetPropertyValue(obj, propName);
+            return v?.ToString() ?? string.Empty;
+        }
+
+        #endregion
+
         private List<AHPCriteria> InitializeDefaultCriteria()
         {
             return new List<AHPCriteria>
             {
-                new() { Id = 1, Name = "Giá", Description = "Giá cả sản phẩm", Weight = 0.3, Priority = 1, Type = CriteriaType.Cost },
-                new() { Id = 2, Name = "Đánh giá", Description = "Đánh giá từ khách hàng", Weight = 0.25, Priority = 2, Type = CriteriaType.Benefit },
-                new() { Id = 3, Name = "Chất lượng", Description = "Chất lượng sản phẩm", Weight = 0.2, Priority = 3, Type = CriteriaType.Benefit },
-                new() { Id = 4, Name = "Số lượng bán", Description = "Mức độ phổ biến", Weight = 0.15, Priority = 4, Type = CriteriaType.Benefit },
-                new() { Id = 5, Name = "Thời gian giao hàng", Description = "Tốc độ giao hàng", Weight = 0.1, Priority = 5, Type = CriteriaType.Cost }
+                new() { Id = 1, Name = "Giá", Weight = 0.3, Type = CriteriaType.Cost },
+                new() { Id = 2, Name = "Đánh giá", Weight = 0.25, Type = CriteriaType.Benefit },
+                new() { Id = 3, Name = "Chất lượng", Weight = 0.2, Type = CriteriaType.Benefit },
+                new() { Id = 4, Name = "Số lượng bán", Weight = 0.15, Type = CriteriaType.Benefit },
+                new() { Id = 5, Name = "Thời gian giao hàng", Weight = 0.1, Type = CriteriaType.Cost }
             };
         }
     }
 }
-
-
