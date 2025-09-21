@@ -48,9 +48,6 @@ namespace Infrastructure.AIChat.Model
         [JsonPropertyName("finish_reason")]
         public string FinishReason { get; set; }
 
-        [JsonPropertyName("seed")]
-        public double Seed { get; set; }
-
         [JsonPropertyName("logprobs")]
         public object Logprobs { get; set; }
 

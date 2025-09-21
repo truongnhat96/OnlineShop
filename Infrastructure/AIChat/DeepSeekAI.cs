@@ -102,12 +102,15 @@ namespace Infrastructure.AIChat
             var payload = new AIRequest
             {
                 Messages = systemMessage,
-                Model = "deepseek-ai/DeepSeek-V3:together"
+                Model = "openai/gpt-oss-120b:novita"
+                //Orenguteng/Llama-3.1-8B-Lexi-Uncensored-V2:featherless-ai
+                //openai/gpt-oss-120b:novita
             };
 
             var response = await client.PostAsync(BaseUrl, new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json"));
             response.EnsureSuccessStatusCode();
 
+            Console.WriteLine(await response.Content.ReadAsStringAsync(cancellationToken));
             var ai = await response.Content.ReadFromJsonAsync<AIResponse>(cancellationToken: cancellationToken) ?? new AIResponse();
             SanitizeImageLinks(ai);
             return ai;

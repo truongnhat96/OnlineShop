@@ -6,15 +6,19 @@ using System.Threading.Tasks;
 using Infrastructure.AIChat;
 using Infrastructure.Models.AHP;
 using Microsoft.AspNetCore.Mvc;
+
 using System.Reflection;
+
+using UseCase.Business_Logic;
+
 
 namespace Infrastructure.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class AHPController : ControllerBase
+    public class AHPController : Controller
     {
         private readonly IAHPRecommendationService _rec;
+
 
         public AHPController(IAHPRecommendationService rec)
         {
@@ -25,6 +29,25 @@ namespace Infrastructure.Controllers
         /// Trả về Top 3 AHPProductScore dựa trên query (gọi service cá nhân hoá)
         /// Body: { "query": "...", "sessionId": "..." }
         /// </summary>
+
+        private readonly IAHPService _ahp;
+        private readonly IProductManage _productManage;
+
+        public AHPController(IAHPRecommendationService rec, IAHPService ahp, IProductManage productManage)
+        {
+            _rec = rec;
+            _ahp = ahp;
+            _productManage = productManage;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var products = await _productManage.GetProductsAsync();
+            return View(new AHPViewModel { Products = products.ToList() ?? [] });
+        }
+
+
         [HttpPost("recommendations")]
         public async Task<IActionResult> GetRecommendations([FromBody] RecommendationRequest req)
         {

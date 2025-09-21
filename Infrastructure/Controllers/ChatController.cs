@@ -9,9 +9,11 @@ namespace Infrastructure.Controllers
     public class ChatController : ControllerBase
     {
         private readonly IAIChat _aiChat;
-        public ChatController(IAIChat aiChat)
+        private readonly ILogger<ChatController> _logger;
+        public ChatController(IAIChat aiChat, ILogger<ChatController> logger)
         {
             _aiChat = aiChat;
+            _logger = logger;
         }
         [HttpPost("ask")]
         public async Task<IActionResult> Ask([FromBody] string prompt, CancellationToken cancellationToken)
@@ -28,6 +30,7 @@ namespace Infrastructure.Controllers
             catch(Exception ex)
             {
                 // Log the exception (not shown here for brevity)
+                _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
