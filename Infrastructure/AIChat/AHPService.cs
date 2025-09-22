@@ -1,7 +1,6 @@
 using Infrastructure.Models.AHP;
 using UseCase.Business_Logic;
 using System.Reflection;
-using System.Text;
 
 namespace Infrastructure.AIChat
 {
@@ -80,7 +79,6 @@ namespace Infrastructure.AIChat
 
             var results = new List<AHPProductScore>();
 
-            // Chuẩn hóa theo tập sản phẩm đang so sánh
             var maxPrice = products.Any() ? products.Max(p => GetDoubleProperty(p, "Price")) : 1.0;
             var maxSold = products.Any() ? products.Max(p => GetIntProperty(p, "Sold")) : 1;
 
@@ -121,11 +119,10 @@ namespace Infrastructure.AIChat
             return results;
         }
 
-        #region -- Private helpers (work with any Product-like object via reflection) --
+        #region -- Helpers --
 
         private async Task<List<object>> GetProductsForRecommendation(AHPRecommendationRequest request)
         {
-            // Gọi các API của productManage, convert về object list (an toàn compile-time)
             if (request == null) return new List<object>();
 
             if (request.CategoryId.HasValue)
@@ -151,11 +148,18 @@ namespace Infrastructure.AIChat
 
         private double CalculateCriteriaScore(object product, AHPCriteria criteria, double maxPrice, int maxSold)
         {
-            return criteria.Type switch
+            var key = (criteria?.Name ?? string.Empty).ToLowerInvariant();
+
+            return key switch
             {
-                CriteriaType.Cost => CalculateCostScore(product, criteria, maxPrice),
-                CriteriaType.Benefit => CalculateBenefitScore(product, criteria, maxPrice, maxSold),
-                _ => 0.5
+                "chất lượng" => CalculateQualityScoreByPrice(product, maxPrice, maxSold), // giá cao = chất lượng cao
+                "giá rẻ" => CalculateCheapScore(product, maxPrice),                       // giá thấp = tốt
+                _ => criteria.Type switch
+                {
+                    CriteriaType.Cost => CalculateCostScore(product, criteria, maxPrice),
+                    CriteriaType.Benefit => CalculateBenefitScore(product, criteria, maxPrice, maxSold),
+                    _ => 0.5
+                }
             };
         }
 
@@ -177,12 +181,12 @@ namespace Infrastructure.AIChat
             {
                 "rating" or "đánh giá" => GetDoubleProperty(product, "Rating") > 0 ? GetDoubleProperty(product, "Rating") : 0.7,
                 "sales_count" or "số lượng bán" => maxSold > 0 ? Math.Min((double)GetIntProperty(product, "Sold") / maxSold, 1.0) : 0.5,
-                "quality" or "chất lượng" => CalculateQualityScore(product, maxPrice, maxSold),
                 _ => 0.5
             };
         }
 
-        private double CalculateQualityScore(object product, double maxPrice, int maxSold)
+        // Giá cao = chất lượng cao
+        private double CalculateQualityScoreByPrice(object product, double maxPrice, int maxSold)
         {
             var sold = (double)GetIntProperty(product, "Sold");
             var price = GetDoubleProperty(product, "Price");
@@ -196,6 +200,13 @@ namespace Infrastructure.AIChat
 
             double priceScore = maxPrice > 0 ? Math.Min(price / maxPrice, 1.0) : 0.5;
             return (popularity + priceScore) / 2.0;
+        }
+
+        // Giá rẻ = giá càng thấp càng tốt
+        private double CalculateCheapScore(object product, double maxPrice)
+        {
+            var price = GetDoubleProperty(product, "Price");
+            return maxPrice > 0 ? 1.0 - Math.Min(price / maxPrice, 1.0) : 0.5;
         }
 
         private static double[] CalculateEigenvector(double[,] matrix)
@@ -224,7 +235,6 @@ namespace Infrastructure.AIChat
             return v;
         }
 
-        // Reflection helpers
         private static object? GetPropertyValue(object? obj, string propName)
         {
             if (obj == null) return null;
@@ -255,18 +265,18 @@ namespace Infrastructure.AIChat
             return v?.ToString() ?? string.Empty;
         }
 
-        #endregion
-
         private List<AHPCriteria> InitializeDefaultCriteria()
         {
             return new List<AHPCriteria>
             {
-                new() { Id = 1, Name = "Giá", Weight = 0.3, Type = CriteriaType.Cost },
+                new() { Id = 1, Name = "Giá rẻ", Weight = 0.25, Type = CriteriaType.Cost },
                 new() { Id = 2, Name = "Đánh giá", Weight = 0.25, Type = CriteriaType.Benefit },
-                new() { Id = 3, Name = "Chất lượng", Weight = 0.2, Type = CriteriaType.Benefit },
+                new() { Id = 3, Name = "Chất lượng", Weight = 0.25, Type = CriteriaType.Benefit },
                 new() { Id = 4, Name = "Số lượng bán", Weight = 0.15, Type = CriteriaType.Benefit },
                 new() { Id = 5, Name = "Thời gian giao hàng", Weight = 0.1, Type = CriteriaType.Cost }
             };
         }
+
+        #endregion
     }
 }

@@ -6,7 +6,7 @@ namespace Infrastructure.SqlServer.DataContext
 {
     public class ShopContext : DbContext
     {
-         private readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=OnlineShop;Trusted_Connection=True;TrustServerCertificate=True;";
+         private readonly string _connectionString = @"Server=.;Database=OnlineShop;Trusted_Connection=True;TrustServerCertificate=True;";
 
         //Use to run command add migrations and update database
         public ShopContext()

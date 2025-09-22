@@ -19,12 +19,6 @@ namespace Infrastructure.Controllers
     {
         private readonly IAHPRecommendationService _rec;
 
-
-        public AHPController(IAHPRecommendationService rec)
-        {
-            _rec = rec;
-        }
-
         /// <summary>
         /// Trả về Top 3 AHPProductScore dựa trên query (gọi service cá nhân hoá)
         /// Body: { "query": "...", "sessionId": "..." }

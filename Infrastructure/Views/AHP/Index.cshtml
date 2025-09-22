@@ -77,19 +77,19 @@
                                 <span class="fw-semibold">@product.Name:</span>
                                 @if (bestSeller != null && product.Id == bestSeller.Id && bestSeller.Sold > 0)
                                 {
-                                    <span class="text-success"> Sản lượng bán được cao nhất, nhận về đánh giá tốt từ người dùng, được yêu thích và đáp ứng nhu cầu người dùng nên nên tăng số lượng nhập kho.</span>
+                                    <span class="productsuccess text-success"> Sản lượng bán được cao nhất, nhận về đánh giá tốt từ người dùng, được yêu thích và đáp ứng nhu cầu người dùng nên nên tăng số lượng nhập kho.</span>
                                 }
                                 else if (product.Sold == 0)
                                 {
-                                    <span class="text-danger"> Bán kém, chưa có đánh giá, nên có các voucher giảm giá để thu hút khách hàng.</span>
+                                    <span class="productsuccess text-danger"> Bán kém, chưa có đánh giá, nên có các voucher giảm giá để thu hút khách hàng.</span>
                                 }
                                 else if (product.Sold < 10)
                                 {
-                                    <span class="text-warning"> Sản lượng bán còn thấp, cần đẩy mạnh quảng bá hoặc tặng kèm ưu đãi.</span>
+                                    <span class="productsuccess text-warning"> Sản lượng bán còn thấp, cần đẩy mạnh quảng bá hoặc tặng kèm ưu đãi.</span>
                                 }
                                 else
                                 {
-                                    <span class="text-info"> Được người dùng quan tâm, đánh giá ổn, nên duy trì chất lượng và dịch vụ.</span>
+                                    <span class="productsuccess text-info"> Được người dùng quan tâm, đánh giá ổn, nên duy trì chất lượng và dịch vụ.</span>
                                 }
                             </div>
                         </li>
@@ -145,6 +145,14 @@
         }
         .overview-item:hover {
             box-shadow: 0 2px 12px #a18cd1a0;
+        }
+
+        .fw-semibold{
+            font-size: 20px;
+        }
+
+        .productsuccess{
+            font-size: 20px;
         }
     </style>
 }
