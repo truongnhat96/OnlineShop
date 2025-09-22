@@ -1548,7 +1548,11 @@ main {
     position: fixed;
     bottom: 30px;
     right: 30px;
+<<<<<<< HEAD
     width: 370px;
+=======
+    width: 450px;
+>>>>>>> ca0995f49d8fcd9cfc33ae0a511771982a1630f6
     max-width: 95vw;
     height: 500px;
     max-height: 80vh;

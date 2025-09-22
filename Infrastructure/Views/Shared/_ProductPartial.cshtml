@@ -2,7 +2,11 @@
 @{
             <ul class="product-partial-list">
             @{
+<<<<<<< HEAD
             var popularProducts = (await ProductManage.GetProductsAsync()).Where(p => p.Sold > 0).OrderByDescending(p => p.Sold).Take(5).ToList();
+=======
+            var popularProducts = (await ProductManage.GetProductsAsync()).Where(p => p.Sold > 0).OrderByDescending(p => p.Sold).Take(3).ToList();
+>>>>>>> ca0995f49d8fcd9cfc33ae0a511771982a1630f6
                 foreach (var product in popularProducts)
                 {
                     <li class="product-partial-item">

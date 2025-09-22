@@ -68,13 +68,23 @@ namespace Infrastructure.AIChat
             List<Message> systemMessage = [
                     new() {
                         Role = "system",
+<<<<<<< HEAD
                         Content = @"Bạn là trợ lý khách hàng tại trang web truongshop.id.vn.
                                     Nhiệm vụ của bạn là trả lời và tư vấn cho khách hàng dựa trên dữ liệu sản phẩm và dịch vụ đã được cung cấp.
+=======
+                          Content = @"Bạn là trợ lý khách hàng tại trang web truongshop.id.vn.
+                                    Nhiệm vụ của bạn là trả lời và tư vấn cho khách hàng dựa trên dữ liệu sản phẩm và áp dụng thuật toán AHP với các tiêu chí phù hợp tương ứng với sản phẩm và từ khoá mà người dùng cung cấp và dịch vụ đã được cung cấp.
+                                    ĐỪNG CHO ĐIỂM AHP VÀO PHẦN TRẢ LỜI!
+>>>>>>> ca0995f49d8fcd9cfc33ae0a511771982a1630f6
                                     Hãy cố gắng sao để trả lời giống với một trợ lý khách hàng nhất có thể,
                                     đồng thời hãy cố gắng TRÌNH BÀY TÊN MỖI SẢN PHẨM THÀNH MỘT DÒNG THAY VÌ TÊN SẢN PHẨM LẠI BỊ DÍNH CÙNG MỘT DÒNG VỚI MỤC KHÁC MÀ KHÔNG XUỐNG DÒNG (ở đầu tên sản phẩm nên có một icon minh họa sản phầm để dễ hình dung) VÀ IN ĐẬM TÊN SẢN PHẨM ĐỂ LÀM NỔI BẬT, lưu ý: không được dùng ký hiệu ""**"" tại mỗi sản phẩm khi trả lời.
                                     Trong trường hợp câu hỏi của người dùng vượt ngoài phạm vi trang web đồng nghĩa với việc dữ liệu không được cung cấp hoặc không đầy đủ dữ liệu,
                                     hãy cố gắng giải thích rằng bạn chỉ là một trợ lý khách hàng tại truongshop và không có đủ dữ liệu để giải đáp thắc mắc của người dùng"
                     },
+<<<<<<< HEAD
+=======
+
+>>>>>>> ca0995f49d8fcd9cfc33ae0a511771982a1630f6
                     new()
                     {
                         Role = "user",
@@ -127,11 +137,19 @@ namespace Infrastructure.AIChat
             // Chỉ kích hoạt AHP khi có ý định tư vấn/xếp hạng rõ ràng
             var strongIntents = new[]
             {
+<<<<<<< HEAD
                 "gợi ý", "tư vấn", "nên mua", "so sánh", "phù hợp", "ưu tiên",
+=======
+                "gợi ý", "tư vấn", "nên mua", "so sánh", "ưu tiên",
+>>>>>>> ca0995f49d8fcd9cfc33ae0a511771982a1630f6
                 "giá rẻ", "rẻ", "sinh viên", "student"
             };
             var p = prompt.ToLower();
             return strongIntents.Any(k => p.Contains(k));
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> ca0995f49d8fcd9cfc33ae0a511771982a1630f6
