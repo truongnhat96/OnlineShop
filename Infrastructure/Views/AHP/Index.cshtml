@@ -1,4 +1,4 @@
-﻿@using Infrastructure.Models.AHP
+﻿﻿@using Infrastructure.Models.AHP
 @model AHPViewModel
 @{
     // Xác định sản phẩm bán chạy nhất
@@ -77,21 +77,6 @@
                                 <span class="fw-semibold">@product.Name:</span>
                                 @if (bestSeller != null && product.Id == bestSeller.Id && bestSeller.Sold > 0)
                                 {
-<<<<<<< HEAD
-                                    <span class="text-success"> Sản lượng bán được cao nhất, nhận về đánh giá tốt từ người dùng, được yêu thích và đáp ứng nhu cầu người dùng nên nên tăng số lượng nhập kho.</span>
-                                }
-                                else if (product.Sold == 0)
-                                {
-                                    <span class="text-danger"> Bán kém, chưa có đánh giá, nên có các voucher giảm giá để thu hút khách hàng.</span>
-                                }
-                                else if (product.Sold < 10)
-                                {
-                                    <span class="text-warning"> Sản lượng bán còn thấp, cần đẩy mạnh quảng bá hoặc tặng kèm ưu đãi.</span>
-                                }
-                                else
-                                {
-                                    <span class="text-info"> Được người dùng quan tâm, đánh giá ổn, nên duy trì chất lượng và dịch vụ.</span>
-=======
                                     <span class="productsuccess text-success"> Sản lượng bán được cao nhất, nhận về đánh giá tốt từ người dùng, được yêu thích và đáp ứng nhu cầu người dùng nên nên tăng số lượng nhập kho.</span>
                                 }
                                 else if (product.Sold == 0)
@@ -105,7 +90,6 @@
                                 else
                                 {
                                     <span class="productsuccess text-info"> Được người dùng quan tâm, đánh giá ổn, nên duy trì chất lượng và dịch vụ.</span>
->>>>>>> ca0995f49d8fcd9cfc33ae0a511771982a1630f6
                                 }
                             </div>
                         </li>
@@ -134,24 +118,30 @@
             align-items: center;
             min-width: 120px;
         }
-        .best-seller-badge i {
-            font-size: 1.2em;
-            margin-right: 0.4em;
-        }
+
+            .best-seller-badge i {
+                font-size: 1.2em;
+                margin-right: 0.4em;
+            }
+
         .product-card {
             overflow: visible;
         }
+
         .product-img {
             border-radius: 1rem 1rem 0 0;
             background: #fff;
         }
+
         .overview-box {
             background: linear-gradient(120deg, #f8fafc 60%, #e0c3fc 100%) !important;
             border: 2px solid #e0c3fc;
         }
+
         .overview-item i {
             min-width: 32px;
         }
+
         .overview-item {
             border-left: 4px solid #a18cd1;
             padding-left: 1rem;
@@ -159,19 +149,17 @@
             border-radius: 0.5rem;
             transition: box-shadow 0.2s;
         }
-        .overview-item:hover {
-            box-shadow: 0 2px 12px #a18cd1a0;
-        }
-<<<<<<< HEAD
-=======
 
-        .fw-semibold{
+            .overview-item:hover {
+                box-shadow: 0 2px 12px #a18cd1a0;
+            }
+
+        .fw-semibold {
             font-size: 20px;
         }
 
-        .productsuccess{
+        .productsuccess {
             font-size: 20px;
         }
->>>>>>> ca0995f49d8fcd9cfc33ae0a511771982a1630f6
     </style>
 }

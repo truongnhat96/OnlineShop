@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-using Infrastructure.AIChat;
-using Infrastructure.Models.AHP;
-using Microsoft.AspNetCore.Mvc;
-using UseCase.Business_Logic;
-
-=======
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,22 +12,18 @@ using System.Reflection;
 using UseCase.Business_Logic;
 
 
->>>>>>> ca0995f49d8fcd9cfc33ae0a511771982a1630f6
 namespace Infrastructure.Controllers
 {
     [Route("api/[controller]")]
     public class AHPController : Controller
     {
         private readonly IAHPRecommendationService _rec;
-<<<<<<< HEAD
-=======
 
         /// <summary>
         /// Trả về Top 3 AHPProductScore dựa trên query (gọi service cá nhân hoá)
         /// Body: { "query": "...", "sessionId": "..." }
         /// </summary>
 
->>>>>>> ca0995f49d8fcd9cfc33ae0a511771982a1630f6
         private readonly IAHPService _ahp;
         private readonly IProductManage _productManage;
 
@@ -54,28 +43,6 @@ namespace Infrastructure.Controllers
 
 
         [HttpPost("recommendations")]
-<<<<<<< HEAD
-        public async Task<IActionResult> GetRecommendations([FromBody] AHPRecommendationRequest request)
-        {
-            var res = await _ahp.GetProductRecommendationsAsync(request);
-            return Ok(res);
-        }
-
-        [HttpPost("chat-recommendations")]
-        public async Task<IActionResult> ChatRecommendations([FromBody] ChatRecommendationRequest request)
-        {
-            var text = await _rec.GenerateRecommendationResponseAsync(request.Query, request.SessionId ?? Guid.NewGuid().ToString());
-            return Ok(new { response = text });
-        }
-
-        [HttpPost("calculate-weights")]
-        public async Task<IActionResult> CalculateWeights([FromBody] CalculateWeightsRequest request)
-        {
-            var w = await _ahp.CalculateCriteriaWeightsAsync(request.Comparisons);
-            return Ok(w);
-        }
-
-=======
         public async Task<IActionResult> GetRecommendations([FromBody] RecommendationRequest req)
         {
             if (req == null) return BadRequest("Missing request body.");
@@ -125,7 +92,6 @@ namespace Infrastructure.Controllers
         /// <summary>
         /// Trả danh sách tiêu chí mặc định
         /// </summary>
->>>>>>> ca0995f49d8fcd9cfc33ae0a511771982a1630f6
         [HttpGet("criteria")]
         public IActionResult Criteria()
         {
@@ -139,8 +105,6 @@ namespace Infrastructure.Controllers
             };
             return Ok(list);
         }
-<<<<<<< HEAD
-=======
 
         #region — Local helpers (weights calculation) —
 
@@ -226,7 +190,6 @@ namespace Infrastructure.Controllers
     {
         public string? Query { get; set; }
         public string? SessionId { get; set; }
->>>>>>> ca0995f49d8fcd9cfc33ae0a511771982a1630f6
     }
 
     public class ChatRecommendationRequest
@@ -239,21 +202,6 @@ namespace Infrastructure.Controllers
     {
         public List<AHPComparisonMatrix> Comparisons { get; set; } = new();
     }
-<<<<<<< HEAD
-}
-
-
-
-
-
-
-
-
-
-
-
-=======
 
     #endregion
 }
->>>>>>> ca0995f49d8fcd9cfc33ae0a511771982a1630f6
