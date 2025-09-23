@@ -101,7 +101,7 @@
     <div class="modal-content">
         <span class="close" id="closeModal">&times;</span>
         <h2>Chọn Phương Thức Thanh Toán</h2>
-        <p style="color: #E31B23">Lưu ý: Chức năng thanh toán online hiện chưa hỗ trợ, vui lòng quét mã qr để thanh toán</p>
+        @* <p style="color: #E31B23">Lưu ý: Chức năng thanh toán online hiện chưa hỗ trợ, vui lòng quét mã qr để thanh toán</p> *@
         <form method="post" asp-action="PayByMomo">
             <input type="hidden" name="FullName" value="@User.Identity?.Name"/>
             <input type="hidden" name="Amount" value="@totalAmount" />
