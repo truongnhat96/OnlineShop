@@ -1,0 +1,135 @@
+﻿@{
+    ViewData["Title"] = "Thanh toán VietQR";
+
+
+    var orderCode = ViewBag.OrderCode;
+    var amount = ViewBag.Amount;
+    var accountName = ViewBag.AccountName;
+    var accountNumber = ViewBag.AccountNumber;
+    var email = ViewBag.Email;
+    var phone = ViewBag.Phone;
+    var name = ViewBag.Name;
+    var note = ViewBag.Note;
+
+    var bankId = "970418";
+    var template = "compact2";
+
+
+    var addInfo = System.Net.WebUtility.UrlEncode(orderCode.ToString());
+
+
+    var vietQrUrl =
+    $"https://img.vietqr.io/image/{bankId}-{accountNumber}-{template}.png?addInfo={addInfo}";
+}
+
+<div style="text-align: center; border: 1px solid #ccc; padding: 20px; border-radius: 8px; max-width: 400px; margin: auto; margin-top: 75px;font-family: Arial, sans-serif;">
+    <h3>Thanh toán đơn hàng qua VietQR</h3>
+    <p>Vui lòng quét mã QR dưới đây để hoàn tất thanh toán.</p>
+
+    <img src="@vietQrUrl" width="300" alt="Mã QR thanh toán đơn hàng @orderCode"
+         style="max-width: 100%; height: auto;" />
+
+    <div style="text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
+        <p style="font-weight: bold; font-size: 1.1em; color: #333;">THÔNG TIN CHUYỂN KHOẢN</p>
+        <p><strong>Ngân hàng:</strong> MB Bank </p>
+        <p><strong>Chủ tài khoản:</strong> @accountName</p>
+        <p><strong>Số tài khoản:</strong> @accountNumber</p>
+        <p>
+            <strong>Số tiền:</strong> <span style="color: #d9534f; font-weight: bold;">@amount.ToString("N0") VNĐ</span>
+        </p>
+        <p><strong>Nội dung:</strong> <span style="color: #0275d8; font-weight: bold;">@orderCode</span></p>
+    </div>
+
+    <div style="margin-top: 20px; font-size: 0.9em; color: #777;">
+        <p>Sau khi chuyển khoản thành công, hệ thống sẽ tự động cập nhật trạng thái đơn hàng của bạn.</p>
+        <p>Trang sẽ tự động chuyển hướng sau khi thanh toán được xác nhận.</p>
+    </div>
+</div>
+
+<div style="text-align: center; margin-top: 20px;">
+    <form asp-action="CancelOrder" method="post">
+        <input type="hidden" name="payosOrderCode" value="@ViewBag.PayOSOrderCode" />
+        <button type="submit" class="btn btn-outline-danger">Hủy và quay về giỏ hàng</button>
+    </form>
+</div>
+
+<script>
+    (function () {
+        const payosOrderCode = '@ViewBag.PayOSOrderCode';
+        const email = '@email';
+        const phone = '@phone';
+        const name = '@name';
+        const note = '@note';
+        const orderCode = '@orderCode';
+        const checkStatusUrl = `/Payment/CheckStatus?payosOrderCode=${payosOrderCode}`;
+        const successUrl = `/Payment/Order`;
+        const cancelUrl = '/Cart?payment=cancel';
+
+        let pollingInterval;
+
+        const checkPaymentStatus = () => {
+            console.log("Checking status for PayOS order code:", payosOrderCode);
+            console.log(email, phone, name, note)
+            fetch(checkStatusUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok. Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Status received:", data.status);
+                    if (data.status === 'paid') {
+                        clearInterval(pollingInterval);
+                        alert('Thanh toán thành công!');
+                        fetch(successUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                email: email,
+                                name: name,
+                                phone: phone,
+                                status: 'success',
+                                orderCode: orderCode,
+                                note: note
+                            })
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Network response was not ok. Status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log(data.returnUrl)
+                            if (data) window.location.href = data.returnUrl
+                        })
+                        .catch(error => {
+                            console.error(error)
+                        })
+                    } else if (data.status === 'cancelled') {
+                        clearInterval(pollingInterval);
+                        alert('Thanh toán đã bị hủy. Bạn sẽ được chuyển hướng về giỏ hàng.');
+                        window.location.href = cancelUrl;
+                    }
+                    // If status is 'pending' or 'notfound', do nothing and let the interval run again.
+                })
+                .catch(error => {
+                    console.error('Error checking payment status:', error);
+                    // Stop polling if there's a persistent error with the check itself.
+                    clearInterval(pollingInterval);
+                });
+        };
+
+        // Poll every 3 seconds.
+        pollingInterval = setInterval(checkPaymentStatus, 3000);
+
+        // Stop polling after 10 minutes (600,000 milliseconds) to prevent indefinite requests.
+        setTimeout(() => {
+            clearInterval(pollingInterval);
+            console.log('Stopped polling after 10 minutes.');
+        }, 600000);
+    })();
+</script>
