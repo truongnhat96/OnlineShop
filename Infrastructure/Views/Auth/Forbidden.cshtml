@@ -1,10 +1,8 @@
-﻿@{
-    ViewData["Title"] = "Trang chỉ dành cho quản trị viên";
-}
-<div class="container">
-    <!-- Icon cảnh báo -->
-    <i class="fas fa-exclamation-triangle"></i>
-    <!-- Thông báo -->
-    <h1>Truy cập bị từ chối</h1>
-    <p>Bạn không có quyền truy cập vào trang này.</p>
+@{ Layout = "_AuthLayout"; ViewData["Title"] = "Không có quyền truy cập"; }
+<div class="empty-icon" aria-hidden="true">!</div>
+<h2>Không có quyền truy cập</h2>
+<p class="muted">Tài khoản hiện tại không có quyền sử dụng trang này.</p>
+<div class="form-actions">
+<a class="btn btn-primary" href="/">Về cửa hàng</a>
+<a class="btn btn-outline" href="/Login">Đăng nhập</a>
 </div>

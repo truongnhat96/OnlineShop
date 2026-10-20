@@ -1,51 +1,89 @@
-﻿@model ProductModel
-@{
-    ViewData["Title"] = "Cập nhật";
-}
-
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-info mt-4" role="alert">
-        @TempData["Message"]
-    </div>
-}
-<div class="main-container">
-    @if (Model.ProductList.Count == 0)
-    {
-        <div class="justify-content-center">
-            <h3>Không có sản phẩm nào được lưu</h3>
-        </div>
-    }
-    else
-    {
-        @using (Html.BeginForm("Update", "Product"))
-        {
-            <h3>Các sản phẩm đã lưu</h3>
-            <div class="justify-content-around">
-                <div class="row">
-                    @foreach (var product in Model.ProductList)
-                    {
-                        <div class="col-md-4 col-sm-7 d-flex justify-content-center">
-                            <div class="form-container">
-                                <div class="form-card">
-                                    <img src="/uploads/products/@product.ImageUrl" alt="Ảnh sản phẩm" class="product-img" />
-                                    <h4>ID: @product.Id</h4>
-                                    <h5 class="product-name" title="@product.Name">@product.Name</h5>
-                                    <p>Thương hiệu: @product.Brand</p>
-                                    <p>Giá: @product.Price.ToString("c0", new CultureInfo("vi-VN"))</p>
-                                    <p>Ngày nhập: @product.Date_Import.ToShortDateString()</p>
-                                    <a href="/Edit/@product.Id" class="btn btn-primary mt-auto">Sửa thông tin</a>
-                                    <a href="@Url.Action("Delete", new {id = product.Id})" class="btn btn-danger mt-3">Xóa Sản phẩm</a>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-            <br />
-            <br />
-            <a href="/Manage" class="btn btn-primary">← Quay lại</a>
-        <hr />
-        }
-    }
+@model ProductModel
+@{ Layout = "_AdminLayout"; ViewData["Title"] = "Sản phẩm"; ViewData["Admin"] = true; }
+<div class="page-heading">
+<div>
+<span class="eyebrow">Danh mục kinh doanh</span>
+<h1>Sản phẩm</h1>
+<p>Thông tin và số lượng từ danh sách sản phẩm hiện tại.</p>
 </div>
+<a class="btn btn-primary" href="/Manage">+ Thêm sản phẩm</a>
+</div>
+<div class="stats-grid">
+<div class="stat">
+<span>Tổng sản phẩm</span>
+<strong>@Model.ProductList.Count</strong>
+</div>
+<div class="stat">
+<span>Còn hàng / Hết hàng</span>
+<strong>@Model.ProductList.Count(p=>p.Quantity>0) / @Model.ProductList.Count(p=>p.Quantity<=0)</strong>
+</div>
+<div class="stat">
+<span>Tổng số lượng</span>
+<strong>@Model.ProductList.Sum(p=>(long)p.Quantity)</strong>
+</div>
+<div class="stat">
+<span>Tổng đã bán</span>
+<strong>@Model.ProductList.Sum(p=>(long)p.Sold)</strong>
+</div>
+</div>
+<section class="panel table-panel" data-admin-table>
+<div class="table-toolbar">
+<label class="visually-hidden" for="products-search">Tìm sản phẩm</label>
+<input id="products-search" class="form-control" type="search" data-table-search placeholder="Tìm theo tên, thương hiệu hoặc ID…" />
+<label class="visually-hidden" for="stock-filter">Lọc tồn kho</label>
+<select id="stock-filter" class="form-select" data-table-stock>
+<option value="">Tất cả tồn kho</option>
+<option value="in">Còn hàng</option>
+<option value="out">Hết hàng</option>
+</select>
+<label class="visually-hidden" for="products-sort">Sắp xếp</label>
+<select id="products-sort" class="form-select" data-table-sort>
+<option value="original">Thứ tự hiện có</option>
+<option value="name">Tên A–Z</option>
+<option value="price">Giá tăng dần</option>
+<option value="date">Ngày nhập mới nhất</option>
+</select>
+</div>
+<div class="table-responsive">
+<table class="table">
+<caption class="visually-hidden">Danh sách sản phẩm</caption>
+<thead>
+<tr>
+<th scope="col">Sản phẩm</th>
+<th scope="col">Giá bán</th>
+<th scope="col">Số lượng</th>
+<th scope="col">Đã bán</th>
+<th scope="col">Ngày nhập</th>
+<th scope="col">Thao tác</th>
+</tr>
+</thead>
+<tbody>
+@foreach(var product in Model.ProductList) { <tr data-row data-search="@product.Id @product.Name @product.Brand" data-name="@product.Name" data-stock="@product.Quantity" data-price="@product.Price.ToString(CultureInfo.InvariantCulture)" data-date="@product.Date_Import.Ticks">
+<td>
+<div class="table-product">
+<img src="/uploads/products/@product.ImageUrl" data-fallback-image alt="" width="48" height="48" />
+<div>
+<a href="/Product/@product.Id">@product.Name</a>
+<small>#@product.Id · @product.Brand</small>
+</div>
+</div>
+</td>
+<td class="text-nowrap">@product.Price.ToString("N0",CultureInfo.GetCultureInfo("vi-VN")) ₫</td>
+<td>
+<span class="stock-label @(product.Quantity <= 0 ? "empty" : "")">@product.Quantity</span>
+</td>
+<td>@product.Sold</td>
+<td class="text-nowrap">@product.Date_Import.ToString("dd/MM/yyyy")</td>
+<td>
+<div class="table-actions">
+<a class="btn btn-outline" href="/Edit/@product.Id">Sửa</a>
+<a class="btn btn-outline text-danger" href="/Remove/@product.Id" data-confirm-delete="@product.Name">Xóa</a>
+</div>
+</td>
+</tr> }
+</tbody>
+</table>
+</div>
+<div class="table-empty" data-table-empty hidden>Không có sản phẩm phù hợp.</div>
+<partial name="_TableFooter" />
+</section>

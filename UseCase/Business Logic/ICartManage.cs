@@ -13,6 +13,7 @@ namespace UseCase.Business_Logic
         Task UpdateCartItemAsync(int productId, int userId, int quantity);
         Task RemoveCartItemAsync(int productId, int userId);
         Task OrderProcessingAsync(int userId, int discountId);
+        Task OrderProcessingGuestAsync(IEnumerable<CartItem> items);
         Task<bool> IsCouponUsed(int userId, int discountId);
         Task<Product> GetProductInCartAsync(int productId);
         Task<Product> GetProductInCartAfterDiscountAsync(int productId, string coupon);

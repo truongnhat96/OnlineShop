@@ -364,3 +364,5 @@ FodyWeavers.xsd
 
 # environment variables for .NET Core
 .env
+
+docs/

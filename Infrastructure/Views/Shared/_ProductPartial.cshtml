@@ -1,25 +1,6 @@
-﻿﻿
 @inject IProductManage ProductManage
-@{
-    <ul class="product-partial-list">
-        @{
-            var popularProducts = (await ProductManage.GetProductsAsync()).Where(p => p.Sold > 0).OrderByDescending(p => p.Sold).Take(3).ToList();
-            foreach (var product in popularProducts)
-            {
-                <li class="product-partial-item">
-                    <a href="/Product/@product.Id" class="product-partial-link">
-                        <img onerror="this.src='/images/not-found.png'" src="/uploads/products/@product.ImageUrl" alt="@product.Name" class="product-partial-img">
-                        <div class="product-partial-info">
-                            <span class="product-partial-name">@product.Name</span>
-                            @if (product.OldPrice > product.Price)
-                            {
-                                <span class="product-partial-oldprice">@product.OldPrice.ToString("c0", new CultureInfo("vi-VN"))</span>
-                            }
-                            <span class="product-partial-price">@product.Price.ToString("c0", new CultureInfo("vi-VN"))</span>
-                        </div>
-                    </a>
-                </li>
-            }
-        }
-    </ul>
-}
+@{ var products = (await ProductManage.GetProductsAsync()).Where(p => p.Sold > 0).OrderByDescending(p => p.Sold).Take(3).ToList(); }
+@if (products.Count > 0) { <section class="panel">
+<h2 class="h5">Sản phẩm được quan tâm</h2>
+<div class="product-grid">@foreach(var product in products) { <partial name="_ProductCard" model="product" /> }</div>
+</section> }

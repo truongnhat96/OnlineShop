@@ -1,29 +1,12 @@
-﻿@model double
-@{
-    DateTime orderDate = DateTime.Now;
-}
-
-<div class="main-container">
-    <!-- Thông báo đặt hàng thành công -->
-    <div class="thank-you">Cảm ơn bạn. Đơn hàng của bạn đã được nhận.</div>
-
-    <!-- Thông tin đơn hàng -->
-    <div class="order-info">
-        <div>
-            <span class="label">Đơn hàng</span>
-            <span class="value">@(new Random().Next(121212, 929292))</span>
-        </div>
-        <div>
-            <span class="label">Ngày</span>
-            <span class="value">Tháng @orderDate.Month @(orderDate.Day), @orderDate.Year</span>
-        </div>
-        <div>
-            <span class="label">Tổng cộng</span>
-            <span class="value highlight">@Model.ToString("c0", new CultureInfo("vi-VN"))</span>
-        </div>
-        <div>
-            <span class="label">Phương thức thanh toán</span>
-            <span class="value"><strong>Chuyển khoản ngân hàng</strong></span>
-        </div>
-    </div>
-</div>
+@model double
+@{ ViewData["Title"] = "Đã tiếp nhận thông tin"; }
+<section class="status-card">
+<div class="empty-icon" aria-hidden="true">✓</div>
+<h1>Đã tiếp nhận thông tin mua hàng</h1>
+<p class="muted">Cảm ơn bạn đã gửi yêu cầu. Vui lòng kiểm tra email và liên hệ cửa hàng nếu cần đối chiếu thông tin.</p>
+<dl>
+<dt>Tổng tiền theo yêu cầu</dt>
+<dd class="price">@Model.ToString("N0",CultureInfo.GetCultureInfo("vi-VN")) ₫</dd>
+</dl>
+<a class="btn btn-primary" href="/">Tiếp tục khám phá cửa hàng</a>
+</section>

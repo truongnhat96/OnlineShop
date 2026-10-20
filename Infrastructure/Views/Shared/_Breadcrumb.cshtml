@@ -1,0 +1,7 @@
+@if (ViewData["Title"] is string title) {
+<nav class="breadcrumbs" aria-label="Đường dẫn">
+<a href="@(ViewData["Admin"] is true ? "/Manage" : "/")">@(ViewData["Admin"] is true ? "Quản trị" : "Trang chủ")</a>
+<span aria-hidden="true">/</span>
+<span aria-current="page">@title</span>
+</nav>
+}

@@ -110,7 +110,7 @@ namespace Infrastructure.AIChat
 
             var sb = new StringBuilder();
             var criteriaPart = string.IsNullOrWhiteSpace(extractedCriteria) ? "tiêu chí phù hợp" : $"các tiêu chí: {extractedCriteria}";
-            sb.AppendLine($"✨ Dựa trên {criteriaPart}, Trường Shop gợi ý Top 3 sản phẩm phù hợp:<br>");
+            sb.AppendLine($"✨ Dựa trên {criteriaPart}, MotoShop gợi ý Top 3 sản phẩm phù hợp:<br>");
 
             int idx = 1;
             foreach (var s in top3)

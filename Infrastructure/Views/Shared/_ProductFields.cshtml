@@ -1,0 +1,98 @@
+@model ProductModel
+@inject IProductManage ProductManage
+@{
+    var categories = Model.CategoryList.Count > 0 ? Model.CategoryList : (await CategoryManage.GetAllCategoriesAsync()).SkipLast(1).ToList();
+    var image = Model.Image;
+    if (string.IsNullOrEmpty(image) && Model.Id > 0)
+        image = (await ProductManage.GetProductDetail(Model.Id))?.ImageUrl ?? "";
+}
+<div asp-validation-summary="All" role="alert">
+</div>
+<section class="form-section">
+<h2>Thông tin sản phẩm</h2>
+<div class="form-grid">
+<div class="field full-span">
+<label asp-for="Name" class="form-label">Tên sản phẩm</label>
+<input asp-for="Name" class="form-control" />
+<span asp-validation-for="Name">
+</span>
+</div>
+<div class="field">
+<label asp-for="Brand" class="form-label">Thương hiệu</label>
+<input asp-for="Brand" class="form-control" />
+<span asp-validation-for="Brand">
+</span>
+</div>
+<div class="field">
+<label asp-for="CategoryId" class="form-label">Danh mục</label>
+<select asp-for="CategoryId" class="form-select">
+<option value="">Chọn danh mục</option>@foreach(var category in categories) { <option value="@category.Id">@category.Name</option> }</select>
+<span asp-validation-for="CategoryId">
+</span>
+</div>
+</div>
+</section>
+<section class="form-section">
+<h2>Giá & số lượng</h2>
+<div class="form-grid">
+<div class="field">
+<label asp-for="Price" class="form-label">Giá bán (₫)</label>
+<input asp-for="Price" class="form-control" type="number" step="@(Model.Id > 0 ? "1" : "0.01")" />
+<span asp-validation-for="Price">
+</span>
+</div>
+<div class="field">
+<label asp-for="Quantity" class="form-label">Số lượng</label>
+<input asp-for="Quantity" class="form-control" type="number" step="1" />
+<span asp-validation-for="Quantity">
+</span>
+</div>
+<div class="field">
+<label asp-for="Date_Import" class="form-label">Ngày nhập</label>
+<input asp-for="Date_Import" class="form-control" type="date" asp-format="{0:yyyy-MM-dd}" />
+<span asp-validation-for="Date_Import">
+</span>
+</div>
+@if(Model.Id > 0) { <div class="field">
+<label asp-for="Sold" class="form-label">Đã bán</label>
+<input asp-for="Sold" class="form-control" type="number" readonly />
+<span asp-validation-for="Sold">
+</span>
+</div> }
+<div class="field">
+<label asp-for="Coupon" class="form-label">Mã giảm giá</label>
+<input asp-for="Coupon" class="form-control" placeholder="Không bắt buộc" />
+<span asp-validation-for="Coupon">
+</span>
+</div>
+<div class="field">
+<label asp-for="Discount" class="form-label">Giảm giá (%)</label>
+<input asp-for="Discount" class="form-control" type="number" min="0" max="100" step="1" />
+<span asp-validation-for="Discount">
+</span>
+</div>
+</div>
+</section>
+<section class="form-section">
+<h2>Nội dung & hình ảnh</h2>
+<div class="form-grid">
+<div class="field full-span">
+<label asp-for="Description" class="form-label">Mô tả sản phẩm</label>
+<textarea asp-for="Description" class="form-control" rows="6" data-rich-editor data-cloud-name="@EditorImageSettings.Value.CloudName" data-max-image-bytes="@EditorImageSettings.Value.MaxImageBytes">
+</textarea>
+<span asp-validation-for="Description">
+</span>
+<p id="editor-error" class="inline-error" role="alert"></p>
+</div>
+<div class="field full-span">
+<label asp-for="ImageUrl" class="form-label">Ảnh sản phẩm</label>
+<input asp-for="ImageUrl" class="form-control" type="file" accept="image/*" data-image-preview="product-image-preview" />
+<span asp-validation-for="ImageUrl">
+</span>
+<small>Sử dụng một ảnh thể hiện rõ sản phẩm.</small>
+<img id="product-image-preview" class="image-preview" src="@(string.IsNullOrEmpty(image) ? "/images/motoshop-placeholder.svg" : "/uploads/products/" + image)" data-fallback-image alt="Xem trước ảnh sản phẩm" />
+</div>
+</div>
+</section>
+<input asp-for="Id" type="hidden" />
+@if (!string.IsNullOrEmpty(Model.Image)) { <input asp-for="Image" type="hidden" /> }

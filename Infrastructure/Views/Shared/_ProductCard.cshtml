@@ -1,0 +1,15 @@
+@model Product
+<article class="product-card">
+<a class="product-card-image" href="/Product/@Model.Id">
+<img src="/uploads/products/@Model.ImageUrl" data-fallback-image alt="@Model.Name" loading="lazy" width="320" height="280" />@if (Model.Quantity <= 0) { <span class="stock-badge">Hết hàng</span> }</a>
+<div class="product-card-body">
+<span class="eyebrow">@Model.Brand</span>
+<h3>
+<a href="/Product/@Model.Id">@Model.Name</a>
+</h3>
+<div class="product-card-bottom">
+<span class="price">@Model.Price.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")) ₫</span>
+<a class="product-card-arrow" href="/Product/@Model.Id" aria-label="Xem @Model.Name">↗</a>
+</div>
+</div>
+</article>

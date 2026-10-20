@@ -1,0 +1,44 @@
+@{ var chatBrand = StoreBranding.From(StoreConfiguration); }
+<aside class="shop-chat" aria-label="Tư vấn khách hàng" data-chat-widget data-chat-error="@Infrastructure.AIChat.ChatMessages.Unavailable">
+    <button class="shop-chat-launcher" id="live-chat-toggle" type="button" aria-label="Mở chat tư vấn" aria-controls="live-chat-popup" aria-expanded="false">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H4l-1 1v-9.5a8.5 8.5 0 0 1 17 0Z"/><path d="M7 9h9M7 13h6"/></svg>
+        <span>Chat tư vấn <span class="shop-chat-ai">AI</span></span>
+    </button>
+    <section class="shop-chat-panel" id="live-chat-popup" role="dialog" aria-labelledby="shop-chat-title" aria-describedby="shop-chat-subtitle" hidden>
+        <header class="shop-chat-header">
+            <img class="shop-chat-avatar" src="~/images/assistant.png" alt="" width="44" height="44" />
+            <div class="shop-chat-heading">
+                <h2 id="shop-chat-title">Trợ lý @chatBrand.Name</h2>
+                <p id="shop-chat-subtitle">Tìm sản phẩm · Giải đáp thắc mắc</p>
+            </div>
+            <button id="live-chat-close" class="shop-chat-icon" type="button" aria-label="Đóng chat"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button>
+        </header>
+        <div class="shop-chat-context"><span class="shop-chat-ai">AI</span> Hỗ trợ dựa trên danh mục của cửa hàng</div>
+        <div class="shop-chat-messages" id="live-chat-body" role="log" aria-label="Nội dung trò chuyện" aria-live="polite" aria-relevant="additions" tabindex="0">
+            <div class="shop-chat-message bot shop-chat-greeting">
+                <span class="shop-chat-author">Trợ lý @chatBrand.Name</span>
+                <div class="shop-chat-bubble">Xin chào! 👋 Bạn đang tìm sản phẩm nào?<br />Hãy cho mình biết tên sản phẩm hoặc nhu cầu và ngân sách để mình hỗ trợ nhé.</div>
+            </div>
+        </div>
+        <div class="shop-chat-suggestions" aria-label="Câu hỏi gợi ý">
+            <button type="button" data-chat-prompt="Gợi ý sản phẩm trong cửa hàng">Gợi ý sản phẩm <span aria-hidden="true">↗</span></button>
+            <button type="button" data-chat-prompt="Tư vấn sản phẩm theo ngân sách">Chọn theo ngân sách <span aria-hidden="true">↗</span></button>
+        </div>
+        <div class="shop-chat-status" id="shop-chat-status" role="status"></div>
+        <div class="shop-chat-error" id="shop-chat-error" role="alert" hidden>
+            <p id="shop-chat-error-text"></p>
+            <button type="button" id="shop-chat-retry">Thử lại</button>
+            <a href="https://zalo.me/0358223929" target="_blank" rel="noopener noreferrer">Liên hệ Zalo ↗</a>
+        </div>
+        <form class="shop-chat-form" id="live-chat-form" autocomplete="off">
+            <label class="visually-hidden" for="live-chat-input">Tin nhắn tư vấn</label>
+            <textarea id="live-chat-input" rows="1" maxlength="1000" placeholder="Bạn cần tư vấn gì?" aria-describedby="shop-chat-input-hint" required></textarea>
+            <button class="shop-chat-send" type="submit" aria-label="Gửi tin nhắn" disabled><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 3-7 18-4-7-7-4 18-7ZM10 14 21 3"/></svg></button>
+        </form>
+        <footer class="shop-chat-footer">
+            <p id="shop-chat-input-hint">Không gửi mật khẩu, OTP hoặc thông tin thẻ.</p>
+            <button id="shop-chat-reset" type="button">Trò chuyện mới</button>
+        </footer>
+    </section>
+    <noscript><a class="shop-chat-noscript" href="https://zalo.me/0358223929">Liên hệ tư vấn qua Zalo</a></noscript>
+</aside>

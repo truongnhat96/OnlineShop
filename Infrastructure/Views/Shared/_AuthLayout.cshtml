@@ -1,0 +1,28 @@
+@{ var brand = StoreBranding.From(StoreConfiguration); }
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<partial name="_Head" />
+<meta name="robots" content="noindex, nofollow" />
+</head>
+<body class="auth-layout">
+<a class="skip-link" href="#main-content">Đến nội dung chính</a>
+<header class="shell auth-header">
+<a class="brand" href="/">
+<img src="@brand.Logo" width="40" height="40" alt="" />@brand.Name</a>
+<a href="/">← Về cửa hàng</a>
+</header>
+<main id="main-content" class="auth-main" tabindex="-1">
+<div class="auth-art">
+<span class="eyebrow">READY FOR YOUR NEXT RIDE</span>
+<h1>Cho mỗi hành trình<br />một dấu ấn riêng.</h1>
+<p>@brand.Tagline</p>
+<img src="@brand.Hero" alt="Minh họa mũ bảo hiểm và phụ kiện xe máy" />
+</div>
+<div class="auth-card">
+<partial name="_Notice" />@RenderBody()</div>
+</main>
+<partial name="_Scripts" />
+<script src="~/js/auth.js" asp-append-version="true">
+</script>@await RenderSectionAsync("Scripts", required: false)</body>
+</html>

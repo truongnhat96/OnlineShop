@@ -29,6 +29,7 @@ namespace Infrastructure.Controllers
         [HttpPost("/Login")]
         public async Task<IActionResult> Login(LoginModel model)
         {
+            Console.WriteLine("Login model: " + model.Username + " " + model.Password);
             if (ModelState.IsValid)
             {
                 try

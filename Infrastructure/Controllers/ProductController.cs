@@ -1,6 +1,7 @@
 ﻿using Entities;
 using Infrastructure.Models;
 using Microsoft.AspNetCore.Authorization;
+using Infrastructure.EditorImages;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.RateLimiting;
@@ -17,13 +18,15 @@ namespace Infrastructure.Controllers
         private readonly IReviewerFinder _reviewerFinder;
         private readonly ILogger<ProductController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly EditorContentService _editorContent;
 
-        public ProductController(IProductManage productManager, ILogger<ProductController> logger, IReviewerFinder reviewerFinder, IWebHostEnvironment webHostEnvironment)
+        public ProductController(IProductManage productManager, ILogger<ProductController> logger, IReviewerFinder reviewerFinder, IWebHostEnvironment webHostEnvironment, EditorContentService editorContent)
         {
             _productManager = productManager;
             _logger = logger;
             _reviewerFinder = reviewerFinder;
             _webHostEnvironment = webHostEnvironment;
+            _editorContent = editorContent;
 
             _logger.LogInformation("Environment: {EnvironmentName}", _webHostEnvironment.EnvironmentName);
         }
@@ -158,21 +161,36 @@ namespace Infrastructure.Controllers
         }
 
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("/Add")]
+        [RequestFormLimits(ValueLengthLimit = 3 * 1024 * 1024)]
         public async Task<IActionResult> Add(ProductModel model)
         {
+            try { model.Description = _editorContent.PrepareForSave(model.Description, product: true); }
+            catch (EditorImageException exception)
+            {
+                ModelState.AddModelError(nameof(model.Description), exception.Message);
+                ViewData["ProductForm"] = model;
+                return View("Manage", new CategoryModel { CategoryList = (await _productManager.GetAllCategoriesAsync()).SkipLast(1).ToList() });
+            }
+            if (!ModelState.IsValid)
+            {
+                ViewData["ProductForm"] = model;
+                return View("Manage", new CategoryModel { CategoryList = (await _productManager.GetAllCategoriesAsync()).SkipLast(1).ToList() });
+            }
             try
             {
                 var product = new Product
                 {
                     Name = model.Name,
                     Price = model.Price,
-                    OldPrice = model.Price * new Random().Next(2, 4),
+                    OldPrice = 0,
                     CategoryId = model.CategoryId,
                     Brand = model.Brand,
                     Date_Import = model.Date_Import,
                     Description = model.Description,
                     Quantity = model.Quantity,
+                    ImageUrl = string.Empty,
                 };
 
                 if (model.ImageUrl != null && model.ImageUrl.Length > 0)
@@ -194,24 +212,24 @@ namespace Infrastructure.Controllers
                     // Gán lại tên file (đã sanitize) cho product
                     product.ImageUrl = safeName;
                 }
-                await _productManager.AddProductAsync(product);
+                var saved = await _productManager.AddProductAsync(product);
 
                 if (!string.IsNullOrEmpty(model.Coupon))
                 {
-                    var newProduct = await _productManager.GetProductsByCategoryAsync(model.CategoryId);
-                    await _productManager.AddOrUpdateCouponAsync(newProduct.Last().Id, model.Coupon, model.Discount);
+                    await _productManager.AddOrUpdateCouponAsync(saved.Id, model.Coupon, model.Discount);
                 }
                 TempData["Message"] = "Thêm sản phẩm thành công";
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError(ex, "Failed to add product");
                 TempData["Message"] = "Thêm sản phẩm thất bại";
             }
             return RedirectToAction("Manage");
         }
 
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("/Remove/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -235,6 +253,7 @@ namespace Infrastructure.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var product = await _productManager.GetProductDetail(id);
+            if (product == null) return NotFound();
             var model = new ProductModel
             {
                 Id = id,
@@ -245,7 +264,7 @@ namespace Infrastructure.Controllers
                 oldPrice = product.OldPrice,
                 Brand = product.Brand,
                 Date_Import = product.Date_Import,
-                Description = product.Description,
+                Description = EditorContentService.ProductEditorHtml(product.Description),
                 Quantity = product.Quantity,
                 CategoryList = (await _productManager.GetAllCategoriesAsync()).SkipLast(1).ToList(),
                 Image = product.ImageUrl ?? string.Empty
@@ -262,9 +281,20 @@ namespace Infrastructure.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("/Edit/{id}")]
+        [RequestFormLimits(ValueLengthLimit = 3 * 1024 * 1024)]
         public async Task<IActionResult> Edit(ProductModel model, [FromRoute] int id)
         {
-            if (ModelState.IsValid && double.TryParse(TempData["OldPrice"]?.ToString() ?? "0", out double oldPrice) && double.TryParse(TempData["Price"]?.ToString() ?? "0", out double pre_price))
+            model.Id = id;
+            string description;
+            try { description = _editorContent.PrepareForSave(model.Description, product: true); }
+            catch (EditorImageException exception)
+            {
+                ModelState.AddModelError(nameof(model.Description), exception.Message);
+                return View("Edit", model);
+            }
+            var existing = await _productManager.GetProductDetail(id);
+            if (existing == null) return NotFound();
+            if (ModelState.IsValid)
             {
                 var product = new Product
                 {
@@ -275,20 +305,20 @@ namespace Infrastructure.Controllers
                     Brand = model.Brand,
                     Sold = model.Sold,
                     Date_Import = model.Date_Import,
-                    Description = model.Description,
+                    Description = description,
                     Quantity = model.Quantity,
                 };
 
                 // Check if the price is lower than the previous price
-                if (product.Price < pre_price)
+                if (product.Price < existing.Price)
                 {
-                    product.OldPrice = pre_price;
-                    model.oldPrice = pre_price;
+                    product.OldPrice = existing.Price;
+                    model.oldPrice = existing.Price;
                 }
                 else
                 {
-                    product.OldPrice = oldPrice;
-                    model.oldPrice = oldPrice;
+                    product.OldPrice = existing.OldPrice;
+                    model.oldPrice = existing.OldPrice;
                 }
 
                 if (model.ImageUrl != null && model.ImageUrl.Length > 0)
@@ -310,7 +340,7 @@ namespace Infrastructure.Controllers
                     // Gán lại tên file (đã sanitize) cho product
                     product.ImageUrl = safeName;
                 }
-                model.Image = product.ImageUrl ?? string.Empty;
+                model.Image = product.ImageUrl ?? existing.ImageUrl ?? string.Empty;
 
                 await _productManager.UpdateProductAsync(product);
                 if (!string.IsNullOrEmpty(model.Coupon))
@@ -327,76 +357,6 @@ namespace Infrastructure.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
-        [HttpGet("/EditAccountInfor/{productId}")]
-        public async Task<IActionResult> AccountInfor(int productId)
-        {
-            var infors = await _productManager.GetItems(productId);
-            var model = new ItemInforModel
-            {
-                ItemInfors = infors.ToList(),
-                ProductId = productId
-            };
-            return View(model);
-        }
-
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet("/Infor/{id}/{productId}")]
-        public async Task<IActionResult> AddOrUpdateAccount(int id, int productId)
-        {
-            var infor = await _productManager.GetItem(id);
-            if (infor != null)
-            {
-                var model = new ItemInforModel
-                {
-                    Id = infor.Id,
-                    ProductId = infor.ProductId,
-                    AccountName = infor.AccountName ?? "",
-                    Password = infor.Password ?? "",
-                    Key = infor.Key ?? ""
-                };
-                return View(model);
-            }
-            var newModel = new ItemInforModel
-            {
-                ProductId = productId
-            };
-            return View(newModel);
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpPost("/Infor/{id}/{productId}")]
-        public async Task<IActionResult> AddOrUpdateAccount(ItemInforModel model, int id, int productId)
-        {
-            if (id != 0)
-            {
-                var infor = new ItemInfor
-                {
-                    Id = id,
-                    ProductId = productId,
-                    AccountName = model.AccountName,
-                    Password = model.Password,
-                    Key = model.Key
-                };
-                await _productManager.UpdateInforAsync(infor);
-                TempData["Notify"] = "Cập nhật thông tin tài khoản thành công";
-                return RedirectToAction("AccountInfor", new { productId = model.ProductId });
-            }
-            else
-            {
-                var infor = new ItemInfor
-                {
-                    ProductId = model.ProductId,
-                    AccountName = model.AccountName,
-                    Password = model.Password,
-                    Key = model.Key
-                };
-                await _productManager.AddInforAsync(infor);
-                TempData["Notify"] = "Thêm thông tin tài khoản thành công";
-                return RedirectToAction("AccountInfor", new { productId = model.ProductId });
-            }
-        }
         #endregion
 
 

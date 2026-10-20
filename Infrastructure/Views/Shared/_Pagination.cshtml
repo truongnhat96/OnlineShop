@@ -1,0 +1,14 @@
+@using Microsoft.AspNetCore.WebUtilities
+@model PaginationModel
+@if (Model.Total > 1) {
+    var query = Context.Request.Query.Where(q => q.Key != "page").ToDictionary(q => q.Key, q => (string?)q.Value.ToString());
+    <nav aria-label="Phân trang">
+<ul class="pagination">
+    @for(var number = Math.Max(1, Model.Current - 2); number <= Math.Min(Model.Total, Model.Current + 2); number++) {
+        <li class="page-item @(number == Model.Current ? "active" : "")">
+<a class="page-link" href="@QueryHelpers.AddQueryString($"{Model.Path}/page/{number}", query)" aria-label="Trang @number" aria-current="@(number == Model.Current ? "page" : null)">@number</a>
+</li>
+    }
+    </ul>
+</nav>
+}

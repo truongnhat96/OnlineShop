@@ -37,6 +37,7 @@ namespace UseCase
         public async Task<User> LoginAsync(string username, string password)
         {
             var user = await _unitOfWork.UserRepository.GetUserAsync(username);
+            Console.WriteLine("password: " + user?.Password);
             if (user != null && user.Password == password)
             {
                 return user;

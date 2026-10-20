@@ -1,110 +1,12 @@
-﻿@using System.Text.RegularExpressions
 @model PostModel
-@{
-    ViewData["Title"] = Model.Title;
-    int rdLike = new Random().Next(0, 100);
-    // Tạo URL đầy đủ của trang post, dùng cho share links
-    var postUrl = $"https://{Context.Request.Host}{Context.Request.Path}";
-    var encodedUrl = Uri.EscapeDataString(postUrl);
-    var encodedTitle = Uri.EscapeDataString(Model.Title);
-
-    Console.WriteLine("Post URL: " + postUrl);
-    var postImageUrl = postUrl.Replace(Context.Request.Path, $"/uploads/posts/{Model.Image}");
-    Console.WriteLine("Post Image URL: " + postImageUrl);
-
-    var rawHtml = Model.Content;
-
-    // Xóa bỏ tất cả tag HTML
-    var plainText = Regex.Replace(rawHtml, "<.*?>", string.Empty).Trim();
-
-    // Nếu quá dài, truncate về 150 ký tự + "..."
-    const int maxDescLen = 150;
-    var description =
-        plainText.Length <= maxDescLen
-            ? plainText
-            : plainText.Substring(0, maxDescLen).TrimEnd() + "...";
-    Console.WriteLine("Post Description: " + description);
-}
-
-@section MetaTags {
-    <meta property="og:type" content="article" />
-    <meta property="og:site_name" content="TruongShop" />
-    <meta property="og:url" content="@postUrl" />
-    <meta property="og:title" content="@Model.Title" />
-    <meta property="og:description" content="@description" />
-    <meta property="og:image" content="@postImageUrl" />
-    <meta property="og:image:secure_url" content="@postImageUrl" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="@Model.Title" />
-    <meta name="twitter:description" content="@description" />
-    <meta name="twitter:image" content="@postImageUrl" />
-}
-
-<div class="main">
-    <div class="head">
-        <a href="/Posts" class="category">Thủ Thuật Máy Tính</a>
-        <div class="title">@Model.Title</div>
-        <div class="date">@Model.CreatedAt.ToShortDateString() - Đăng bởi @Model.Author</div>
-        <div class="image-title"><img onerror="this.src='/images/error-404.png'" src="/uploads/posts/@Model.Image" /></div>
-        <div class="content">
-            @(Html.Raw(Model.Content))
-        </div>
-        <!---->
-        <div class="like-button">
-            <input class="on" id="heart" type="checkbox" />
-            <label class="like" for="heart">
-                <svg class="like-icon"
-                     fill-rule="nonzero"
-                     viewBox="0 0 24 24"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z"></path>
-                </svg>
-                <span class="like-text">Likes</span>
-            </label>
-            <span class="like-count one">@rdLike</span>
-            <span class="like-count two">@(rdLike + 1)</span>
-        </div>
-
-        <div class="share-container">
-            <div class="share-button">
-                <i class="fa-solid fa-share-nodes"></i>
-            </div>
-            <div class="share-popup">
-                <span class="arrow"></span>
-                <a href="https://twitter.com/intent/tweet?url=@encodedUrl&text=@encodedTitle" class="twitter" target="_blank" title="Twitter"><i class="fa-brands fa-twitter"></i></a>
-                <a href="https://www.facebook.com/sharer/sharer.php?u=@encodedUrl&quote=@encodedTitle" target="_blank" title="Facebook" class="facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                <a href="https://pinterest.com/pin/create/button/?url=@encodedUrl&description=@encodedTitle" target="_blank" title="Pinterest" class="pinterest"><i class="fa-brands fa-pinterest-p"></i></a>
-                <a href="https://www.linkedin.com/sharing/share-offsite/?url=@encodedUrl&title=@encodedTitle" target="_blank" title="LinkedIn" class="linkedin"><i class="fa-brands fa-linkedin-in"></i></a>
-            </div>
-        </div>
-
-
-
-        <hr />
-    </div>
-
-    <aside class="sidebar">
-        <div class="advertisement">
-            <h3 class="ad-title">ChatGPT Team Business</h3>
-            <img src="/images/chatgpt-banner.jpg" alt="Office 365" class="advertisement-image">
-            <p class="advertisement-price">Giá chỉ 95K</p>
-        </div>
-
-        <div class="advertisement">
-            <a href="#" class="ad-link">
-                <h3 class="ad-title">Bán Quyền Windows 11 Pro Key Global</h3>
-                <img src="/images/windows-11-pro-banner.jpg" alt="Windows 11 Pro" class="advertisement-image">
-            </a>
-            <p class="advertisement-price">160.000 VND</p>
-        </div>
-
-        <div class="advertisement">
-            <h3 class="ad-title">Netflix Premium 4K</h3>
-            <img src="/images/netflix-banner.jpg" alt="Netflix" class="advertisement-image">
-            <p class="advertisement-price">79K/ Tháng</p>
-        </div>
-    </aside>
-</div>
+@{ ViewData["Title"] = Model.Title; }
+<article class="article">
+<header>
+<span class="eyebrow">Cẩm nang xe máy</span>
+<h1 class="mt-3">@Model.Title</h1>
+<p class="muted">@Model.Author · @Model.CreatedAt.ToString("dd/MM/yyyy")</p>
+</header>
+<img class="article-cover" src="/uploads/posts/@Model.Image" data-fallback-image alt="@Model.Title" width="880" height="460" />
+<div class="panel prose">@Html.Raw(Model.Content)</div>
+<a class="btn btn-outline" href="/Posts">← Về cẩm nang</a>
+</article>

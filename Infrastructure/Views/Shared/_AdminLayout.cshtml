@@ -1,0 +1,43 @@
+@{ var brand = StoreBranding.From(StoreConfiguration); }
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<partial name="_Head" />
+<meta name="robots" content="noindex, nofollow" />@await RenderSectionAsync("MetaTags", required: false)</head>
+<body class="admin-layout">
+<a class="skip-link" href="#main-content">Đến nội dung chính</a>
+<aside class="admin-sidebar" id="admin-sidebar" aria-label="Điều hướng quản trị">
+<a class="brand" href="/Manage">
+<img src="@brand.Logo" width="40" height="40" alt="" />
+<span>@brand.Name<small>QUẢN TRỊ CỬA HÀNG</small>
+</span>
+</a>
+<nav class="admin-nav">
+<span class="eyebrow">Không gian làm việc</span>
+@if (User.IsInRole("Admin")) { <a href="/Manage">Tổng quan & thêm sản phẩm</a>
+<a href="/Product-List">Sản phẩm</a>
+<a href="/BlogList">Bài viết</a>
+<a href="/api/AHP">Số bán & tồn kho</a> }
+<span class="eyebrow">Cửa hàng</span>
+<a href="/">Xem cửa hàng ↗</a>
+<a href="/Logout">Đăng xuất</a>
+</nav>
+</aside>
+<button class="admin-scrim" type="button" aria-label="Đóng điều hướng" hidden>
+</button>
+<div class="admin-workspace">
+<header class="admin-topbar">
+<button class="btn btn-outline admin-menu-trigger" type="button" aria-controls="admin-sidebar" aria-expanded="false" aria-label="Mở điều hướng">☰</button>
+<span>Không gian quản trị</span>
+<span class="admin-identity">@User.Identity?.Name</span>
+</header>
+<main id="main-content" class="admin-main" tabindex="-1">
+<partial name="_Breadcrumb" />
+<partial name="_Notice" />@RenderBody()</main>
+<footer class="admin-footer">@brand.Name · Quản trị cửa hàng</footer>
+</div>
+<partial name="_ConfirmModal" />
+<partial name="_Scripts" />
+<script src="~/js/admin.js" asp-append-version="true">
+</script>@await RenderSectionAsync("Scripts", required: false)</body>
+</html>

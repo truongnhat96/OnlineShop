@@ -58,7 +58,9 @@ namespace UseCase.Caching
 
         public async Task<Post> UpdatePostAsync(Post post)
         {
-            return await _postRepository.UpdatePostAsync(post);
+            var saved = await _postRepository.UpdatePostAsync(post);
+            await _cache.RemoveAsync(_option.CacheKey);
+            return saved;
         }
 
         public async Task<Post> GetPostDetailAsync(Guid id)

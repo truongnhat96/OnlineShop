@@ -69,7 +69,7 @@ namespace UseCase.Tests.BlogManageTest
                 ImageUrl = "test.jpg",
                 CreatedAt = DateTime.Now
             };
-            repo.Setup(p => p.DeletePostAsync(blog.Id)).ReturnsAsync(blog);
+            repo.Setup(p => p.DeletePostAsync(blog.Id, null)).ReturnsAsync(blog);
             repo.Setup(p => p.GetPostAsync(blog.Id));
 
             var postManage = new PostManage(repo.Object);

@@ -12,16 +12,12 @@ namespace Infrastructure.Seed
             var productCategory = await context.Categories.ToListAsync();
             if (productCategory.Count == 0)
             {
-                productCategory.Add(new Category { Name = "Diệt Virus" });
-                productCategory.Add(new Category { Name = "Key Office" });
-                productCategory.Add(new Category { Name = "ChatGPT" });
-                productCategory.Add(new Category { Name = "AutoCAD" });
-                productCategory.Add(new Category { Name = "Project" });
-                productCategory.Add(new Category { Name = "Visio" });
-                productCategory.Add(new Category { Name = "Visual Studio" });
-                productCategory.Add(new Category { Name = "IDM" });
-                productCategory.Add(new Category { Name = "VPN" });
-                productCategory.Add(new Category { Name = "Thủ Thuật" });
+                productCategory.Add(new Category { Name = "Phụ kiện tiện ích" });
+                productCategory.Add(new Category { Name = "Tay lái & Gương" });
+                productCategory.Add(new Category { Name = "Bảo vệ xe" });
+                productCategory.Add(new Category { Name = "Điện & chiếu sáng" });
+                productCategory.Add(new Category { Name = "Chăm sóc & bảo dưỡng" });
+                productCategory.Add(new Category { Name = "Đồ bảo hộ" });
                 await context.Categories.AddRangeAsync(productCategory);
             }
             if (adminRole == null)
@@ -43,7 +39,7 @@ namespace Infrastructure.Seed
                     Username = "AdminTruongshop204",
                     DisplayName = "Super Admin TruongShop",
                     Email = "luongnhattruong2004@gmail.com",
-                    Password = "@1TruongShop02k4",
+                    Password = "@1TruongShop24k",
                     RoleId = 1
                 };
                 await context.Users.AddAsync(superUser);

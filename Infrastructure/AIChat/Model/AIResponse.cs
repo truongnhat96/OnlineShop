@@ -87,7 +87,7 @@ namespace Infrastructure.AIChat.Model
 
     public partial class AIResponse
     {
-        public static AIResponse FromJson(string json) => JsonSerializer.Deserialize<AIResponse>(json, Infrastructure.AIChat.Model.Converter.Settings);
+        public static AIResponse FromJson(string json) => JsonSerializer.Deserialize<AIResponse>(json);
     }
 }
 #pragma warning restore CS8618

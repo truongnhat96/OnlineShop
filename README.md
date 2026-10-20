@@ -50,7 +50,7 @@ OnlineShop.sln           # Solution file
 
 ## Prerequisites
 
-* .NET 6 SDK or later
+* .NET 9 SDK
 * SQL Server (LocalDB or full instance)
 * Visual Studio 2022 / VS Code
 * (Optional) Docker, if running in containers
@@ -69,23 +69,31 @@ OnlineShop.sln           # Solution file
    dotnet restore
    dotnet build
    ```
-3. **Database migrations**
+3. **Use the existing database**
 
-   ```bash
-   cd Infrastructure.SqlServer
-   dotnet ef database update
-   ```
+   Keep the existing SQL Server connection and OnlineShop database. This UI update adds no migrations, seed replacements or business-data changes.
 4. **Run the web project**
 
    ```bash
-   dotnet run --project WebUI/WebUI.csproj
+   dotnet dev-certs https --trust
+   dotnet run --project Infrastructure/Infrastructure.csproj --launch-profile https
    ```
 
-> *Note: Replace `WebUI/WebUI.csproj` with your front-end project path if different.*
+Open **https://localhost:7042** for the real application. HTTPS is the default project launch profile; http://localhost:5085 redirects to HTTPS while this profile is running. Products, accounts, login, cart and admin use the existing SQL Server database and application services.
+
+Trust the ASP.NET Core development certificate once per machine/user and accept the Windows certificate prompt if shown. In Visual Studio, select the **https** launch profile. Use `localhost` in the URL so it matches the development certificate.
+
+The project under `tests/MotoShop.UiHarness` is only a UI automation fixture. It does not use real accounts or database data. It requires the explicit `--ui-fixtures` flag and runs on port **15187**. Do not use this host to operate the shop.
+
+See [the runtime and UI test guide](docs/ui-review/README.md).
 
 ## Configuration
 
-Add a `.env` or `appsettings.json` entry for:
+Summernote in article content and product descriptions supports automatic Cloudinary image uploads. Set `Cloudinary:CloudName`, `Cloudinary:ApiKey`, and `Cloudinary:ApiSecret` through ASP.NET configuration, or supply missing values in the repository-root `.env` as `Cloudinary__CloudName`, `Cloudinary__ApiKey`, `Cloudinary__ApiSecret`, then restart the app. Non-empty ASP.NET values take precedence per field. Product thumbnails and article covers still save locally. Empty defaults keep text editing available; image uploads report a configuration error until credentials are supplied. See [Cloudinary setup](docs/ke-hoach-tich-hop-cloudinary-summernote.md) and [configuration fix verification](docs/ui-review/cloudinary/config-fix/README.md).
+
+The customer AI chat uses Google Gemini Developer API. Create a key at [Google AI Studio](https://aistudio.google.com/api-keys), add `GEMINI_API_KEY=your_key` to the existing repository-root `.env`, then restart the app. The default model is `gemini-3.5-flash-lite`; use a Free Tier project and check its current quota. No billing is enabled by this integration. For chat, only `GEMINI_API_KEY` is read from `.env`; explicit ASP.NET configuration takes precedence. Cloudinary reads its own credential keys separately. The old `HF_TOKEN` is no longer used. Keys stay on the server; AHP recommendations still operate independently. All service failures show one generic message; classified technical details go to logs. See [Gemini setup](docs/ke-hoach-tich-hop-gemini-chatbot.md) and [verification](docs/ui-review/chat/gemini/README.md).
+
+Use `appsettings.json`, user-secrets or exported environment variables for other configuration:
 
 ```json
 {

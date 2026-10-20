@@ -1,0 +1,8 @@
+@foreach (var key in new[] { "Message", "Notify", "CartMessage", "CartError", "submit", "delete" }) {
+    if (TempData[key] is object message) {
+        <div class="notice @(key == "CartError" ? "notice-error" : "")" role="status">
+<span>@message</span>
+<button type="button" class="notice-dismiss" aria-label="Đóng thông báo">×</button>
+</div>
+    }
+}

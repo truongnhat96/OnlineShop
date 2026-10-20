@@ -1,50 +1,50 @@
-﻿@model SignupModel
-@{
-    ViewData["Title"] = "Đăng ký";
-}
-
-<form method="post" style="border:1px solid #ccc">
-    <div class="container">
-        <h1>Đăng ký</h1>
-        <p>Vui lòng điền vào biểu mẫu để tạo tài khoản mới.</p>
-        <hr>
-
-        <label for="Username"><b>Tên người dùng</b></label>
-        <input class="@(Html.ViewContext.ModelState["Username"]?.Errors.Count > 0 ? "error" : "")" type="text" placeholder="Tên người dùng" name="Username" required>
-        <span class="notify-error">
-            @Html.ViewContext.ModelState["Username"]?.Errors.FirstOrDefault()?.ErrorMessage
-            <br />
-        </span>
-
-        <label for="DisplayName"><b>Tên hiển thị</b></label>
-        <input type="text" placeholder="Tên hiển thị" name="DisplayName" required>
-
-        <label for="Email"><b>Email</b></label>
-        <input class="@(Html.ViewContext.ModelState["Email"]?.Errors.Count > 0 ? "error" : "")" type="email" placeholder="Địa chỉ email" name="Email" required>
-        <span class="notify-error">
-            @Html.ViewContext.ModelState["Email"]?.Errors.FirstOrDefault()?.ErrorMessage
-            <br />
-        </span>
-
-        <label for="Password"><b>Mật khẩu</b></label>
-        <input class="@(Html.ViewContext.ModelState["Password"]?.Errors.Count > 0 ? "error" : "")" type="password" placeholder="Mật khẩu" name="Password" required>
-        <span class="notify-error">
-            @Html.ViewContext.ModelState["Password"]?.Errors.FirstOrDefault()?.ErrorMessage
-            <br />
-        </span>
-
-        <label for="ConfirmPassword"><b>Xác nhận mật khẩu</b></label>
-        <input class="@(Html.ViewContext.ModelState["ConfirmPassword"]?.Errors.Count > 0 ? "error" : "")" type="password" placeholder="Xác nhận mật khẩu" name="ConfirmPassword" required>
-        <span class="notify-error">
-            @Html.ViewContext.ModelState["ConfirmPassword"]?.Errors.FirstOrDefault()?.ErrorMessage
-        </span>
-
-        <p>Khi đăng ký, bạn đã đồng ý với <a href="/home/privacy" style="color:dodgerblue; text-decoration:none">Điều khoản dịch vụ và chính sách Quyền riêng tư</a>.</p>
-
-        <div class="clearfix">
-            <button type="submit" class="signupbtn">ĐĂNG KÝ</button>
-            <button type="button" class="cancelbtn" onclick="location.href='/'">THOÁT</button>
-        </div>
-    </div>
+@model SignupModel
+@{ Layout = "_AuthLayout"; ViewData["Title"] = "Đăng ký"; }
+<span class="eyebrow">Bắt đầu cùng @StoreBranding.From(StoreConfiguration).Name</span>
+<h2 class="mt-2">Tạo tài khoản</h2>
+<p class="muted">Điền thông tin để đăng ký.</p>
+<form action="/Signup" method="post">
+<div asp-validation-summary="All" role="alert">
+</div>
+<div class="field">
+<label asp-for="Username" class="form-label">Tên tài khoản</label>
+<input asp-for="Username" class="form-control" autocomplete="username" required />
+<span asp-validation-for="Username">
+</span>
+</div>
+<div class="field">
+<label asp-for="DisplayName" class="form-label">Tên hiển thị</label>
+<input asp-for="DisplayName" class="form-control" autocomplete="name" required />
+<span asp-validation-for="DisplayName">
+</span>
+</div>
+<div class="field">
+<label asp-for="Email" class="form-label">Email</label>
+<input asp-for="Email" type="email" class="form-control" autocomplete="email" required />
+<span asp-validation-for="Email">
+</span>
+</div>
+<div class="field">
+<label asp-for="Password" class="form-label">Mật khẩu</label>
+<div class="password-field">
+<input asp-for="Password" type="password" minlength="5" class="form-control" autocomplete="new-password" required />
+<button class="btn btn-outline" type="button" data-password-toggle="Password" aria-controls="Password" aria-pressed="false">Hiện</button>
+</div>
+<span asp-validation-for="Password">
+</span>
+</div>
+<div class="field">
+<label asp-for="ConfirmPassword" class="form-label">Nhập lại mật khẩu</label>
+<div class="password-field">
+<input asp-for="ConfirmPassword" type="password" class="form-control" autocomplete="new-password" required />
+<button class="btn btn-outline" type="button" data-password-toggle="ConfirmPassword" aria-controls="ConfirmPassword" aria-pressed="false">Hiện</button>
+</div>
+<span asp-validation-for="ConfirmPassword">
+</span>
+</div>
+<p class="muted">Xem <a href="/Home/Privacy">chính sách quyền riêng tư</a> trước khi cung cấp thông tin.</p>
+<button class="btn btn-primary w-100" type="submit">Đăng ký ↗</button>
 </form>
-
+<p class="mt-4 mb-0">Đã có tài khoản? <a href="/Login">Đăng nhập</a>
+</p>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

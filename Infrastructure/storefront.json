@@ -1,0 +1,9 @@
+{
+  "Storefront": {
+    "BrandName": "MotoShop",
+    "Tagline": "Phụ kiện cho hành trình của bạn",
+    "Logo": "/images/motoshop-logo.svg",
+    "Favicon": "/images/motoshop-mark.svg",
+    "Hero": "/images/motoshop-hero.svg"
+  }
+}

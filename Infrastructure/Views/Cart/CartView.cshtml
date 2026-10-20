@@ -1,323 +1,60 @@
-﻿@using System.Text.Json
-@using System.Security.Claims
 @model List<CartModel>
-@{
-    int totalItems = 0;
-    int userId = User.Identity?.IsAuthenticated == true ? int.Parse(User.FindFirstValue(ClaimTypes.Sid) ?? "0") : 0;
-    double totalPrice = 0;
-    foreach (var item in Model)
-    {
-        totalItems += item.Quantity;
-        totalPrice += item.Product.Price * item.Quantity;
-    }
-    int mt = 0;
+@{ ViewData["Title"] = "Giỏ hàng"; var items = Model ?? new List<CartModel>(); var total = items.Sum(item => item.Product.Price * item.Quantity); var userId = User.Identity?.IsAuthenticated == true ? User.FindFirstValue(ClaimTypes.Sid) ?? "0" : "0"; }
+<div class="page-heading">
+<div>
+<span class="eyebrow">Hành trình mua sắm</span>
+<h1>Giỏ hàng của bạn</h1>
+<p>@items.Sum(item => item.Quantity) sản phẩm</p>
+</div>
+</div>
+@if(items.Count == 0) { <partial name="_EmptyState" model='@("Giỏ hàng đang trống")' /> } else {
+<div class="commerce-grid">
+<section class="panel">
+<h2 class="h5">Sản phẩm đã chọn</h2>
+@foreach(var item in items) {
+<div class="cart-row">
+<a href="/Product/@item.Product.Id">
+<img src="/uploads/products/@item.Product.ImageUrl" data-fallback-image alt="@item.Product.Name" width="88" height="88" />
+</a>
+<div>
+<h2>
+<a href="/Product/@item.Product.Id">@item.Product.Name</a>
+</h2>
+<span class="muted">@item.Product.Brand</span>
+</div>
+<div class="field">
+<label class="visually-hidden" for="cart-quantity-@item.Product.Id">Số lượng @item.Product.Name</label>
+<input class="form-control" id="cart-quantity-@item.Product.Id" type="number" min="0" step="1" value="@item.Quantity" data-cart-quantity data-product-id="@item.Product.Id" required />
+</div>
+<span class="price">@item.Product.Price.ToString("N0",CultureInfo.GetCultureInfo("vi-VN")) ₫</span>
+<a class="btn btn-outline remove-item" href="@Url.Action("Remove","Cart",new { productId=item.Product.Id, productName=item.Product.Name })" aria-label="Xóa @item.Product.Name khỏi giỏ">×</a>
+</div>
 }
-
-@if (TempData["CartMessage"] != null)
-{
-    mt = 140;
-    <div class="alert" id="alertBox">
-        <span class="alert-icon">✔</span>
-        <span class="alert-text">@TempData["CartMessage"]</span>
-        <span class="alert-close" id="closeBtn">&times;</span>
-    </div>
+<p id="cart-update-error" class="inline-error" role="alert">
+</p>
+<div class="cart-update-actions">
+<a href="/">← Tiếp tục mua sắm</a>
+<button id="cart-update" type="button" class="btn btn-outline" disabled>Cập nhật giỏ hàng</button>
+</div>
+</section>
+<aside class="panel summary">
+<h2 class="h5">Tóm tắt giỏ hàng</h2>
+<div class="summary-line">
+<span>Số lượng</span>
+<strong>@items.Sum(item=>item.Quantity)</strong>
+</div>
+<div class="summary-line summary-total">
+<span>Tổng tiền</span>
+<span>@total.ToString("N0",CultureInfo.GetCultureInfo("vi-VN")) ₫</span>
+</div>
+@if(User.Identity?.IsAuthenticated == true) { <form action="/Discount" method="post" class="mb-4">
+<label for="coupon" class="form-label">Mã giảm giá</label>
+<input id="coupon" class="form-control mb-2" name="coupon" value="@(Context.Request.HasFormContentType ? Context.Request.Form["coupon"].ToString() : "")" placeholder="Nhập mã giảm giá" required />
+<button class="btn btn-outline w-100">Áp dụng mã</button>
+</form> }
+else { <p class="muted">
+<a href="/Login">Đăng nhập</a> để sử dụng mã giảm giá.</p> }
+<a class="btn btn-primary w-100" href="/Pay/@userId" data-checkout-link>Tiến hành thanh toán ↗</a>
+</aside>
+</div>
 }
-
-@if (Model.Count != 0)
-{
-    <section class="h-custom" style="margin-top: @(mt)px">
-        <div class="container py-5">
-            <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-12">
-                    <div class="card card-registration card-registration-2" style="border-radius: 15px;">
-                        <div class="card-body p-0">
-                            <div class="row g-0">
-                                <div class="col-lg-8">
-                                    <div class="p-5">
-                                        <div class="d-flex justify-content-between align-items-center mb-5">
-                                            <h1 class="fw-bold mb-0">Shopping Cart</h1>
-                                            <h6 class="mb-0 text-muted">@totalItems items</h6>
-                                        </div>
-                                        <hr class="my-4">
-
-                                        @foreach (var item in Model)
-                                        {
-                                            <div class="row mb-4 d-flex justify-content-between align-items-center">
-
-                                                <div class="col-md-2 col-lg-2 col-xl-2">
-                                                    <a href="/product/@item.Product.Id" class="product-link">
-                                                        <img onerror="this.src='/images/not-found.png'" src="/uploads/products/@item.Product.ImageUrl"
-                                                             class="img-fluid rounded-3" alt="@item.Product.Name">
-                                                    </a>
-                                                </div>
-                                                <div class="col-md-3 col-lg-3 col-xl-3">
-                                                    <a href="/product/@item.Product.Id" class="product-link">
-                                                        <h6 class="mb-0">@item.Product.Name</h6>
-                                                    </a>
-                                                </div>
-                                                <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
-
-                                                    <input type="number" class="quantity-input" value="@item.Quantity" inputmode="numeric" min="0" data-product-id="@item.Product.Id">
-
-                                                </div>
-                                                <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                                                    <h6 class="mb-0">@item.Product.Price.ToString("c0", new CultureInfo("vi-VN"))</h6>
-                                                </div>
-                                                <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                                                    <a href="/Cart-Remove/@item.Product.Id/@item.Product.Name" class="text-muted"><i class="fas fa-times"></i></a>
-                                                </div>
-                                            </div>
-
-                                            <hr class="my-4">
-                                        }
-
-                                        <!-- Cảnh báo số lượng tồn kho -->
-                                        <div style="display:none;" class="cart-warning">
-                                            <span class="cart-warning-icon">&#9888;</span>
-                                            <span class="cart-warning-text">
-                                                  Số lượng bạn muốn mua vượt quá số hàng hiện có!
-                                            </span>
-                                        </div>
-
-                                        <div class="pt-5 d-flex justify-content-between">
-                                            <h6 class="mb-0">
-                                                <a href="/" class="text-body">
-                                                    <i class="fas fa-long-arrow-alt-left me-2"></i>Back to shop
-                                                </a>
-                                            </h6>
-                                            <div id="wrapper" class="cursor-disable">
-                                                <button id="button-update" class="btn-update" disabled>
-                                                    <span class="text">Update Cart</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 bg-body-tertiary">
-                                    <div class="p-5">
-                                        <h3 class="fw-bold mb-5 mt-2 pt-1">Tổng cộng giỏ hàng</h3>
-                                        <hr class="my-4">
-
-                                        <div class="d-flex justify-content-between mb-4">
-                                            <h5 class="text-uppercase">Số lượng: @totalItems</h5>
-                                            <h5>@totalPrice.ToString("c0", new CultureInfo("vi-VN"))</h5>
-                                        </div>
-
-                                        <h5 class="text-uppercase mb-3">Mã giảm giá</h5>
-
-                                        <form asp-action="Discount" method="post">
-                                            <div class="mb-5">
-                                                <div data-mdb-input-init class="form-outline">
-                                                    <input type="text" name="coupon" class="form-control form-control-lg mb-2 @(TempData["CartError"] != null ? "error" : "")" placeholder="Enter your coupon" required />
-                                                    <span class="notify-error">@TempData["CartError"]</span>
-                                                    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-block btn-lg"
-                                                            data-mdb-ripple-color="dark">
-                                                        Áp dụng
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </form>
-
-                                        <hr class="my-4">
-
-                                        <div class="d-flex justify-content-between mb-5">
-                                            <h5 class="text-uppercase">Tổng tiền:</h5>
-                                            <h5>@totalPrice.ToString("c0", new CultureInfo("vi-VN"))</h5>
-                                        </div>
-
-                                        <!--payment button-->
-                                        <a href="/pay/@userId" class="frutiger-button">
-                                          <div class="inner">
-                                            <div class="top-white"></div>
-                                            <span class="text">Tiến hành thanh toán</span>
-                                          </div>
-                                        </a>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-}
-else
-{
-    int rdCate = new Random().Next(1, 9);
-
-    <div class="container d-flex justify-content-center align-items-center" style="height: 80vh;">
-        <div class="card shadow-sm p-4" style="width: 750px;">
-            <div class="d-flex align-items-center mb-4">
-                <div class="bg-info text-white rounded-circle d-flex justify-content-center align-items-center ico-box">
-                    <i class="bi bi-info-circle" style="font-size: 35px;"></i>
-                </div>
-                <p class="ms-2 mb-0" style="font-size: 36px;">Chưa có sản phẩm nào trong giỏ hàng.</p>
-            </div>
-            <a href="/Category/@rdCate" class="btn btn-success w-100">MUA SẮM NGAY</a>
-        </div>
-    </div>
-}
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Lấy tất cả các ô nhập số lượng và nút "Update Cart"
-        const quantityInputs = document.querySelectorAll('.quantity-input');
-        const updateCartButton = document.getElementById('button-update');
-        const wrap = document.querySelector('#wrapper');
-        const cartWarning = document.querySelector('.cart-warning');
-
-        let initialQuantities = {}; // Lưu giá trị ban đầu của các ô nhập số lượng
-
-        let storageQuantity = JSON.parse(localStorage.getItem(quantityKey));
-
-        // Lưu giá trị ban đầu cho mỗi ô nhập số lượng (dùng key 'Id' + productId)
-        quantityInputs.forEach(input => {
-            const productId = input.getAttribute('data-product-id');
-            initialQuantities['Id' + productId] = input.value;
-
-            input.addEventListener('input', e => {
-                let isExceedQuantity = false; // Biến để kiểm tra nếu có ô nhập nào vượt quá số lượng tồn kho
-                let remainValue
-                for (let x in storageQuantity) {
-                    const Id = 'Id' + e.target.getAttribute('data-product-id');
-                    if (x === Id) {
-                        let currentValue = parseInt(e.target.value);
-                        let previousValue = parseInt(storageQuantity[x]);
-                        // Nếu số lượng hiện tại vượt quá số lượng lưu trữ thì cảnh báo
-                        if (currentValue > previousValue) {
-                            isExceedQuantity = true;
-                            remainValue = previousValue; // Lưu lại số lượng tồn kho để hiển thị
-                            break;
-                        }
-                    }
-                }
-
-                if (isExceedQuantity) {
-                    cartWarning.style.display = 'flex';
-                    const warningText = cartWarning.querySelector('.cart-warning-text');
-                    warningText.textContent = `Số lượng bạn muốn mua vượt quá số hàng hiện có! (còn lại ${remainValue})`;
-                }
-                else {
-                    cartWarning.style.display = 'none';
-                }
-            })
-        });
-
-
-        // Hàm kiểm tra nếu số lượng thay đổi so với giá trị ban đầu
-        function checkQuantityChange() {
-            let isModified = false; // Kiểm tra nếu có ô nhập nào thay đổi
-
-            // Kiểm tra tất cả các ô nhập số lượng
-            quantityInputs.forEach(input => {
-                const productId = input.getAttribute('data-product-id');
-                const currentValue = input.value;
-                // Nếu giá trị hiện tại khác giá trị ban đầu thì đánh dấu là có thay đổi
-                if (currentValue !== initialQuantities['Id' + productId]) {
-                    isModified = true;
-                }
-            });
-
-            // Nếu có ô nhập nào thay đổi thì enable nút "Update Cart", ngược lại disable
-            if (isModified) {
-                updateCartButton.disabled = false;
-                updateCartButton.classList.add('active');
-                updateCartButton.classList.remove('disabled');
-                updateCartButton.classList = 'btn-update';
-                wrap.classList.remove('cursor-disable');
-            } else {
-                updateCartButton.disabled = true;
-                updateCartButton.classList.add('disabled');
-                updateCartButton.classList.remove('active');
-                updateCartButton.classList = 'btn btn-dark btn-lg';
-                wrap.classList.add('cursor-disable');
-            }
-        }
-
-        // Gắn sự kiện khi người dùng thay đổi giá trị ô nhập
-        quantityInputs.forEach(input => {
-            input.addEventListener('input', checkQuantityChange);
-        });
-
-        // Kiểm tra lần đầu khi trang load
-        checkQuantityChange();
-    });
-</script>
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const updateCartButton = document.getElementById('button-update');
-        const quantityInputs = document.querySelectorAll('.quantity-input');
-
-
-        // Hàm thu thập dữ liệu số lượng sản phẩm
-        function gatherQuantities() {
-            const quantities = [];
-
-            quantityInputs.forEach(input => {
-                const productId = input.getAttribute('data-product-id');
-                const quantity = input.value;
-                quantities.push({ ProductId: parseInt(productId), Quantity: parseInt(quantity) });
-            });
-
-            return quantities;
-        }
-
-        // Sự kiện nhấn nút "Update Cart"
-        updateCartButton.addEventListener('click', function () {
-            const model = gatherQuantities();
-
-            // Gửi dữ liệu đến máy chủ qua AJAX (fetch)
-            fetch('/Cart-Update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ UpdateItem: model })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Nếu thành công, có thể cập nhật lại giao diện hoặc thông báo cho người dùng
-                    alert('Giỏ hàng đã được cập nhật!');
-                    if(data.reload) {
-                        window.location.href = '/Cart';
-                    }
-                    else {
-                        window.location.reload();
-                    }
-                } else {
-                    alert('Có lỗi xảy ra, vui lòng thử lại.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Có lỗi xảy ra!');
-            });
-        });
-    });
-</script>
-
-<script>
-        // Thêm class .show cho alert khi trang vừa load
-    window.addEventListener('load', function() {
-      const alertBox = document.getElementById('alertBox');
-      // Sau 200ms (hoặc tùy chỉnh) sẽ thêm class .show
-      setTimeout(() => {
-        alertBox.classList.add('show');
-      }, 200);
-    });
-
-    // Đóng alert khi click nút close
-    document.getElementById('closeBtn').addEventListener('click', function() {
-      const alertBox = document.getElementById('alertBox');
-      alertBox.classList.remove('show'); // gỡ class .show để fade-out
-      // Có thể remove alert hẳn sau khi ẩn
-      setTimeout(() => {
-        alertBox.style.display = 'none';
-      }, 500); // chờ transition 0.5s
-    });
-
-</script>

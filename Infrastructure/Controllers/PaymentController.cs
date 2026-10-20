@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Text.Json;
 using UseCase.Business_Logic;
 using UseCase.MailService;
+using Infrastructure.PaymentSupport;
 
 namespace Infrastructure.Controllers
 {
@@ -18,13 +19,107 @@ namespace Infrastructure.Controllers
         private readonly IMomoService _momoService;
         private readonly ICartManage _cartManage;
         private readonly IMailSender _mailSender;
+        private readonly ILogger<PaymentController>? _logger;
+        private readonly StoreBranding _brand;
+        public const string CodReceiptSessionKey = "CodReceipt";
 
-        public PaymentController(IVnPayService vnPayService, IMomoService momoService, ICartManage cartManage, IMailSender mailSender)
+        public PaymentController(IVnPayService vnPayService, IMomoService momoService, ICartManage cartManage, IMailSender mailSender, ILogger<PaymentController>? logger = null, IConfiguration? configuration = null)
         {
             _vnPayService = vnPayService;
             _momoService = momoService;
             _cartManage = cartManage;
             _mailSender = mailSender;
+            _logger = logger;
+            _brand = configuration is null ? new StoreBranding() : StoreBranding.From(configuration);
+        }
+
+        [HttpPost("/Payment/PayByCod")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PayByCod(CodCheckoutModel model)
+        {
+            var userId = int.TryParse(User.FindFirstValue(ClaimTypes.Sid), out var id) ? id : 0;
+            List<CartModel> items;
+            try { items = await LoadCheckoutItemsAsync(userId); }
+            catch (Exception exception)
+            {
+                _logger?.LogWarning(exception, "Could not load COD cart. TraceId={TraceId}", HttpContext.TraceIdentifier);
+                TempData["CartError"] = "Không thể kiểm tra giỏ hàng. Vui lòng kiểm tra lại sản phẩm và mã giảm giá.";
+                return RedirectToAction("CartView", "Cart");
+            }
+            if (items.Count == 0) return RedirectToAction("CartView", "Cart");
+            if (items.Any(item => item.Product == null))
+            {
+                TempData["CartError"] = "Có sản phẩm không còn bán. Vui lòng kiểm tra lại giỏ hàng.";
+                return RedirectToAction("CartView", "Cart");
+            }
+            ViewData["CodCheckout"] = model;
+            if (!ModelState.IsValid) return View("Option", items);
+            foreach (var item in items)
+            {
+                if (item.Quantity <= 0 || item.Quantity > item.Product.Quantity || !double.IsFinite(item.Product.Price) || item.Product.Price < 0)
+                    ModelState.AddModelError(string.Empty, "Số lượng hoặc giá sản phẩm đã thay đổi. Vui lòng kiểm tra lại giỏ hàng.");
+            }
+            foreach (var group in items.GroupBy(item => item.Product.Id))
+                if (group.Sum(item => (long)item.Quantity) > group.First().Product.Quantity)
+                    ModelState.AddModelError(string.Empty, "Số lượng sản phẩm vượt quá tồn kho. Vui lòng kiểm tra lại giỏ hàng.");
+            var total = items.Sum(item => item.Product.Price * item.Quantity);
+            if (!double.IsFinite(total)) ModelState.AddModelError(string.Empty, "Tổng tiền không hợp lệ. Vui lòng kiểm tra lại giỏ hàng.");
+            if (!ModelState.IsValid) return View("Option", items);
+
+            try
+            {
+                // Use the existing SMTP sender for both recipients. A rejected send must not
+                // silently confirm COD or discard the customer's cart.
+                var customerSent = await _mailSender.SendMailAsync(new MailContent {
+                    To = model.Email, Subject = $"{_brand.Name} — XÁC NHẬN ĐẶT HÀNG COD",
+                    Body = CodEmailContent.Create(model, items, total, _brand.Name, false)
+                });
+                var storeSent = await _mailSender.SendMailAsync(new MailContent {
+                    To = adminEmail, Subject = $"{_brand.Name} — YÊU CẦU ĐẶT HÀNG COD",
+                    Body = CodEmailContent.Create(model, items, total, _brand.Name, true)
+                });
+                if (!customerSent || !storeSent)
+                {
+                    _logger?.LogWarning("COD email rejected. CustomerAccepted={CustomerAccepted} StoreAccepted={StoreAccepted} TraceId={TraceId}", customerSent, storeSent, HttpContext.TraceIdentifier);
+                    ModelState.AddModelError(string.Empty, "Chưa gửi được đầy đủ email xác nhận COD. Giỏ hàng của bạn vẫn được giữ. Vui lòng thử lại hoặc liên hệ cửa hàng.");
+                    return View("Option", items);
+                }
+                if (userId != 0)
+                {
+                    var coupons = ReadCoupons();
+                    var applied = coupons.Where(coupon => items.Any(item => item.Product.Id == coupon.Id)).Select(coupon => coupon.Id).Distinct().ToList();
+                    if (applied.Count == 0) await _cartManage.OrderProcessingAsync(userId, 0);
+                    else foreach (var couponId in applied) await _cartManage.OrderProcessingAsync(userId, couponId);
+                }
+                else
+                {
+                    await _cartManage.OrderProcessingGuestAsync(items.Select(item => new Entities.CartItem { ProductId = item.Product.Id, Quantity = item.Quantity }));
+                    HttpContext.Session.Remove(CartController.CartSessionKey);
+                }
+                HttpContext.Session.Remove(CartController.CouponSessionKey);
+                HttpContext.Session.SetString(CodReceiptSessionKey, JsonSerializer.Serialize(new CodConfirmationModel { Total = total, Email = model.Email }));
+                return RedirectToAction(nameof(CodConfirmed));
+            }
+            catch (Exception exception)
+            {
+                _logger?.LogError(exception, "COD confirmation failed. TraceId={TraceId}", HttpContext.TraceIdentifier);
+                ModelState.AddModelError(string.Empty, "Chưa hoàn tất yêu cầu COD. Vui lòng liên hệ cửa hàng để đối chiếu trước khi gửi lại.");
+                return View("Option", items);
+            }
+        }
+
+        [HttpGet("/Payment/CodConfirmed")]
+        public IActionResult CodConfirmed()
+        {
+            var receipt = HttpContext.Session.GetString(CodReceiptSessionKey);
+            if (string.IsNullOrEmpty(receipt)) return RedirectToAction("CartView", "Cart");
+            return View(JsonSerializer.Deserialize<CodConfirmationModel>(receipt));
+        }
+
+        private List<CouponModel> ReadCoupons()
+        {
+            var json = HttpContext.Session.GetString(CartController.CouponSessionKey);
+            return string.IsNullOrEmpty(json) ? [] : JsonSerializer.Deserialize<List<CouponModel>>(json) ?? [];
         }
 
         [HttpPost("/CF-Order")]
@@ -102,6 +197,11 @@ namespace Infrastructure.Controllers
         [HttpGet("/Pay/{userId}")]
         public async Task<IActionResult> Option(int userId)
         {
+            return View(await LoadCheckoutItemsAsync(userId));
+        }
+
+        private async Task<List<CartModel>> LoadCheckoutItemsAsync(int userId)
+        {
             var model = new List<CartModel>();
             if (userId != 0)
             {
@@ -162,7 +262,7 @@ namespace Infrastructure.Controllers
                     }
                 }
             }
-            return View(model);
+            return model;
         }
 
         [Authorize]

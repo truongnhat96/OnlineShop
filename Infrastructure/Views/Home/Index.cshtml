@@ -1,269 +1,57 @@
-﻿@{
-    ViewData["Title"] = "TruongShop – chuyên cung cấp key bản quyền Windows và phần mềm văn phòng chuyên nghiệp";
-    var host = $"https://{Context.Request.Host}";
-    var homeUrl = $"{host}{Context.Request.Path}";
-    // Dùng ảnh lớn 1200×630 đã deploy sẵn
-    var homeImage = $"{host}/images/banner.jpg";
-    Console.WriteLine("Home URL: " + homeUrl);
-    Console.WriteLine("Home Image URL: " + homeImage);
-    var description = "Key office 365 - ChatGPT Plus - Key phần mềm diệt virus và nhiều sản phẩm kỹ thuật số khác nữa. Các bạn có thể liên hệ mua ngay để nhận nhiều ưu đãi và quà tặng";
+@inject IProductManage ProductManage
+@{
+    ViewData["Title"] = "Phụ kiện xe máy";
+    var brand = StoreBranding.From(StoreConfiguration);
+    var categories = (await CategoryManage.GetAllCategoriesAsync()).ToList();
+    var products = (await ProductManage.GetProductsAsync()).OrderByDescending(p => p.Sold).ThenBy(p => p.Id).Take(8).ToList();
 }
-
-
-@section MetaTags {
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="@homeUrl" />
-    <meta property="og:title" content="@ViewData["Title"]" />
-    <meta property="og:description" content="@description" />
-    <meta property="og:image" content="@homeImage" />
-    <meta property="og:image:secure_url" content="@homeImage" />
-    <meta property="og:image:type" content="image/jpeg" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="@ViewData["Title"]" />
-    <meta name="twitter:description" content="@description" />
-    <meta name="twitter:image" content="@homeImage" />
-}
-
-
-<div id="home" class="welcome-hero">
-    <div class="container">
-        <div class="welcome-hero-txt">
-            <h2 class="animated fadeInUp">Welcome to TruongShop</h2>
-            <h3 class="animated fadeInRightBig">Chúng tôi chuyên cung cấp Key bản quyền windows và các phần mềm văn phòng chuyên nghiệp </h3>
-            <p class="animated fadeInDown">
-                Tại đây Shop chuyên cung cấp bản quyền Windows và <br />
-                các phần mềm Văn phòng khác. Với giá cả phải chăng <br />
-                mà vẫn đảm bảo chất lượng sản phẩm, cùng với chế độ bảo <br />
-                hành và chăm sóc khách hàng tận tình. Chúng tôi tự tin sẽ làm <br />
-                cho bạn hài lòng ngay từ lần mua hàng đầu tiên!
-            </p>
-            <br />
-            <p class="animated fadeInLeftBig">TruongShop hân hạnh được phục vụ Quý khách!</p>
-        </div>
-    </div>
-
+<section class="hero">
+<div class="hero-copy">
+<span class="eyebrow">@brand.Name / MOTORCYCLE ACCESSORIES</span>
+<h1>Sẵn sàng cho<br />
+<span>hành trình mới.</span>
+</h1>
+<p>@brand.Tagline. Khám phá sản phẩm, tìm hiểu thông tin và lựa chọn theo nhu cầu của bạn.</p>
+<a class="btn btn-primary" href="#categories">Khám phá danh mục ↗</a>
 </div>
-
-<div class="container-main">
-    <div class="row">
-        <div class="col-md-3 text-center">
-            <div class="feature-box">
-                <div class="icon">
-                    <img src="https://cdn-icons-png.flaticon.com/512/306/306473.png" width="50" />
-                </div>
-                <h3>Dịch vụ khách hàng tận tâm</h3>
-                <p>
-                    Luôn sẵn sàng trợ giúp khách hàng trước khi mua hàng, trong quá trình mua hàng và ngay cả sau khi mua hàng. TruongShop hiểu rằng giá trị thực sự được tạo ra không chỉ được ở chất lượng của sản phẩm mà còn là cả quá trình chăm sóc khách hàng trước và sau khi mua hàng. Vì vậy TruongShop luôn lắng nghe và hỗ trợ hết mình khi khách hàng có nhu cầu.
-                </p>
-            </div>
-        </div>
-
-        <div class="col-md-3 text-center">
-            <div class="feature-box">
-                <div class="icon">
-                    <img src="https://cdn-icons-png.flaticon.com/512/633/633601.png" width="50" />
-                </div>
-                <h3>Giao hàng ngay lập tức</h3>
-                <p>
-                    Sau khi các giao dịch được yêu cầu hoàn tất, TruongShop sẽ gửi các sản phẩm kỹ thuật số cho khách hàng gần như ngay lập tức. Chúng tôi luôn đảm bảo rằng những hướng dẫn cụ thể và chi tiết nhất sẽ đi kèm với sản phẩm mà bạn nhận được.
-                </p>
-            </div>
-        </div>
-
-        <div class="col-md-3 text-center">
-            <div class="feature-box">
-                <div class="icon">
-                    <img src="https://cdn-icons-png.flaticon.com/512/556/556671.png" width="50" />
-                </div>
-                <h3>Giấy phép chính hãng</h3>
-                <p>
-                    TruongShop tự tin rằng các sản phẩm phần mềm là 100% chính hãng. Với những ưu điểm không thể phủ nhận, khách hàng sẽ có những trải nghiệm mua sắm trực tuyến tuyệt vời khi lựa chọn mua hàng tại TruongShop.
-                </p>
-            </div>
-        </div>
-        <div class="col-md-3 text-center">
-            <div class="feature-box">
-                <div class="icon">
-                    <img src="https://cdn-icons-png.flaticon.com/128/1490/1490853.png" width="50" />
-                </div>
-                <h3>Giá cả phải chăng</h3>
-                <p>
-                    Chắc chắn rằng trong mỗi khách hàng khi tham khảo giá cả sản phẩm đều hoài nghi rằng liệu giá rẻ có đảm bảo chất lượng sản phẩm hay không ??. TruongShop xin cam kết rằng phần mềm và sản phẩm đều là chính hãng. nếu khách hàng không hài lòng về chất lượng sản phẩm hãy liên hệ với bộ phận hỗ trợ . Shop sẽ khắc phục sự cố và đổi trả sản phẩm theo yêu cầu của khách hàng.
-                </p>
-            </div>
-        </div>
-    </div>
+<div class="hero-visual">
+<img src="@brand.Hero" alt="Minh họa mũ bảo hiểm, găng tay và phụ kiện xe máy" width="640" height="480" />
 </div>
-
-
-<section id="statistics" class="statistics">
-    <div class="container">
-        <div class="row statistics-counter text-center">
-            <!-- Mỗi cột chiếm 3/12 cột, để hiển thị 4 khối trên 1 dòng -->
-            <div class="col-md-3 col-sm-6">
-                <div class="single-ststistics-box">
-                    <div class="statistics-content">
-                        <div class="counter">90</div><span>+</span>
-                    </div>
-                    <h3>SẢN PHẨM</h3>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="single-ststistics-box">
-                    <div class="statistics-content">
-                        <div class="counter">12500</div><span>+</span>
-                    </div>
-                    <h3>KHÁCH HÀNG</h3>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="single-ststistics-box">
-                    <div class="statistics-content">
-                        <div class="counter">1865</div><span>+</span>
-                    </div>
-                    <h3>ĐÁNH GIÁ</h3>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="single-ststistics-box">
-                    <div class="statistics-content">
-                        <div class="counter">1750</div><span>+</span>
-                    </div>
-                    <h3>HÀI LÒNG</h3>
-                </div>
-            </div>
-        </div><!--/.statistics-counter-->
-    </div><!--/.container-->
-</section><!--/.statistics-->
-
-
-
-<div class="faq-header">Câu hỏi và trả lời</div>
-<div class="faq-content">
-    <div class="faq-question">
-        <input id="q1" type="checkbox" class="panel">
-        <div class="plus">+</div>
-        <label for="q1" class="panel-title">Digital download là gì ?</label>
-        <div class="panel-content">Digital download là một bản chuyển thể điện tử của mặt hàng sản phẩm của bạn. Bạn sẽ thừa nhận việc tải xuống và sử dụng chương trình mới của mình ngay lập tức. Điều này ngụ ý rằng một đĩa CD hoặc DVD thực tế bị loại trừ khỏi giao dịch mua của bạn. Chương trình giới thiệu sản phẩm được tải xuống thông qua dung lượng dựa trên đám mây.</div>
-    </div>
-
-    <div class="faq-question">
-        <input id="q2" type="checkbox" class="panel">
-        <div class="plus">+</div>
-        <label for="q2" class="panel-title">Sự khác biệt chính giữa Office 2019 và Office 365 là gì ?</label>
-        <div class="panel-content">Office 2019 là bản mua một lần kết hợp các ứng dụng PC hoặc Mac mẫu mực như Word, Excel và PowerPoint. Nó không chứa bất kỳ điểm nổi bật nào đi kèm với tư cách thành viên Office 365. Sau khi mua không có giải pháp thay thế thiết kế lại, điều này có nghĩa là bạn sẽ phải có được nó ở mức tối đa nếu bạn có kế hoạch chuyển lên bản cập nhật quan trọng sau.</div>
-    </div>
-
-    <div class="faq-question">
-        <input id="q3" type="checkbox" class="panel">
-        <div class="plus">+</div>
-        <label for="q3" class="panel-title">Office có yêu cầu truy cập Internet không ?</label>
-        <div class="panel-content">
-            Cần có quyền truy cập web để tải xuống và cấp quyền cho tất cả các bản phân phối bộ Office mới cũng như tất cả các gói thành viên Office 365. Quyền truy cập web cũng được yêu cầu đối với các thiết kế Office 365 để kiểm soát tài khoản thành viên của bạn, ví dụ: để giới thiệu Office trên các PC khác nhau hoặc thay đổi các lựa chọn thay thế tính phí.<br /> <br />
-
-            Ngoài ra, cần có quyền truy cập web đối với các kho lưu trữ trên OneDrive trừ khi bạn giới thiệu ứng dụng khu vực làm việc OneDrive. Để cập nhật những thông tin mới nhất và lợi thế từ các bản làm mới được lập trình, bạn nên thường xuyên kết hợp với Internet.<br /> <br />
-
-            Tại thời điểm khi bạn không kết hợp với Internet như định kỳ, các ứng dụng của bạn sẽ chuyển sang chế độ hữu ích giảm, điều này có nghĩa là bạn có thể truy cập hoặc in tài liệu lưu trữ của mình. Tất cả những thứ được xem xét, bạn sẽ không làm mới hoặc tạo báo cáo mới. Hợp lý hóa việc kích hoạt lại chương trình Office của bạn bằng cách kết nối lại với Internet.
-        </div>
-    </div>
-    <div class="faq-question">
-        <input id="q4" type="checkbox" class="panel">
-        <div class="plus">+</div>
-        <label for="q4" class="panel-title">Tại sao tôi nên mua Phần mềm chống vi-rút ?</label>
-        <div class="panel-content">
-            Khi bạn truy cập Internet sẽ tiềm ẩn nhiều nguy cơ vô hình cho máy tính và virus tấn công là một trong số đó. <br /> <br />
-
-            Vi rút có thể xâm nhập vào khuôn khổ của bạn mà không có dấu hiệu và bạn có thể kết thúc với một khuôn khổ không thể hoạt động hoặc thông tin của riêng bạn bị lấy đi. <br /> <br />
-
-            Đây là lý do cần thiết phải có một số loại bảo hiểm trên PC của bạn. Bất kể bạn có một kế hoạch tài chính rất ít để chi tiêu, trong mọi trường hợp, bạn có thể theo dõi các câu trả lời tốt nhất cho kế hoạch chi tiêu của mình tại TruongShop.net
-        </div>
-    </div>
-    <div class="faq-question">
-        <input id="q5" type="checkbox" class="panel">
-        <div class="plus">+</div>
-        <label for="q5" class="panel-title">Tại sao tôi nên mua Windows 10 thay vì Windows 7 ?</label>
-        <div class="panel-content">
-            Windows 10 là phiên bản mới nhất và tuyệt vời nhất của Microsoft Windows. So với Windows 7, Windows 10 sẽ cung cấp khả năng tương thích và chơi game tốt hơn.<br /> <br />
-
-            Windows 10 cũng giới thiệu trình duyệt Internet Microsoft Edge, một khung khu vực làm việc ảo, một cửa sổ và khu vực làm việc mà bảng bao gồm có tên là Task View, hỗ trợ đăng nhập nhận dạng khuôn mặt và đánh dấu duy nhất, các điểm nổi bật bảo mật mới cho các điều kiện kinh doanh lớn và DirectX 12.
-        </div>
-    </div>
-
-    <div class="faq-question">
-        <input id="q6" type="checkbox" class="panel">
-        <div class="plus">+</div>
-        <label for="q6" class="panel-title">Mất bao lâu để một sản phẩm hết hàng được bổ sung lại?</label>
-        <div class="panel-content">
-            Thông thường, chúng tôi luôn dự trữ một số lượng lớn hàng hóa để phục vụ khách hàng. Do đó, tình trạng hết hàng diễn ra phổ biến trên truongshop.id.vn. Tuy nhiên, không có nghĩa là điều đó sẽ không bao giờ xảy ra.
-
-            Nếu một mặt hàng không có trong kho, chúng tôi sẽ cố gắng thông báo cho tất cả khách hàng nhanh nhất có thể.
-        </div>
-    </div>
+</section>
+<section id="categories">
+<div class="section-heading">
+<div>
+<span class="eyebrow">Tìm điều bạn cần</span>
+<h2>Danh mục sản phẩm</h2>
 </div>
-
-<div class="map-address">
-    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3371.2035080303076!2d105.78657997471312!3d20.980562389433313!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ade83ba9e115%3A0x6f4fdb5e1e9e39ed!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBLaeG6v24gdHLDumMgSMOgIE7hu5lp!5e1!3m2!1svi!2s!4v1758588625303!5m2!1svi!2s" height="450" style="border:0;width:100%;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 </div>
-
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Tìm tất cả phần tử .counter
-        const counters = document.querySelectorAll('.counter');
-
-        // IntersectionObserver để “nghe” khi .counter lọt vào khung nhìn
-        const observer = new IntersectionObserver((entries, obs) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    // Bắt đầu hiệu ứng đếm khi phần tử xuất hiện
-                    startCount(entry.target);
-                    // Ngừng quan sát phần tử này (chỉ đếm 1 lần)
-                    obs.unobserve(entry.target);
-                }
-            });
-        }, {
-            threshold: 0.5 // ít nhất 50% phần tử hiển thị mới kích hoạt
-        });
-
-        // Đăng ký quan sát cho tất cả .counter
-        counters.forEach(counter => observer.observe(counter));
-
-        // Hàm đếm: tất cả sẽ chạy đủ 'duration' ms => cùng kết thúc
-        function startCount(element) {
-            // Giá trị đích (loại bỏ ký tự không phải số)
-            const target = parseInt(element.innerText.replace(/\D/g, ''), 10) || 0;
-            let current = 0;
-
-            // Thời gian chạy hiệu ứng (ms) - tất cả sẽ cùng chạy 3 giây
-            const duration = 3000;
-            // Khoảng thời gian giữa mỗi lần cập nhật
-            const intervalDelay = 50;
-            // Số lần lặp cập nhật
-            const steps = Math.floor(duration / intervalDelay);
-            // Mỗi bước tăng thêm bao nhiêu
-            const increment = target / steps;
-
-            let currentStep = 0;
-
-            // Dùng setInterval để cập nhật số
-            const timer = setInterval(() => {
-                currentStep++;
-                // Tính giá trị hiện tại
-                let value = increment * currentStep;
-                if (value >= target) {
-                    value = target; // Nếu vượt, giữ bằng target
-                }
-                element.innerText = Math.floor(value);
-
-                // Hết số lần lặp => dừng hẳn
-                if (currentStep >= steps) {
-                    clearInterval(timer);
-                }
-            }, intervalDelay);
-        }
-    });
-</script>
-
+@if(categories.Count > 0) { <div class="category-grid">@foreach(var category in categories) { <a class="category-tile" href="/Category/@category.Id">@category.Name <span aria-hidden="true">↗</span>
+</a> }</div> }
+else { <partial name="_EmptyState" model='@("Danh mục đang được cập nhật")' /> }
+</section>
+<section>
+<div class="section-heading">
+<div>
+<span class="eyebrow">Khám phá cửa hàng</span>
+<h2>Sản phẩm dành cho bạn</h2>
+</div>
+</div>
+@if(products.Count > 0) { <div class="product-grid">@foreach(var product in products) { <partial name="_ProductCard" model="product" /> }</div> }
+else { <partial name="_EmptyState" model='@("Chưa có sản phẩm")' /> }</section>
+<section class="panel faq mt-5">
+<span class="eyebrow">Trước khi lựa chọn</span>
+<h2 class="mt-2">Hiểu phụ kiện, chọn phù hợp</h2>
+<details>
+<summary>Làm sao chọn phụ kiện phù hợp với xe?</summary>
+<p>Đối chiếu thông tin sản phẩm với mẫu xe và nhu cầu sử dụng. Nếu mô tả chưa đủ thông tin, liên hệ cửa hàng trước khi đặt mua.</p>
+</details>
+<details>
+<summary>Tôi xem thương hiệu sản phẩm ở đâu?</summary>
+<p>Thương hiệu hiển thị trên thẻ sản phẩm và trang chi tiết. Dùng ô tìm kiếm để tra cứu theo tên sản phẩm.</p>
+</details>
+<details>
+<summary>Tôi xem thêm thông tin sản phẩm ở đâu?</summary>
+<p>Mở trang chi tiết để xem mô tả, giá, số lượng đang hiển thị và đánh giá đã có.</p>
+</details>
+<a class="btn btn-outline mt-4" href="/Posts">Đọc cẩm nang xe máy ↗</a>
+</section>

@@ -1,40 +1,13 @@
-﻿@model SearchResultModel
-@{
-}
-
-<div class="search-title">Kết quả tìm kiếm cho: <strong>@Model.Keyword</strong></div>
-@foreach(var product in Model.Products)
-{
-    <div class="product-list">
-        <div class="product-item">
-            <div class="image-container">
-                <a href="/product/@product.Id">
-                    <img onerror="this.src='/images/not-found.png'" src="/uploads/products/@product.ImageUrl" alt="Sản phẩm 1">
-                </a>
-            </div>
-            <a href="/product/@product.Id" class="product-name">@product.Name</a>
-            <div class="product-description">Thương Hiệu: @product.Brand</div>
-            <a href="/product/@product.Id" class="read-more">READ MORE</a>
-        </div>
-    </div>
-}
-
-<div class="pagination">
-    @if (Model.totalPage > 1)
-    {
-        @if (Model.currentPage > 1)
-        {
-            <a class="page-btn" href="@(Url.Action("Search", new { page = Model.currentPage - 1 }) + Url.ActionContext.HttpContext.Request.QueryString.ToString())">❮</a>
-        }
-
-        @for (int i = 1; i <= Model.totalPage; i++)
-        {
-            <a href="@(Url.Action("Search", new { page = i }) + Url.ActionContext.HttpContext.Request.QueryString.ToString())" class="page-btn @(i == Model.currentPage ? "active" : "")">@i</a>
-        }
-
-        @if (Model.currentPage < Model.totalPage)
-        {
-            <a class="page-btn" href="@(Url.Action("Search", new { page = Model.currentPage + 1 }) + Url.ActionContext.HttpContext.Request.QueryString.ToString())">❯</a>
-        }
-    }
+@model SearchResultModel
+@{ ViewData["Title"] = "Kết quả tìm kiếm"; }
+<div class="page-heading">
+<div>
+<span class="eyebrow">Tìm kiếm sản phẩm</span>
+<h1>Kết quả cho “@Model.Keyword”</h1>
+<p>Trang @Math.Max(1, Model.currentPage) / @Math.Max(1, Model.totalPage)</p>
 </div>
+<a class="btn btn-outline" href="/">Về cửa hàng</a>
+</div>
+@if(Model.Products.Count > 0) { <div class="product-grid">@foreach(var product in Model.Products) { <partial name="_ProductCard" model="product" /> }</div> }
+else { <partial name="_EmptyState" model='@("Không tìm thấy sản phẩm")' /> }
+<partial name="_Pagination" model='@(new PaginationModel("/Search", Model.currentPage, Model.totalPage))' />

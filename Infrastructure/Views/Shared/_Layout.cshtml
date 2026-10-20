@@ -1,339 +1,102 @@
-﻿<!DOCTYPE html>
+@{
+    var brand = StoreBranding.From(StoreConfiguration);
+    var categories = (await CategoryManage.GetAllCategoriesAsync()).ToList();
+}
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
-    <meta name="title" content="TruongShop - chuyên cung cấp Key bản quyền windows và các phần mềm văn phòng chuyên nghiệp" />
-    <meta name="description" content="Key office 365 - ChatGPT Plus - Key phần mềm diệt virus và nhiều sản phẩm kỹ thuật số khác nữa. Các bạn có thể liên hệ mua ngay để nhận nhiều ưu đãi và quà tặng"/>
-    <meta name="robots" content="follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large"/>
-    <meta property="fb:app_id" content="1878557349756624" />
-    @RenderSection("MetaTags", required: false)
-    @if (!IsSectionDefined("MetaTags")) {
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="@($"https://{Context.Request.Host}{Context.Request.Path}")" />
-        <meta property="og:site_name" content="@Context.Request.Host" />
-        <meta property="og:title" content="@ViewData["Title"]" />
-        <meta property="og:description" content="Key office 365 - ChatGPT Plus - Key phần mềm diệt virus và nhiều sản phẩm kỹ thuật số khác nữa. Các bạn có thể liên hệ mua ngay để nhận nhiều ưu đãi và quà tặng" />
-        <meta property="og:image" content="@($"https://{Context.Request.Host}/images/banner.jpg")" />
-        <meta property="og:image:secure_url" content="@($"https://{Context.Request.Host}/images/banner.jpg")" />
-        <meta property="og:image:type" content="image/jpeg" />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-
-        <!-- Twitter Card chung -->
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:description" content="Key office 365 - ChatGPT Plus - Key phần mềm diệt virus và nhiều sản phẩm kỹ thuật số khác nữa. Các bạn có thể liên hệ mua ngay để nhận nhiều ưu đãi và quà tặng" />
-        <meta name="twitter:title" content="@ViewData["Title"]" />
-        <meta name="twitter:image" content="@($"https://{Context.Request.Host}/images/banner.jpg")" />
-        <meta name="twitter:label1" content="Được viết bởi" />
-        <meta name="twitter:data1" content="Lương Nhật Trường" />
-        <meta name="twitter:label2" content="Thời gian để đọc" />
-        <meta name="twitter:data2" content="24 phút" />
-    }
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/lib/summernote/summernote-bs5.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Infrastructure.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/_ProductPartial.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link rel="icon" type="image/x-icon" href="~/images/truongshop.png" />
-</head>
-<body>
-    <div class="layout-wrapper d-flex flex-column min-vh-100">
-        @{
-            var categories = (await CategoryManage.GetAllCategoriesAsync()).ToList();
-        }
-        <header id="site-header">
-            <nav class="navbar navbar-expand-lg">
-                <div class="container-fluid">
-                    <!-- Phần trái: Thông tin đăng nhập/ user + Nút toggle -->
-                    <div class="d-flex align-items-center">
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            <div class="dropdown d-none d-lg-block">
-                                @{
-                                    var tok = User.Identity.Name?.Split([' '], StringSplitOptions.RemoveEmptyEntries);
-                                    var displayName = tok?.Last();
-                                }
-                                <a href="#" class="navbar-brand dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                     <i class="fa fa-user-circle" style="margin-right:8px;"></i> Xin chào @displayName
-                                </a>
-                                <ul class="dropdown-menu">
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <li>
-                                            <a class="dropdown-item" asp-area="" asp-controller="Product" asp-action="Manage">Quản lý sản phẩm</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" asp-area="" asp-controller="AHP" asp-action="Index">Gợi ý xu hướng sản phẩm</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" asp-area="" asp-controller="User" asp-action="Blog">Tạo Blog</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" asp-area="" asp-controller="User" asp-action="BlogManage">Quản lý bài viết</a>
-                                        </li>
-                                    }
-                                    <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Auth" asp-action="Logout">
-                                            Đăng Xuất <i style="margin-left: 8px;" class="fas fa-sign-out-alt"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        }
-                        else
-                        {
-                            <a class="navbar-brand d-none d-lg-block" asp-area="" asp-controller="Auth" asp-action="Login">
-                                Đăng Nhập 🔑
-                            </a>
-                        }
-                        <!-- Nút mở rộng (toggle) chỉ hiển thị khi màn hình nhỏ -->
-                        <button class="navbar-toggler ms-2 d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu"
-                        aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                    </div>
-
-                    <!-- Phần giữa: Mục menu chính - hiển thị trực tiếp trên header -->
-                    <div class="navbar-nav mx-auto d-none d-lg-flex">
-                        <ul class="centered-menu nav-menu" style="margin-bottom: 0;">
-                            @foreach (var category in categories.Take(3))
-                            {
-                                <li><a href="/category/@category.Id">@category.Name</a></li>
-                            }
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Phần Mềm Khác
-                                </a>
-                                <ul class="dropdown-menu">
-                                    @foreach (var category in categories.Skip(3).SkipLast(1))
-                                    {
-                                        <li><a href="/category/@category.Id">@category.Name</a></li>
-                                    }
-                                </ul>
-                            </li>
-                            <li><a href="/posts">Thủ Thuật</a></li>
-                        </ul>
-                    </div>
-
-                    <!-- Phần phải: Thanh search và hình ảnh giỏ hàng -->
-                    <div class="d-flex align-items-center">
-                        <div class="search-container me-3">
-                            <form action="@Url.RouteUrl("searchAll")" class="search-form">
-                                <input type="search" name="keyword" class="search-input" pattern=".*\S.*" required placeholder="Search...">
-                                <button class="search-submit" type="submit">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </form>
-                        </div>
-                        <a class="cart-icon-link" asp-area="" asp-controller="Cart" asp-action="CartView">
-                            <span class="cart-icon">
-                                <svg viewBox="0 0 16 16" class="bi bi-cart2" fill="currentColor" height="16" width="16" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"></path>
-                                </svg>
-                                @(await Html.PartialAsync("_CartPartial"))
-                            </span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Mobile menu collapse -->
-                <div class="collapse navbar-collapse d-lg-none" id="mainMenu">
-                    <ul class="centered-menu nav-menu" style="margin-bottom: 0;">
-                        @foreach (var category in categories.Take(3))
-                        {
-                            <li><a href="/category/@category.Id">@category.Name</a></li>
-                        }
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                Phần Mềm Khác
-                            </a>
-                            <ul class="dropdown-menu">
-                                @foreach (var category in categories.Skip(3).SkipLast(1))
-                                {
-                                    <li><a href="/category/@category.Id">@category.Name</a></li>
-                                }
-                            </ul>
-                        </li>
-                        <li><a href="/posts">Thủ Thuật</a></li>
-                        
-                        <!-- Menu mobile cho user -->
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            <li class="dropdown">
-                                @{
-                                    var tokMobile = User.Identity.Name?.Split([' '], StringSplitOptions.RemoveEmptyEntries);
-                                    var displayNameMobile = tokMobile?.Last();
-                                }
-                                <div class="name-container" title="@(displayNameMobile?.Length > 14 ? displayNameMobile : "")">
-                                    <a class="navbar-brand" href="#">
-                                        Xin chào @displayNameMobile
-                                    </a>
-                                </div>
-                                <ul class="dropdown-menu">
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <li>
-                                            <a class="navbar-brand" asp-area="" asp-controller="Product" asp-action="Manage">
-                                                Quản lý sản phẩm
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="navbar-brand" asp-area="" asp-controller="User" asp-action="Blog">
-                                                Tạo Blog
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="navbar-brand" asp-area="" asp-controller="User" asp-action="BlogManage">
-                                                Quản lý bài viết
-                                            </a>
-                                        </li>
-                                    }
-                                    <li>
-                                        <a class="navbar-brand" asp-area="" asp-controller="Auth" asp-action="Logout">
-                                            Đăng Xuất <i style="margin-left: 8px;" class="fas fa-sign-out-alt"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        }
-                        else
-                        {
-                            <li>
-                                <a class="navbar-brand" asp-area="" asp-controller="Auth" asp-action="Login">
-                                    Đăng Nhập 🔑
-                                </a>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </nav>
-        </header>
-
-        <main class="flex-grow-1">
-            @if(ViewData["Title"] != null && (Context.Request.Path.Value == "/" || string.Equals(Context.Request.Path.Value, "/home/index", StringComparison.OrdinalIgnoreCase)))
-            {
-                <div class="main-container">
-                        @RenderBody()
-                </div>
-            }
-            else
-            {
-                <div class="container">
-                        @RenderBody()
-                </div>
-            }
-        </main>
-
-
-        <ul class="fixed-buttons">
-            <li><a href="tel:0358223929" rel="nofollow"><img src="~/images/call.png" class="ico-contact" /></a></li>
-            <li><a target="_blank" href="https://www.messenger.com/t/100031933698842" rel="nofollow"><img src="~/images/messenger.png" class="ico-contact" /></a></li>
-            <li><a target="_blank" href="https://zalo.me/0358223929" rel="nofollow"><img src="~/images/icon-zalo.png" class="ico-contact" /></a></li>
-        </ul>
-
-                    <!-- Live Chat Button -->
-        <div id="live-chat-toggle" class="live-chat-toggle">
-            <div class="Icon__IconContainer-sc-1013a803-0 eapJlh ButtonBase__ButtonIcon-sc-f9fbfeb2-0 hxtSkw">
-               <div>
-                  <div>
-                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" class="injected-svg" data-src="https://universe-static.elfsightcdn.com/app-static/ai-chatbot/bubble-icons/dialog-4.svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 5.0957C4.10218 5.0957 3.72064 5.25374 3.43934 5.53504C3.15804 5.81635 3 6.19788 3 6.5957V16.5957C3 16.9935 3.15804 17.3751 3.43934 17.6564C3.72064 17.9377 4.10217 18.0957 4.5 18.0957H7C8.24264 18.0957 9.25 19.1031 9.25 20.3457V20.8284L11.957 18.5138C11.9993 18.4776 12.0446 18.445 12.0924 18.4163C12.4421 18.2065 12.8422 18.0957 13.25 18.0957H19.5C19.8978 18.0957 20.2794 17.9377 20.5607 17.6564C20.842 17.3751 21 16.9935 21 16.5957V6.5957C21 6.19788 20.842 5.81635 20.5607 5.53504C20.2794 5.25374 19.8978 5.0957 19.5 5.0957H4.5ZM2.02513 4.12083C2.6815 3.46445 3.57174 3.0957 4.5 3.0957H19.5C20.4283 3.0957 21.3185 3.46445 21.9749 4.12083C22.6313 4.77721 23 5.66744 23 6.5957V16.5957C23 17.524 22.6313 18.4142 21.9749 19.0706C21.3185 19.727 20.4283 20.0957 19.5 20.0957H13.25C13.2221 20.0957 13.1946 20.1004 13.1685 20.1094L8.89986 23.7591C8.60321 24.0128 8.18609 24.0706 7.83159 23.9073C7.47709 23.744 7.25 23.3894 7.25 22.9991V20.3457C7.25 20.2076 7.13807 20.0957 7 20.0957H4.5C3.57174 20.0957 2.6815 19.727 2.02513 19.0706C1.36875 18.4142 1 17.524 1 16.5957V6.5957C1 5.66745 1.36875 4.77721 2.02513 4.12083Z"></path>
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M7.50229 13.1212C8.3309 13.1212 9.00263 12.4385 9.00263 11.5965C9.00263 10.7544 8.3309 10.0718 7.50229 10.0718C6.67368 10.0718 6.00195 10.7544 6.00195 11.5965C6.00195 12.4385 6.67368 13.1212 7.50229 13.1212ZM13.5023 11.5965C13.5023 12.4385 12.8306 13.1212 12.002 13.1212C11.1734 13.1212 10.5017 12.4385 10.5017 11.5965C10.5017 10.7544 11.1734 10.0718 12.002 10.0718C12.8306 10.0718 13.5023 10.7544 13.5023 11.5965ZM16.5016 13.1212C17.3302 13.1212 18.002 12.4385 18.002 11.5965C18.002 10.7544 17.3302 10.0718 16.5016 10.0718C15.673 10.0718 15.0013 10.7544 15.0013 11.5965C15.0013 12.4385 15.673 13.1212 16.5016 13.1212Z"></path>
-                     </svg>
-                  </div>
-               </div>
-            </div>
-        </div>
-
-        <!-- Live Chat Popup -->
-        <div id="live-chat-popup" class="live-chat-popup">
-            <div class="live-chat-header">
-                <img src="/images/assistant.png" alt="Bot Avatar" class="chat-avatar" style="width:32px;height:32px;border-radius:50%;margin-right:10px;object-fit:cover;" />
-                <span class="live-chat-title">Trợ lý TruongShop</span>
-                <button id="live-chat-close" class="live-chat-close">&times;</button>
-            </div>
-            <div class="live-chat-body" id="live-chat-body">
-                <!-- Tin nhắn sẽ được render ở đây -->
-                <div class="chat-message bot">
-                    Xin chào! 👋<br>
-                    Bạn cần hỗ trợ đặt hàng trực tuyến? Mình luôn sẵn sàng hỗ trợ bạn bất cứ lúc nào! 😘
-                </div>
-            </div>
-            <form class="live-chat-input" id="live-chat-form" autocomplete="off">
-                <textarea rows="1" id="live-chat-input" maxlength="1000" placeholder="Viết tin nhắn của bạn..." required></textarea>
-                <button type="submit"><i class="fa fa-paper-plane"></i></button>
-            </form>
-        </div>
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-content">
-                <div class="footer-info">
-                    <a href="/">TRUONG SHOP</a>
-                    <p>
-                        truongshop.id.vn - Cung Cấp Key Office <br />
-                        - Key Phần Mềm Bản Quyền - Uy Tín - Giá Rẻ.<br />
-                        Kèm nhiều dịch vụ về internet mà có thể bạn sẽ quan tâm
-                    </p>
-                </div>
-
-                <div class="social-links">
-                    <h4>Follow Us</h4>
-                    <div class="social-icons">
-                        <a target="_blank" href="https://www.facebook.com/truong.luong.386820/" class="social-icon facebook" title="Facebook">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a target="_blank" href="https://www.tiktok.com/@@truongnhat9604?is_from_webapp=1&sender_device=pc" class="social-icon tiktok" title="TikTok">
-                            <i class="fab fa-tiktok"></i>
-                        </a>
-                        <a target="_blank" href="https://github.com/truongnhat96" class="social-icon github" title="GitHub">
-                            <i class="fab fa-github"></i>
-                        </a>
-                        <a target="_blank" href="https://www.youtube.com/@@nhattruong9604" class="social-icon youtube" title="YouTube">
-                            <i class="fab fa-youtube"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="footer-right">
-                    <h2>Địa Chỉ:</h2>
-                    <p>km10 Nguyễn Trãi, Thanh Xuân, Hà Nội</p>
-                    <h2>Email:</h2>
-                    <p><a href="mailto:luongnhattruong2004@gmail.com">luongnhattruong2004@gmail.com</a></p>
-                    <h2>SĐT - ZALO:</h2>
-                    <p><a href="tel:0358223929">0358223929</a></p>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <div class="footer-wave">
-                    <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-                        <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25"></path>
-                        <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5"></path>
-                        <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"></path>
-                    </svg>
-                </div>
-                <a href="/Home/Privacy">Chính Sách Bảo Mật</a>
-                <p>Copyright &copy; 2025 truongshop.id.vn&nbsp; All Rights Reserved.</p>
-                <p>
-                    Developed by <span class="highlight">Lương Nhật Trường</span> <i class="fas fa-heart"></i>
-                </p>
-            </div>
-        </footer>
-    </div>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/summernote/summernote-bs5.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("AddProductQuantityInLocal", required: false)
-    @await RenderSectionAsync("UpdateQuantityProductInLocal", required: false)
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
+<partial name="_Head" />
+<link rel="stylesheet" href="~/css/chat.css" asp-append-version="true" />
+@await RenderSectionAsync("MetaTags", required: false)</head>
+<body class="storefront">
+<a class="skip-link" href="#main-content">Đến nội dung chính</a>
+<div class="announcement">@brand.Tagline <span>·</span> Khám phá danh mục sản phẩm</div>
+<header class="store-header">
+<div class="shell header-row">
+<a class="brand" href="/">
+<img src="@brand.Logo" alt="" width="40" height="40" />
+<span>@brand.Name<span class="brand-caption">MOTORCYCLE ACCESSORIES</span>
+</span>
+</a>
+<form class="header-search" action="/Search" method="get" role="search">
+<label class="visually-hidden" for="header-keyword">Tìm sản phẩm</label>
+<input id="header-keyword" type="search" name="keyword" value="@Context.Request.Query["keyword"]" placeholder="Tìm tên sản phẩm…" />
+<button type="submit" aria-label="Tìm kiếm">↗</button>
+</form>
+<div class="header-actions">
+@if (User.Identity?.IsAuthenticated == true) {
+<div class="dropdown">
+<button class="btn btn-outline dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Tài khoản</button>
+<ul class="dropdown-menu dropdown-menu-end">
+<li class="dropdown-item-text">@User.Identity.Name</li>
+@if (User.IsInRole("Admin")) { <li>
+<a class="dropdown-item" href="/Manage">Trang quản trị</a>
+</li> }
+<li>
+<a class="dropdown-item" href="/Logout">Đăng xuất</a>
+</li>
+</ul>
+</div>
+} else { <a class="account-link" href="/Login">Đăng nhập</a> }
+<a class="cart-link" href="/Cart" aria-label="Giỏ hàng">Giỏ hàng <partial name="_CartPartial" />
+</a>
+<button class="btn btn-outline menu-trigger" type="button" data-bs-toggle="offcanvas" data-bs-target="#store-menu" aria-controls="store-menu" aria-label="Mở danh mục">☰</button>
+</div>
+</div>
+<nav class="shell store-nav" aria-label="Điều hướng cửa hàng">
+<a href="/">Trang chủ</a>
+<div class="dropdown">
+<button class="nav-button dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Danh mục sản phẩm</button>
+<ul class="dropdown-menu">
+@foreach (var category in categories) { <li>
+<a class="dropdown-item" href="/Category/@category.Id">@category.Name</a>
+</li> }
+@if (categories.Count == 0) { <li class="dropdown-item-text">Chưa có danh mục</li> }
+</ul>
+</div>
+<a href="/Posts">Cẩm nang xe máy</a>
+<a href="/Home/Privacy">Quyền riêng tư</a>
+</nav>
+</header>
+<div class="offcanvas offcanvas-start" tabindex="-1" id="store-menu" aria-labelledby="store-menu-title">
+<div class="offcanvas-header">
+<h2 id="store-menu-title" class="h5">@brand.Name</h2>
+<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Đóng menu">
+</button>
+</div>
+<nav class="offcanvas-body mobile-links" aria-label="Điều hướng di động">
+<a href="/">Trang chủ</a>@foreach (var category in categories) { <a href="/Category/@category.Id">@category.Name</a> }<a href="/Posts">Cẩm nang xe máy</a>
+<a href="/Cart">Giỏ hàng</a>
+@if (User.Identity?.IsAuthenticated == true) { @if (User.IsInRole("Admin")) { <a href="/Manage">Trang quản trị</a> }<a href="/Logout">Đăng xuất</a> } else { <a href="/Login">Đăng nhập</a>
+<a href="/Signup">Đăng ký</a> }
+</nav>
+</div>
+<main id="main-content" class="shell page-main" tabindex="-1">
+<partial name="_Breadcrumb" />
+<partial name="_Notice" />@RenderBody()</main>
+<footer class="store-footer">
+<div class="shell footer-grid">
+<div>
+<a class="brand" href="/">
+<img src="@brand.Logo" alt="" width="40" height="40" />@brand.Name</a>
+<p>@brand.Tagline</p>
+</div>
+<div>
+<h2 class="h6">Khám phá</h2>
+<a href="/Posts">Cẩm nang xe máy</a>
+<a href="/Cart">Giỏ hàng của bạn</a>
+</div>
+<div>
+<h2 class="h6">Hỗ trợ</h2>
+<a href="/Home/Privacy">Chính sách quyền riêng tư</a>
+<a href="https://zalo.me/0358223929">Liên hệ Zalo</a>
+</div>
+</div>
+<div class="shell footer-bottom">© @DateTime.Now.Year @brand.Name</div>
+</footer>
+<partial name="_ChatWidget" />
+<partial name="_Scripts" />
+<script src="~/js/chat.js" asp-append-version="true" defer></script>
+<script src="~/js/storefront.js" asp-append-version="true">
+</script>@await RenderSectionAsync("Scripts", required: false)</body>
 </html>

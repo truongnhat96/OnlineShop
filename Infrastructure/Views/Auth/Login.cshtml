@@ -1,106 +1,33 @@
-﻿@model LoginModel
-@{
-    ViewData["Title"] = "Đăng nhập";
-    int mt = 50;
-}
-@if (Html.ViewContext.ModelState["LoginError"]?.Errors.Count > 0)
-{
-    mt += 65;
-    <div class="alert" id="alertBox">
-        <span class="alert-icon"><i class="fa-solid fa-circle-xmark"></i></span>
-        <span class="alert-text"> @Html.ViewContext.ModelState["LoginError"]?.Errors.FirstOrDefault()?.ErrorMessage</span>
-        <span class="alert-close" id="closeBtn">&times;</span>
-    </div>
-}
-<div class="d-flex border fix border-bottom justify-content-center align-items-center" style="margin-top: @(mt)px;">
-    <form asp-action="Login" method="post" class="form">
-        <h2 class="form-title">ĐĂNG NHẬP</h2>
-
-        <div class="brutalist-container" style="margin-bottom: 53px; margin-top: 45px;">
-            <input name="Username" 
-                   placeholder="Enter Username"
-                   class="brutalist-input smooth-type"
-                   type="text" required/>
-            <label class="brutalist-label">Tên tài khoản</label>
-        </div>
-
-        <div class="brutalist-container">
-            <input name="Password"
-                   id="password"
-                   placeholder="Enter Password"
-                   class="brutalist-input smooth-type"
-                   type="password" required/>
-            <label class="brutalist-label">Mật khẩu</label>
-            <i class="fa-solid fa-eye toggle-password" id="togglePassword"></i>
-        </div>
-
-        <!-- -->
-        <div class="checkbox-wrapper-46">
-            <input type="checkbox" id="cbx-RememberMe" name="IsRememberLoginInfor" class="inp-cbx" value="true"/>
-            <label for="cbx-RememberMe" class="cbx">
-                <span>
-                    <svg viewBox="0 0 12 10" height="10px" width="12px">
-                        <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-                    </svg>
-                </span><span>Lưu thông tin đăng nhập</span>
-            </label>
-        </div>
-
-
-        <div class="justify-content-end">
-            <p class="forgetpass-link">
-                <a href="/ForgotPassword">Quên mật khẩu?</a>
-            </p>
-        </div>
-        <button class="pushable">
-            <span class="shadow"></span>
-            <span class="edge"></span>
-            <span class="front"> Đăng Nhập </span>
-        </button>
-
-        <div class="form-text">
-            <p class="signup-link">
-                Chưa có tài khoản?
-                <a href="/Signup">Đăng ký</a>
-            </p>
-        </div>
-    </form>
+@model LoginModel
+@{ Layout = "_AuthLayout"; ViewData["Title"] = "Đăng nhập"; }
+<span class="eyebrow">Chào mừng trở lại</span>
+<h2 class="mt-2">Đăng nhập</h2>
+<p class="muted">Tiếp tục trải nghiệm mua sắm của bạn.</p>
+<form action="/Login" method="post">
+<div asp-validation-summary="All" role="alert">
 </div>
-
-
-<script>
-        const passwordInput = document.getElementById('password');
-    const togglePassword = document.getElementById('togglePassword');
-
-    togglePassword.addEventListener('click', () => {
-        // Toggle the type attribute
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-
-        // Toggle the eye icon
-        togglePassword.classList.toggle('fa-eye');
-        togglePassword.classList.toggle('fa-eye-slash');
-    });
-</script>
-
-<script>
-        // Thêm class .show cho alert khi trang vừa load
-    window.addEventListener('load', function() {
-      const alertBox = document.getElementById('alertBox');
-      // Sau 200ms (hoặc tùy chỉnh) sẽ thêm class .show
-      setTimeout(() => {
-        alertBox.classList.add('show');
-      }, 150);
-    });
-
-    // Đóng alert khi click nút close
-    document.getElementById('closeBtn').addEventListener('click', function() {
-      const alertBox = document.getElementById('alertBox');
-      alertBox.classList.remove('show'); // gỡ class .show để fade-out
-      // Có thể remove alert hẳn sau khi ẩn
-      setTimeout(() => {
-        alertBox.style.display = 'none';
-      }, 500); // chờ transition 0.5s
-    });
-
-</script>
+<div class="field">
+<label asp-for="Username" class="form-label">Tên tài khoản</label>
+<input asp-for="Username" class="form-control" autocomplete="username" required />
+<span asp-validation-for="Username">
+</span>
+</div>
+<div class="field">
+<label asp-for="Password" class="form-label">Mật khẩu</label>
+<div class="password-field">
+<input asp-for="Password" type="password" class="form-control" autocomplete="current-password" required />
+<button class="btn btn-outline" type="button" data-password-toggle="Password" aria-controls="Password" aria-pressed="false">Hiện</button>
+</div>
+<span asp-validation-for="Password">
+</span>
+</div>
+<div class="auth-links">
+<label>
+<input asp-for="IsRememberLoginInfor" class="form-check-input" /> Ghi nhớ đăng nhập</label>
+<a href="/ForgotPassword">Quên mật khẩu?</a>
+</div>
+<button type="submit" class="btn btn-primary w-100">Đăng nhập ↗</button>
+</form>
+<p class="mt-4 mb-0">Chưa có tài khoản? <a href="/Signup">Đăng ký</a>
+</p>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

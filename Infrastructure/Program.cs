@@ -1,6 +1,7 @@
 using AutoMapper;
 using Infrastructure.AIChat;
 using Infrastructure.Models.Caching;
+using Infrastructure.EditorImages;
 using Infrastructure.PaymentSupport;
 using Infrastructure.Seed;
 using Infrastructure.SqlServer;
@@ -24,9 +25,11 @@ namespace Infrastructure
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Configuration.AddJsonFile("storefront.json", optional: false, reloadOnChange: true);
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddEditorImages(builder.Configuration, builder.Environment.ContentRootPath);
 
             System.Console.WriteLine("Database connection string: " + builder.Configuration.GetConnectionString("DefaultConnection"));
 
@@ -38,6 +41,8 @@ namespace Infrastructure
                 {
                     options.LoginPath = "/Login";
                     options.AccessDeniedPath = "/Forbidden";
+                    options.Events.OnRedirectToLogin = context => EditorImageRegistration.RedirectOrError(context.HttpContext, context.RedirectUri, 401);
+                    options.Events.OnRedirectToAccessDenied = context => EditorImageRegistration.RedirectOrError(context.HttpContext, context.RedirectUri, 403);
                 });
 
 
@@ -61,7 +66,7 @@ namespace Infrastructure
                 });
             });
 
-            builder.Services.AddChatbot(builder.Configuration);
+            builder.Services.AddChatbot(builder.Configuration, builder.Environment.ContentRootPath);
             builder.Services.AddTransient<IAHPService, AHPService>();
             builder.Services.AddTransient<IAHPRecommendationService, AHPRecommendationService>();
 
@@ -123,9 +128,8 @@ namespace Infrastructure
 
             app.UseRouting();
 
-            app.UseRateLimiter();
-
             app.UseAuthentication();
+            app.UseRateLimiter();
             app.UseAuthorization();
 
 

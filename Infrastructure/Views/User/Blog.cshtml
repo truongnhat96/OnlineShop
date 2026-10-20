@@ -1,92 +1,45 @@
-﻿@model PostModel
-@{
-}
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="form-container">
-                @if (TempData["submit"] != null)
-                {
-                    <div class="alert alert-success" role="alert">
-                        @TempData["submit"]
-                    </div>
-                }
-                <h2 class="custom-header">Tạo hoặc sửa thông tin bài viết tại đây</h2>
-                <form id="blogForm" method="post" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="title" class="form-label">Tiêu đề:</label>
-                        <input type="text" id="title" name="Title" value="@Model?.Title" class="form-control" placeholder="Nhập tiêu đề bài viết..." required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="content" class="form-label">Nội dung:</label>
-                        <textarea id="content" name="Content" asp-for="Content" class="form-control" placeholder="Nhập nội dung bài viết..." rows="6" required></textarea>
-                    </div>
-                    <!-- Cảnh báo sẽ hiển thị ở đây -->
-                    <div id="warning-message" class="text-danger" style="display: none;">
-                        Nội dung quá lớn. Vui lòng giảm kích thước trước khi tiếp tục!
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Ảnh bìa:  @(Model != null ? "Đã thêm ảnh" : "Chưa chọn ảnh nào")</label>
-                        <input type="file" id="images" name="ImageUrl" class="form-control" accept="image/*" @(Model != null ? "" : "required")>
-                    </div>
-                    <div class="text-center">
-                        <button id="submit-button" type="submit" class="save">Lưu bài viết</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+@model PostModel
+@{ Layout = "_AdminLayout"; ViewData["Title"] = "Biên tập bài viết"; ViewData["Admin"] = true; ViewData["Editor"] = true; }
+<div class="page-heading">
+<div>
+<span class="eyebrow">Cẩm nang xe máy</span>
+<h1>Biên tập bài viết</h1>
+<p>Chuẩn bị tiêu đề, nội dung và ảnh bìa.</p>
 </div>
-
-
-@section Scripts {
-    <script>
-        $(document).ready(function () {
-
-            const maxSize = 2.5 * 1024 * 1024; // 2,5MB in bytes
-
-            // Khởi tạo Summernote
-            $('#content').summernote({
-                placeholder: 'Nhập nội dung tại đây...',
-                height: 350,
-                toolbar: [
-                    ['style', ['style']],
-                    ['font', ['bold', 'underline', 'clear']],
-                    ['fontname', ['fontname']],
-                    ['color', ['color']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['table', ['table']],
-                    ['insert', ['link', 'picture', 'video']],
-                    ['view', ['fullscreen', 'codeview', 'help']],
-                ]
-            });
-
-            // Lắng nghe sự kiện thay đổi nội dung
-            $('#content').on('summernote.change', function () {
-                let content = $('#content').summernote('code');  // Lấy mã HTML của nội dung
-                let contentSize = new Blob([content]).size;  // Tính kích thước nội dung
-
-                console.log("Content size: " + contentSize + " bytes");
-
-                // Kiểm tra nếu nội dung vượt quá 2MB
-                if (contentSize > maxSize) {
-                    // Thêm lớp invalid-input (bôi đỏ viền)
-                    $('#content').addClass('invalid-input').removeClass('valid-input');
-                    // Hiển thị cảnh báo
-                    $('#warning-message').show();
-                    // Vô hiệu hóa nút submit
-                    $('#submit-button').prop('disabled', true);
-                } else {
-                    // Xóa lớp invalid-input và thêm lớp valid-input (reset viền)
-                    $('#content').removeClass('invalid-input').addClass('valid-input');
-                    // Ẩn cảnh báo
-                    $('#warning-message').hide();
-                    // Kích hoạt nút submit
-                    $('#submit-button').prop('disabled', false);
-                }
-            });
-        });
-    </script>
-}
-
-
+<a class="btn btn-outline" href="/BlogList">← Danh sách bài viết</a>
+</div>
+<section class="panel">
+<form id="blog-form" method="post" enctype="multipart/form-data">
+@Html.AntiForgeryToken()
+<div asp-validation-summary="All" role="alert">
+</div>
+<div class="field mb-4">
+<label asp-for="Title" class="form-label">Tiêu đề</label>
+<input asp-for="Title" class="form-control" required />
+<span asp-validation-for="Title">
+</span>
+</div>
+<div class="field mb-4">
+<label asp-for="Content" class="form-label">Nội dung</label>
+<textarea asp-for="Content" id="post-content" class="form-control" rows="12" data-rich-editor data-editor-required="true" data-cloud-name="@EditorImageSettings.Value.CloudName" data-max-image-bytes="@EditorImageSettings.Value.MaxImageBytes">
+</textarea>
+<span asp-validation-for="Content">
+</span>
+<p id="editor-error" class="inline-error" role="alert">
+</p>
+</div>
+<div class="field mb-4">
+<label asp-for="ImageUrl" class="form-label">Ảnh bìa</label>
+<input asp-for="ImageUrl" type="file" accept="image/*" class="form-control" data-image-preview="post-image-preview" required="@(Model == null || ViewData["RequireCover"] is true)" />
+<span asp-validation-for="ImageUrl">
+</span>
+<img id="post-image-preview" class="image-preview" data-fallback-image src="@(string.IsNullOrEmpty(Model?.Image) ? "/images/motoshop-placeholder.svg" : "/uploads/posts/" + Model.Image)" alt="Xem trước ảnh bìa" />
+</div>
+<div class="form-actions">
+<button id="post-save" class="btn btn-primary" type="submit">Lưu bài viết</button>
+<a class="btn btn-outline" href="/BlogList">Hủy</a>
+</div>
+</form>
+</section>
+@section Scripts { <partial name="_ValidationScriptsPartial" />
+<partial name="_EditorScripts" /> }

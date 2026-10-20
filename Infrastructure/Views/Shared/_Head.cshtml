@@ -1,0 +1,13 @@
+@{ var brand = StoreBranding.From(StoreConfiguration); }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>@ViewData["Title"] · @brand.Name</title>
+<meta name="description" content="@brand.Tagline" />
+<meta property="og:site_name" content="@brand.Name" />
+<meta property="og:title" content="@ViewData["Title"] · @brand.Name" />
+<meta property="og:description" content="@brand.Tagline" />
+<meta property="og:image" content="@($"{Context.Request.Scheme}://{Context.Request.Host}{brand.Hero}")" />
+<link rel="icon" type="image/svg+xml" href="@brand.Favicon" />
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+@if (ViewData["Editor"] is true) { <link rel="stylesheet" href="~/lib/summernote/summernote-bs5.min.css" /> }

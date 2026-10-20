@@ -1,0 +1,10 @@
+@model CodConfirmationModel
+@{ ViewData["Title"] = "Đã xác nhận yêu cầu COD"; }
+<section class="status-card">
+<div class="empty-icon" aria-hidden="true">✓</div>
+<h1>Đã tiếp nhận yêu cầu đặt hàng COD</h1>
+<p>Email xác nhận đã được gửi đến <strong>@Model.Email</strong> và cửa hàng.</p>
+<p class="muted">Đơn hàng chưa thanh toán. Bạn thanh toán khi nhận sản phẩm. Cửa hàng sẽ liên hệ để xác nhận thông tin và chi phí giao hàng nếu có.</p>
+<dl><dt>Tổng tiền sản phẩm</dt><dd class="price">@Model.Total.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")) ₫</dd><dt>Phương thức</dt><dd>COD — Thanh toán khi nhận hàng</dd></dl>
+<a class="btn btn-primary" href="/">Tiếp tục mua sắm</a>
+</section>

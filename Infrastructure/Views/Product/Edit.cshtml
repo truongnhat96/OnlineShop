@@ -1,99 +1,21 @@
-﻿@model ProductModel
-@{
-    ViewData["Title"] = "Edit Product";
-    TempData["Price"] = Model.Price.ToString();
-    TempData["OldPrice"] = Model.oldPrice.ToString();
-    List<SelectListItem> items = [];
-    Model.CategoryList.ForEach(c =>
-    {
-        if (c.Id == Model.CategoryId)
-        {
-            items.Add(new SelectListItem(c.Name, c.Id.ToString(), true));
-        }
-        else
-        {
-            items.Add(new SelectListItem(c.Name, c.Id.ToString()));
-        }
-    });
-}
-
-<div class="justify-content-center" style="padding-bottom:250px;">
-    @using (Html.BeginForm("Edit", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-        <h3>Sửa thông tin sản phẩm</h3>
-        @if (TempData["Notify"] != null)
-        {
-            <div class="alert alert-success" role="alert">
-                @TempData["Notify"]
-            </div>
-            @section UpdateQuantityProductInLocal {
-              <script>
-                console.log(quantityKey);
-                let products = JSON.parse(localStorage.getItem(quantityKey))
-                if (products) {
-                    products['Id' + '@(Model.Id)'] = @(Model.Quantity)
-                    localStorage.setItem(quantityKey, JSON.stringify(products));
-                } else {
-                    console.error('No products found in localStorage');
-                }
-              </script>
-            }
-        }
-        <div class="form-group">
-            @Html.Label("Tên sản phẩm")
-            @Html.TextBox("Name", Model.Name, new { @class = "form-control", placeholder = "Nhập tên sản phẩm" })
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Danh mục sản phẩm")
-            @Html.DropDownList("CategoryId", items, "Chọn danh mục")
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Thương hiệu")
-            @Html.TextBox("Brand", Model.Brand, new { @class = "form-control", placeholder = "Nhập thương hiệu" })
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Số lượng")
-            @Html.TextBox("Quantity", Model.Quantity, new { @class = "form-control", type = "number", placeholder = "Nhập số lượng" })
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Đã bán")
-            @Html.TextBox("Sold", Model.Sold, new { @class = "form-control", type = "number", @readonly = "readonly" })
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Ngày nhập")
-            @Html.TextBox("Date_Import", Model.Date_Import.ToString("yyyy-MM-dd"), new { @class = "form-control", type = "date" })
-        </div>
-
-        <div class="form-group">
-            <label style="display:flex">Giá Gốc: @Model.oldPrice.ToString("c0", new CultureInfo("vi-VN"))</label>
-            @Html.Label("Giá hiện tại")
-            @Html.TextBox("Price", Model.Price, new { @class = "form-control", type = "number", step = "1", placeholder = "Nhập giá" })
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Mã giảm giá (%)")
-            @Html.TextBox("Coupon", Model.Coupon, new { @class = "form-control", placeholder = "Mã giảm giá" })
-            <input type="number" asp-for="Discount" max="100" min="0" style="color: black; width: 60px;" step="1" />
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Mô tả")
-            @Html.TextArea("Description", Model.Description, new { @class = "form-control", rows = "4", placeholder = "Nhập mô tả sản phẩm" })
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Ảnh sản phẩm: ")
-            <label>@(!string.IsNullOrEmpty(Model.Image) ? "đã thêm ảnh" : "chưa thêm ảnh")</label>
-            <input asp-for=@(Model.ImageUrl) type="file" class="form-control" accept="image/*"/>
-        </div>
-        <br />
-        <button type="submit" class="btn btn-success">Cập nhật</button>
-        <a href="/EditAccountInfor/@Model.Id" class="btn btn-warning">Thêm thông tin tài khoản/key</a>
-        <a href="/Product-List" class="btn btn-danger">Thoát</a>
-    }
+@model ProductModel
+@{ Layout = "_AdminLayout"; ViewData["Title"] = "Sửa sản phẩm"; ViewData["Admin"] = true; ViewData["Editor"] = true; }
+<div class="page-heading">
+<div>
+<span class="eyebrow">Sản phẩm / #@Model.Id</span>
+<h1>Sửa sản phẩm</h1>
+<p>@Model.Name</p>
 </div>
+<a class="btn btn-outline" href="/Product/@Model.Id">Xem sản phẩm ↗</a>
+</div>
+<section class="panel">
+<form action="/Edit/@Model.Id" method="post" enctype="multipart/form-data">
+@Html.AntiForgeryToken()
+<partial name="_ProductFields" model="Model" />
+<div class="form-actions">
+<button class="btn btn-primary" type="submit">Lưu thay đổi</button>
+<a class="btn btn-outline" href="/Product-List">Hủy</a>
+</div>
+</form>
+</section>
+@section Scripts { <partial name="_ValidationScriptsPartial" /><partial name="_EditorScripts" /> }

@@ -92,6 +92,12 @@ namespace UseCase.Caching
             throw new("Coupon is used");
         }
 
+        public async Task OrderProcessingGuestAsync(IEnumerable<CartItem> items)
+        {
+            foreach (var item in items)
+                await _unitOfWork.ProductRepository.UpdateQuantityAsync(item.ProductId, item.Quantity);
+        }
+
         public async Task OrderProcessingAsync(int userId, int discountId)
         {
             var cartItem = await _unitOfWork.CartItemRepository.GetCartItemsAsync(userId);

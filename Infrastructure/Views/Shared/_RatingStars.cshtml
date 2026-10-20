@@ -1,0 +1,10 @@
+@model int
+@{ var score = Math.Clamp(Model, 0, 5); }
+<span class="review-stars" role="img" aria-label="@score trên 5 sao" data-rating="@score">
+@for (var star = 1; star <= 5; star++)
+{
+    <svg class="review-star @(star <= score ? "is-filled" : "")" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="m12 3 2.78 5.63 6.22.91-4.5 4.39 1.06 6.2L12 17.2l-5.56 2.93 1.06-6.2L3 9.54l6.22-.91L12 3Z" />
+    </svg>
+}
+</span>

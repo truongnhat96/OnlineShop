@@ -23,7 +23,7 @@ namespace Infrastructure.SqlServer
             var productDb = _mapper.Map<Entities.Product, Product>(product);
             await _context.Products.AddAsync(productDb);
             await _context.SaveChangesAsync();
-            return product;
+            return _mapper.Map<Entities.Product>(productDb);
         }
 
         public async Task<Entities.Product> DeleteProductAsync(int id, string? uploadsPath = default)
@@ -45,15 +45,10 @@ namespace Infrastructure.SqlServer
                         throw new Exception($"Không thể xóa ảnh sản phẩm: {ex.Message}");
                     }
                 }
-
-                _context.Products.Remove(productDb);
-                await _context.SaveChangesAsync();
-                return _mapper.Map<Entities.Product>(productDb);
             }
-            else
-            {
-                throw new ArgumentNullException("Sản phẩm không tồn tại");
-            }
+            _context.Products.Remove(productDb);
+            await _context.SaveChangesAsync();
+            return _mapper.Map<Entities.Product>(productDb);
         }
 
         public async Task<IEnumerable<Entities.Product>> FilterBy(SortingType type, int id)
