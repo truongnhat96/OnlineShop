@@ -3,7 +3,6 @@
     ViewData["Title"] = "Phụ kiện xe máy";
     var brand = StoreBranding.From(StoreConfiguration);
     var categories = (await CategoryManage.GetAllCategoriesAsync()).ToList();
-    var products = (await ProductManage.GetProductsAsync()).OrderByDescending(p => p.Sold).ThenBy(p => p.Id).Take(8).ToList();
 }
 <section class="hero">
 <div class="hero-copy">
@@ -29,15 +28,17 @@
 </a> }</div> }
 else { <partial name="_EmptyState" model='@("Danh mục đang được cập nhật")' /> }
 </section>
-<section>
+<section id="personalized-home">
 <div class="section-heading">
 <div>
-<span class="eyebrow">Khám phá cửa hàng</span>
-<h2>Sản phẩm dành cho bạn</h2>
+<span class="eyebrow">Gợi ý sản phẩm</span>
+<h2 data-home-title>Khám phá sản phẩm</h2>
 </div>
 </div>
-@if(products.Count > 0) { <div class="product-grid">@foreach(var product in products) { <partial name="_ProductCard" model="product" /> }</div> }
-else { <partial name="_EmptyState" model='@("Chưa có sản phẩm")' /> }</section>
+<partial name="_PersonalizationControls" />
+<p data-home-status role="status">Đang tải gợi ý…</p>
+<div class="product-grid" data-home-results></div>
+</section>
 <section class="panel faq mt-5">
 <span class="eyebrow">Trước khi lựa chọn</span>
 <h2 class="mt-2">Hiểu phụ kiện, chọn phù hợp</h2>
@@ -55,3 +56,4 @@ else { <partial name="_EmptyState" model='@("Chưa có sản phẩm")' /> }</sec
 </details>
 <a class="btn btn-outline mt-4" href="/Posts">Đọc cẩm nang xe máy ↗</a>
 </section>
+@section Scripts { <script src="~/js/personalization.js" asp-append-version="true"></script> }

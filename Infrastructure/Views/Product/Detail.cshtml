@@ -1,4 +1,5 @@
 @model ProductModel
+<span id="recommendation-view-product" data-ticket="@ViewData["RecommendationViewTicket"]" hidden></span>
 @inject EditorContentService EditorContent
 @{ ViewData["Title"] = Model.Name; }
 @section MetaTags {
@@ -58,6 +59,7 @@
 <div class="prose plain-description">@Model.Description</div>
 }
 </section>
+@section Scripts { <script src="~/js/personalization-view.js" asp-append-version="true"></script> }
 <section class="panel product-reviews" id="reviews" aria-labelledby="reviews-title">
 <div class="reviews-heading">
 <h2 id="reviews-title">Đánh giá <span class="review-count">@Model.Reviews.Count</span></h2>

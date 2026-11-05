@@ -33,7 +33,11 @@ namespace Infrastructure
             builder.Services.AddAntiforgery(options => options.HeaderName = "RequestVerificationToken");
             builder.Services.AddEditorImages(builder.Configuration, builder.Environment.ContentRootPath);
             builder.Services.AddScoped<IRecommendationCatalog, RecommendationCatalog>();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<UseCase.Recommendations.IRecommendationInteractionService, Infrastructure.Recommendations.RecommendationInteractionService>();
+            builder.Services.AddScoped<UseCase.Recommendations.IRecommendationProfileProvider>(services => services.GetRequiredService<UseCase.Recommendations.IRecommendationInteractionService>());
             builder.Services.AddScoped<IProductRecommendationService, ProductRecommendationService>();
+            builder.Services.AddHostedService<Infrastructure.Recommendations.RecommendationRetentionService>();
 
 
             builder.Services.AddSession(config =>

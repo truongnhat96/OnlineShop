@@ -41,6 +41,7 @@ public sealed class RecommendationProduct
 
 public sealed class RecommendationQuery
 {
+    public string Placement { get; set; } = "recommendations";
     public string? Query { get; set; }
     public int? CategoryId { get; set; }
     public string? UseCase { get; set; }
@@ -70,9 +71,45 @@ public sealed class RecommendationItem
 public sealed class RecommendationResult
 {
     public string Status { get; set; } = "Ready";
+    public string Mode { get; set; } = "Explore";
     public string? Clarification { get; set; }
     public RecommendationQuery EffectiveCriteria { get; set; } = new();
     public List<RecommendationItem> Items { get; set; } = [];
+}
+
+public sealed class RecommendationBehavior
+{
+    public string Kind { get; set; } = "";
+    public int? ProductId { get; set; }
+    public string? Terms { get; set; }
+    public string? Key { get; set; }
+    public DateTimeOffset At { get; set; }
+}
+
+public sealed class RecommendationProfile
+{
+    public bool Chosen { get; set; }
+    public bool Enabled { get; set; }
+    public int? VehicleModelId { get; set; }
+    public int? Year { get; set; }
+    public List<RecommendationBehavior> Events { get; set; } = [];
+    public HashSet<int> CartProductIds { get; set; } = [];
+}
+
+public interface IRecommendationProfileProvider
+{
+    Task<RecommendationProfile> GetAsync(CancellationToken cancellationToken = default);
+}
+
+public interface IRecommendationInteractionService : IRecommendationProfileProvider
+{
+    Task SetEnabledAsync(bool enabled, CancellationToken cancellationToken = default);
+    Task SetVehicleAsync(int? vehicleId, int? year, CancellationToken cancellationToken = default);
+    Task ClearAsync(CancellationToken cancellationToken = default);
+    Task RecordViewAsync(int productId, string ticket, CancellationToken cancellationToken = default);
+    Task RecordCartAsync(int productId, CancellationToken cancellationToken = default);
+    Task RecordSearchAsync(string query, CancellationToken cancellationToken = default);
+    void ClearGuest();
 }
 
 public interface IRecommendationCatalog

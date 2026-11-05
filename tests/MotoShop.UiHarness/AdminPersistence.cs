@@ -19,8 +19,8 @@ internal static class AdminPersistence
 {
     public static void Register(IServiceCollection services)
     {
-        services.AddSingleton(_ => { var connection = new SqliteConnection("Data Source=:memory:"); connection.Open(); return connection; });
-        services.AddScoped<ShopContext>(provider => new TestContext(new DbContextOptionsBuilder<ShopContext>().UseSqlite(provider.GetRequiredService<SqliteConnection>()).Options));
+        services.AddSingleton(_ => { var connection = new SqliteConnection("Data Source=motoshop-ui-fixture;Mode=Memory;Cache=Shared"); connection.Open(); return connection; });
+        services.AddScoped<ShopContext>(provider => new TestContext(new DbContextOptionsBuilder<ShopContext>().UseSqlite(provider.GetRequiredService<SqliteConnection>().ConnectionString).Options));
         services.AddSingleton<IMapper>(new MapperConfiguration(config => config.AddProfile<EntityMapper>()).CreateMapper());
         services.AddScoped<IPostRepository, PostRepository>();
         services.AddScoped<IProductUnitOfWork, ProductUnitOfWork>();
@@ -35,6 +35,10 @@ internal static class AdminPersistence
         services.AddHttpClient();
         services.AddSingleton(new CacheProductOption());
         services.AddScoped<IRecommendationCatalog, RecommendationCatalog>();
+        services.AddScoped<IRecommendationInteractionService, Infrastructure.Recommendations.RecommendationInteractionService>();
+        services.AddScoped<IRecommendationProfileProvider>(provider => provider.GetRequiredService<IRecommendationInteractionService>());
+        services.AddScoped<ICartItemUnitOfWork, CartItemUnitOfWork>();
+        services.AddScoped<ICartManage, CartManage>();
         services.AddScoped<IProductRecommendationService, ProductRecommendationService>();
         services.AddScoped<IAHPRecommendationService, RecommendationChatAdapter>();
         services.AddScoped<IAIChat, GeminiChat>();
@@ -56,6 +60,9 @@ internal static class AdminPersistence
         await db.SaveChangesAsync();
         if (recommendations)
         {
+            db.Roles.Add(new Role { Id = 2, Name = "User" });
+            db.Users.AddRange(new User { Id = 2, RoleId = 2, Username = "member-two", DisplayName = "Member two", Email = "member-two@example.invalid", Password = "TEST-ONLY" },
+                new User { Id = 3, RoleId = 2, Username = "member-three", DisplayName = "Member three", Email = "member-three@example.invalid", Password = "TEST-ONLY" });
             var manifest = await RecommendationSeed.ReadAsync(Path.Combine(root, "Infrastructure.SqlServer", "Seed", "recommendations.json"));
             foreach (var name in manifest.Products.Select(p => p.Category).Distinct()) db.Categories.Add(new Category { Name = name });
             await db.SaveChangesAsync();

@@ -52,7 +52,7 @@ namespace Infrastructure.Controllers
             if (scores == null || !scores.Any()) return Ok(new { items = Array.Empty<object>() });
 
             // Trả về top 3, rút gọn thông tin (không show chi tiết điểm nếu bạn muốn)
-            var top3 = scores.OrderByDescending(s => s.TotalScore).Take(3)
+            var top3 = scores.OrderBy(s => s.Rank).Take(3)
                 .Select(s => new
                 {
                     ProductId = s.ProductId,

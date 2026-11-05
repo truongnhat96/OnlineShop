@@ -8,7 +8,7 @@ using UseCase.Recommendations;
 namespace Infrastructure.AIChat;
 
 // Compatibility adapter: the existing AHP routes and chat contract now share one ranker.
-public sealed class RecommendationChatAdapter(IProductRecommendationService engine, IRecommendationCatalog catalog, IHttpContextAccessor accessor) : IAHPRecommendationService
+public sealed class RecommendationChatAdapter(IProductRecommendationService engine, IRecommendationCatalog catalog, IHttpContextAccessor accessor, IRecommendationInteractionService? interactions = null) : IAHPRecommendationService
 {
     private const string SessionKey = "recommendation:pending:v1";
     private sealed record Pending(RecommendationQuery Query, DateTimeOffset UpdatedAt, bool MarketConfirmed = false);
@@ -31,6 +31,7 @@ public sealed class RecommendationChatAdapter(IProductRecommendationService engi
         var q = ProductRecommendationService.Normalize(input);
         var previous = IsPendingFollowUp(input) ? ReadPending() : null;
         var result = previous?.Query ?? new RecommendationQuery();
+        result.Placement = "chat";
         var previousVehicle = result.VehicleModelId;
         result.Limit = 3;
         var vehicles = await catalog.VehiclesAsync();
@@ -66,10 +67,23 @@ public sealed class RecommendationChatAdapter(IProductRecommendationService engi
     {
         var (query, error, marketConfirmed) = await Parse(userQuery);
         if (error is not null) { Session?.SetString(SessionKey, JsonSerializer.Serialize(new Pending(query, DateTimeOffset.UtcNow, marketConfirmed))); return WebUtility.HtmlEncode(error); }
+        if (marketConfirmed && query.VehicleModelId.HasValue && query.Year.HasValue && interactions is not null)
+        {
+            try
+            {
+                if ((await interactions.GetAsync()).Enabled)
+                    await interactions.SetVehicleAsync(query.VehicleModelId, query.Year);
+            }
+            catch (Exception ex)
+            {
+                accessor.HttpContext?.RequestServices.GetService<ILogger<RecommendationChatAdapter>>()?
+                    .LogWarning(ex, "Could not save the confirmed recommendation vehicle.");
+            }
+        }
         var response = await engine.RecommendAsync(query);
         Session?.SetString(SessionKey, JsonSerializer.Serialize(new Pending(query, DateTimeOffset.UtcNow, marketConfirmed)));
         if (response.Status != "Ready") return WebUtility.HtmlEncode(response.Clarification ?? "Chưa tìm thấy sản phẩm phù hợp.");
-        return string.Join("<br>", response.Items.Select((item, index) => $"{index + 1}. <a href=\"/Product/{item.Id}\">{WebUtility.HtmlEncode(item.Name)}</a> — {item.Price.ToString("N0", CultureInfo.GetCultureInfo("vi-VN"))} ₫ — Còn hàng ({item.Quantity}) — {WebUtility.HtmlEncode(item.Compatibility)}{(item.IsSample ? " — Giá và tồn kho kiểm thử" : "")}"));
+        return string.Join("<br>", response.Items.Select((item, index) => $"{index + 1}. <a href=\"/Product/{item.Id}\">{WebUtility.HtmlEncode(item.Name)}</a> — {item.Price.ToString("N0", CultureInfo.GetCultureInfo("vi-VN"))} ₫ — Còn hàng ({item.Quantity}) — {WebUtility.HtmlEncode(item.Compatibility)}{(item.Reasons.Count > 0 ? " — " + WebUtility.HtmlEncode(string.Join(", ", item.Reasons)) : "")}{(item.IsSample ? " — Giá và tồn kho kiểm thử" : "")}"));
     }
     public async Task<List<AHPProductScore>> GetPersonalizedRecommendationsAsync(string userQuery, string userSessionId)
     {

@@ -5,6 +5,7 @@ using Infrastructure.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using UseCase.Business_Logic;
+using UseCase.Recommendations;
 
 namespace Infrastructure.Controllers
 {
@@ -34,7 +35,16 @@ namespace Infrastructure.Controllers
         [HttpGet("/Search/page/{page}")]
         public async Task<IActionResult> Search([FromQuery] string keyword, int page = 1)
         {
-            var list = await _homeManage.FindProductAsync(keyword);
+            var list = (await _homeManage.FindProductAsync(keyword)).ToList();
+            if (page == 1 && list.Count > 0)
+            {
+                try
+                {
+                    var tracker = HttpContext.RequestServices.GetService<IRecommendationInteractionService>();
+                    if (tracker is not null) await tracker.RecordSearchAsync(keyword, HttpContext.RequestAborted);
+                }
+                catch (Exception error) { _logger.LogWarning("Recommendation search not recorded: {ErrorType}", error.GetType().Name); }
+            }
 
             int pageSize = 10;
             int totalProduct = list.Count();

@@ -169,8 +169,12 @@ app.UseRouting(); app.UseSession(); app.UseAuthentication(); app.UseRateLimiter(
 app.Use(async(context,next)=> { context.Response.Headers["X-MotoShop-Test-Fixture"]="true"; await next(); });
 if (persistence) AdminPersistence.MapState(app);
 app.MapGet("/_fixture/identity/{role}",async (string role,HttpContext context)=> {
+    context.RequestServices.GetService<UseCase.Recommendations.IRecommendationInteractionService>()?.ClearGuest();
+    context.Session.Remove("recommendation:pending:v1");
+    var pieces = role.Split('-');
+    var fixtureId = pieces.Length == 2 && int.TryParse(pieces[1], out _) ? pieces[1] : "1";
     if(role=="guest") await context.SignOutAsync();
-    else await context.SignInAsync(new ClaimsPrincipal(new ClaimsIdentity(new[] {new Claim(ClaimTypes.Sid,role.StartsWith("admin-") ? role[6..] : "1"),new Claim(ClaimTypes.Name,"DEMO "+role),new Claim(ClaimTypes.Email,"fixture@example.invalid"),new Claim(ClaimTypes.Role,role.StartsWith("admin")?"Admin":"User")},CookieAuthenticationDefaults.AuthenticationScheme)));
+    else await context.SignInAsync(new ClaimsPrincipal(new ClaimsIdentity(new[] {new Claim(ClaimTypes.Sid,fixtureId),new Claim(ClaimTypes.Name,"DEMO "+role),new Claim(ClaimTypes.Email,"fixture@example.invalid"),new Claim(ClaimTypes.Role,role.StartsWith("admin")?"Admin":"User")},CookieAuthenticationDefaults.AuthenticationScheme)));
     return Results.Redirect("/");
 });
 app.MapGet("/_fixture/cart/{state}",(string state,HttpContext context)=> {

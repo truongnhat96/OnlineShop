@@ -7,6 +7,7 @@ using System.Security.Claims;
 using UseCase;
 using UseCase.Business_Logic;
 using UseCase.MailService;
+using UseCase.Recommendations;
 
 namespace Infrastructure.Controllers
 {
@@ -29,7 +30,6 @@ namespace Infrastructure.Controllers
         [HttpPost("/Login")]
         public async Task<IActionResult> Login(LoginModel model)
         {
-            Console.WriteLine("Login model: " + model.Username + " " + model.Password);
             if (ModelState.IsValid)
             {
                 try
@@ -53,6 +53,8 @@ namespace Infrastructure.Controllers
                         ExpiresUtc = model.IsRememberLoginInfor == true ? DateTimeOffset.UtcNow.AddDays(14) : DateTimeOffset.UtcNow.AddMinutes(25)
                     };
  
+                    HttpContext.RequestServices.GetService<IRecommendationInteractionService>()?.ClearGuest();
+                    HttpContext.Session.Remove("recommendation:pending:v1");
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
                     return RedirectToAction("Index", "Home");
                 }
@@ -68,6 +70,8 @@ namespace Infrastructure.Controllers
         [Route("/Logout")]
         public async Task<IActionResult> Logout()
         {
+            HttpContext.RequestServices.GetService<IRecommendationInteractionService>()?.ClearGuest();
+            HttpContext.Session.Remove("recommendation:pending:v1");
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }

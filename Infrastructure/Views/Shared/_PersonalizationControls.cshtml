@@ -1,0 +1,9 @@
+@if (!User.IsInRole("Admin")) {
+<div class="personalization-controls" data-personalization-controls>
+    <p data-personalization-status role="status">Đang tải tùy chọn cá nhân hóa…</p>
+    <button type="button" class="btn btn-outline" data-personalization-enable hidden>Bật cá nhân hóa</button>
+    <button type="button" class="btn btn-outline" data-personalization-disable hidden>Tắt cá nhân hóa</button>
+    <button type="button" class="btn btn-outline" data-personalization-clear hidden>Xóa lịch sử cá nhân hóa</button>
+    <a href="/Home/Privacy">Tìm hiểu cách sử dụng dữ liệu</a>
+</div>
+}

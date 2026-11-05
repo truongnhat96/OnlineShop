@@ -12,6 +12,7 @@ try {
     const page = await browser.newPage({ viewport: { width, height: 900 } });
     await page.goto(base + '/Recommendations');
     await page.locator('#rec-vehicle option').nth(1).waitFor({ state: 'attached' });
+    await page.locator('summary').filter({hasText:'Điều chỉnh nhu cầu'}).click();
     await page.locator('#rec-query').fill('mu bao hiem');
     await page.locator('#recommendation-form button[type=submit]').click();
     await page.locator('#rec-results .product-card').first().waitFor();
@@ -26,6 +27,7 @@ try {
     assert.notEqual((await page.locator('body').innerText()).includes('An unhandled exception'), true);
     await page.goBack();
     await page.locator('#rec-vehicle option').nth(1).waitFor({ state: 'attached' });
+    if (!(await page.locator('#recommendation-form').isVisible())) await page.locator('summary').filter({hasText:'Điều chỉnh nhu cầu'}).click();
     await page.locator('#rec-query').fill('kính chắn gió');
     await page.locator('#recommendation-form button[type=submit]').click();
     await page.getByText('Vui lòng cho biết dòng và đời xe để kiểm tra tương thích.').waitFor();

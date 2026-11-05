@@ -105,6 +105,8 @@ namespace Infrastructure.Controllers
             {
                 return NotFound("Sản phẩm không tồn tại hoặc đã bị xóa");
             }
+            try { ViewData["RecommendationViewTicket"] = Infrastructure.Recommendations.RecommendationViewTicket.Create(HttpContext, id); }
+            catch (Exception error) { _logger.LogWarning("Recommendation view ticket unavailable: {ErrorType}", error.GetType().Name); }
             var reviews = (await _reviewerFinder.GetReview(id)).ToList();
             List<string> reviewerName = [];
             foreach (var review in reviews)

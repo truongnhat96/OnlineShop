@@ -297,6 +297,74 @@ namespace Infrastructure.SqlServer.Migrations
                     b.ToTable("ProductFitments");
                 });
 
+            modelBuilder.Entity("Infrastructure.SqlServer.DataContext.RecommendationEvent", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("At")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DedupeKey")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Terms")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "At");
+
+                    b.HasIndex("UserId", "DedupeKey")
+                        .IsUnique();
+
+                    b.ToTable("RecommendationEvents");
+                });
+
+            modelBuilder.Entity("Infrastructure.SqlServer.DataContext.RecommendationPreference", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Chosen")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("VehicleConfirmedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int?>("VehicleModelId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("VehicleModelId");
+
+                    b.ToTable("RecommendationPreferences");
+                });
+
             modelBuilder.Entity("Infrastructure.SqlServer.DataContext.Review", b =>
                 {
                     b.Property<Guid>("Id")
@@ -531,6 +599,29 @@ namespace Infrastructure.SqlServer.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("VehicleModel");
+                });
+
+            modelBuilder.Entity("Infrastructure.SqlServer.DataContext.RecommendationEvent", b =>
+                {
+                    b.HasOne("Infrastructure.SqlServer.DataContext.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Infrastructure.SqlServer.DataContext.RecommendationPreference", b =>
+                {
+                    b.HasOne("Infrastructure.SqlServer.DataContext.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Infrastructure.SqlServer.DataContext.VehicleModel", null)
+                        .WithMany()
+                        .HasForeignKey("VehicleModelId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("Infrastructure.SqlServer.DataContext.Review", b =>

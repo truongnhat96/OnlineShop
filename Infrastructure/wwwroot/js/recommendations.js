@@ -15,16 +15,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         appendOptions('rec-vehicle', data.vehicles, v => [v.brand, v.model, v.variant, v.market].filter(Boolean).join(' '), v => v.id);
         appendOptions('rec-brand', data.brands, x => x, x => x);
         appendOptions('rec-use', data.useCases, x => x, x => x);
+        const preferenceResponse = await fetch('/api/recommendations/preferences');
+        if (preferenceResponse.ok) {
+            const preference = await preferenceResponse.json();
+            if (preference.enabled && preference.vehicleModelId) { get('rec-vehicle').value = String(preference.vehicleModelId); get('rec-year').value = String(preference.year || ''); }
+        }
     } catch { status.textContent = 'Không tải được lựa chọn. Vui lòng thử lại sau.'; return; }
     form.addEventListener('submit', async event => {
         event.preventDefault(); results.replaceChildren(); status.textContent = 'Đang tìm sản phẩm…';
         const numeric = id => get(id).value === '' ? null : Number(get(id).value);
-        const request = { query: get('rec-query').value.trim(), categoryId: numeric('rec-category'), useCase: get('rec-use').value,
+        const request = { placement: 'recommendations', query: get('rec-query').value.trim(), categoryId: numeric('rec-category'), useCase: get('rec-use').value,
             brand: get('rec-brand').value, vehicleModelId: numeric('rec-vehicle'), year: numeric('rec-year'), minPrice: numeric('rec-min'), maxPrice: numeric('rec-max'), preferLowPrice: get('rec-cheap').checked, limit: 6 };
         try {
             const response = await fetch('/api/recommendations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(request) });
             if (!response.ok) throw new Error();
             const data = await response.json();
+            get('rec-title').textContent = data.mode === 'Personalized' ? 'Dành cho bạn' : data.mode === 'Contextual' ? 'Phù hợp nhu cầu của bạn' : 'Khám phá sản phẩm';
             status.textContent = data.status === 'Ready' ? `Tìm thấy ${data.items.length} sản phẩm.` : data.clarification;
             for (const item of data.items) {
                 const card = document.createElement('article'); card.className = 'product-card';
@@ -41,5 +47,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         } catch { status.textContent = 'Chưa tải được gợi ý. Vui lòng thử lại.'; }
     });
+    document.addEventListener('personalization:changed', event => {
+        if (event.detail?.clear || event.detail?.enabled === false) { get('rec-vehicle').value = ''; get('rec-year').value = ''; }
+        form.requestSubmit();
+    });
+    for (const clear of [false, true]) {
+        get(clear ? 'rec-clear-vehicle' : 'rec-save-vehicle').addEventListener('click', async () => {
+            const vehicleModelId = clear ? null : Number(get('rec-vehicle').value) || null;
+            const year = clear ? null : Number(get('rec-year').value) || null;
+            if (!clear && (!vehicleModelId || !year)) { get('rec-vehicle-status').textContent = 'Vui lòng chọn phiên bản, thị trường và đời xe.'; return; }
+            try {
+                const response = await window.MotoPersonalization.post('/api/recommendations/vehicle', {vehicleModelId, year});
+                if (!response.ok) throw new Error();
+                if (clear) { get('rec-vehicle').value = ''; get('rec-year').value = ''; }
+                get('rec-vehicle-status').textContent = clear ? 'Đã xóa xe đã lưu.' : 'Đã lưu xe đã xác nhận.';
+                form.requestSubmit();
+            } catch { get('rec-vehicle-status').textContent = 'Không lưu được xe. Hãy bật cá nhân hóa và kiểm tra lại.'; }
+        });
+    }
     form.requestSubmit();
 });

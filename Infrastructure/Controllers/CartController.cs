@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text.Json;
 using UseCase.Business_Logic;
+using UseCase.Recommendations;
 
 namespace Infrastructure.Controllers
 {
@@ -54,6 +55,7 @@ namespace Infrastructure.Controllers
         [HttpGet("/Cart-Add/{productId}/{productName}", Name = "cart")]
         public async Task<IActionResult> Add(int productId, string productName, [FromQuery]int quantity)
         {
+            var before = await SnapshotForRecommendationsAsync();
             var user = HttpContext.User;
             if (user.Identity != null && user.Identity.IsAuthenticated)
             {
@@ -94,6 +96,7 @@ namespace Infrastructure.Controllers
                     HttpContext.Session.SetString(CartSessionKey, JsonSerializer.Serialize(cart));
                 }
             }
+            await RecordCartChangesAsync(before);
             TempData["CartMessage-Temp"] = $"\"{productName}\" đã được thêm vào giỏ hàng";
             return RedirectToAction("CartView");
         }
@@ -130,6 +133,7 @@ namespace Infrastructure.Controllers
         [HttpPost("/Cart-Update")]
         public async Task<IActionResult> UpdateCart([FromBody]CartUpdateRequest model)
         {
+            var before = await SnapshotForRecommendationsAsync();
             var user = HttpContext.User;
             bool isDeleted = false;
             if (user.Identity != null && user.Identity.IsAuthenticated)
@@ -169,7 +173,35 @@ namespace Infrastructure.Controllers
                     HttpContext.Session.SetString(CartSessionKey, JsonSerializer.Serialize(cart));
                 }
             }
+            await RecordCartChangesAsync(before);
             return Json(new { success = true, reload = isDeleted });
+        }
+
+        private async Task<Dictionary<int, int>?> SnapshotForRecommendationsAsync()
+        {
+            try
+            {
+                if (HttpContext.RequestServices.GetService<IRecommendationInteractionService>() is null) return null;
+                if (User.Identity?.IsAuthenticated == true && int.TryParse(User.FindFirstValue(ClaimTypes.Sid), out var id))
+                    return (await _cartManage.GetCartItemsAsync(id)).GroupBy(i => i.ProductId).ToDictionary(g => g.Key, g => g.Sum(i => i.Quantity));
+                var json = HttpContext.Session.GetString(CartSessionKey);
+                var items = json is null ? [] : JsonSerializer.Deserialize<List<CartModel>>(json) ?? [];
+                return items.Where(i => i.Product is not null).GroupBy(i => i.Product.Id).ToDictionary(g => g.Key, g => g.Sum(i => i.Quantity));
+            }
+            catch (Exception error) { _logger.LogWarning("Recommendation cart snapshot failed: {ErrorType}", error.GetType().Name); return null; }
+        }
+        private async Task RecordCartChangesAsync(Dictionary<int, int>? before)
+        {
+            if (before is null) return;
+            try
+            {
+                var tracker = HttpContext.RequestServices.GetService<IRecommendationInteractionService>();
+                var after = await SnapshotForRecommendationsAsync();
+                if (tracker is null || after is null) return;
+                foreach (var item in after.Where(item => item.Value > before.GetValueOrDefault(item.Key)))
+                    await tracker.RecordCartAsync(item.Key, HttpContext.RequestAborted);
+            }
+            catch (Exception error) { _logger.LogWarning("Recommendation cart event failed: {ErrorType}", error.GetType().Name); }
         }
 
 

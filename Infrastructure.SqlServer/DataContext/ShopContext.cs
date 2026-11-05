@@ -29,6 +29,8 @@ namespace Infrastructure.SqlServer.DataContext
         public DbSet<Review> Reviews { get; set; }
         public DbSet<VehicleModel> VehicleModels { get; set; }
         public DbSet<ProductFitment> ProductFitments { get; set; }
+        public DbSet<RecommendationPreference> RecommendationPreferences { get; set; }
+        public DbSet<RecommendationEvent> RecommendationEvents { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -36,6 +38,11 @@ namespace Infrastructure.SqlServer.DataContext
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<RecommendationPreference>().HasOne<User>().WithMany().HasForeignKey(p => p.UserId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<RecommendationPreference>().HasOne<VehicleModel>().WithMany().HasForeignKey(p => p.VehicleModelId).OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<RecommendationEvent>().HasOne<User>().WithMany().HasForeignKey(e => e.UserId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<RecommendationEvent>().HasIndex(e => new { e.UserId, e.At });
+            modelBuilder.Entity<RecommendationEvent>().HasIndex(e => new { e.UserId, e.DedupeKey }).IsUnique();
             modelBuilder.Entity<Product>().HasIndex(p => p.RecommendationSeedKey).IsUnique().HasFilter("[RecommendationSeedKey] IS NOT NULL");
             modelBuilder.Entity<ProductFitment>().HasOne(f => f.Product).WithMany(p => p.Fitments).HasForeignKey(f => f.ProductId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<ProductFitment>().HasOne(f => f.VehicleModel).WithMany(v => v.Fitments).HasForeignKey(f => f.VehicleModelId).OnDelete(DeleteBehavior.Restrict);
