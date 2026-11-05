@@ -27,12 +27,19 @@ namespace Infrastructure.SqlServer.DataContext
         public DbSet<ItemInfor> ItemInfors { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<VehicleModel> VehicleModels { get; set; }
+        public DbSet<ProductFitment> ProductFitments { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(_connectionString).UseLazyLoadingProxies();
+            if (!optionsBuilder.IsConfigured)
+                optionsBuilder.UseSqlServer(_connectionString).UseLazyLoadingProxies();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Product>().HasIndex(p => p.RecommendationSeedKey).IsUnique().HasFilter("[RecommendationSeedKey] IS NOT NULL");
+            modelBuilder.Entity<ProductFitment>().HasOne(f => f.Product).WithMany(p => p.Fitments).HasForeignKey(f => f.ProductId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ProductFitment>().HasOne(f => f.VehicleModel).WithMany(v => v.Fitments).HasForeignKey(f => f.VehicleModelId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ProductFitment>().HasIndex(f => new { f.ProductId, f.VehicleModelId, f.YearFrom, f.YearTo }).IsUnique();
             modelBuilder.Entity<Product>(entity =>
             {
                 entity.HasOne(p => p.Category)

@@ -32,7 +32,7 @@ public sealed class GeminiChat(
     {
         cancellationToken.ThrowIfCancellationRequested();
         // Keep the existing recommendation path independent of the provider/key.
-        if (IsRecommendation(prompt))
+        if (IsRecommendation(prompt) || recommendations.IsPendingFollowUp(prompt))
         {
             var text = await recommendations.GenerateRecommendationResponseAsync(prompt, Guid.NewGuid().ToString());
             cancellationToken.ThrowIfCancellationRequested();
@@ -142,7 +142,7 @@ public sealed class GeminiChat(
     private static AIResponse Answer(string text) => new() { Choices = [new Choice { Message = new MessageResponse { Role = "assistant", Content = text } }] };
     private static bool IsRecommendation(string prompt)
     {
-        var query = prompt.ToLower();
-        return new[] { "gợi ý", "tư vấn", "nên mua", "so sánh", "ưu tiên", "giá rẻ", "rẻ", "sinh viên", "student" }.Any(query.Contains);
+        var query = UseCase.Recommendations.ProductRecommendationService.Normalize(prompt);
+        return new[] { "goi y", "tu van", "nen mua", "so sanh", "uu tien", "gia re", "sinh vien", "student" }.Any(query.Contains);
     }
 }

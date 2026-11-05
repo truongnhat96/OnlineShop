@@ -1,0 +1,70 @@
+{
+  "sources": {
+    "rain": "https://givi.com.vn/vi/do-di-mua",
+    "rainpants": "https://www.dobaohomoto.vn/san-pham/chi-tiet/quan-mua-givi-ars4t-12061",
+    "helmets": "https://givi.com.vn/vi/non-bao-hiem",
+    "motul": "https://cms.motul.com/images/MOTUL_Katalog_2025_EN_Single_Pages_48d8b654c3.pdf",
+    "philips": "https://images.philips.com/is/content/PhilipsConsumer/Campaigns/CA20191107_Support_Automotive/en_exp_philips_lamps_catalog_2020_21_lr.pdf",
+    "forza": "https://www.givi.it/my-motorcycle/bike/honda/forza-125-300-19--20",
+    "cb500x": "https://www.givi.it/my-motorcycle/bike/honda/cb-500-x-19--23",
+    "cb650r": "https://www.givi.it/my-motorcycle/bike/honda/cb-650-r-24--26",
+    "tracer": "https://www.givi.it/my-motorcycle/bike/yamaha/mt-07-tracer-16--19",
+    "sh": "https://www.givi.it/my-motorcycle/bike/honda/sh-125-150-20--25",
+    "pcx": "https://www.givi.it/my-motorcycle/bike/honda/pcx-125-21--24"
+  },
+  "vehicles": [
+    { "key": "forza", "brand": "Honda", "model": "Forza 125", "variant": "125", "market": "Châu Âu", "aliases": "Forza 125" },
+    { "key": "cb500x", "brand": "Honda", "model": "CB 500 X", "variant": "CB500X", "market": "Châu Âu", "aliases": "CB500X,CB 500 X" },
+    { "key": "cb650r", "brand": "Honda", "model": "CB 650 R", "variant": "CB650R", "market": "Châu Âu", "aliases": "CB650R,CB 650 R" },
+    { "key": "tracer", "brand": "Yamaha", "model": "MT-07 Tracer", "variant": "MT-07 Tracer", "market": "Châu Âu", "aliases": "MT-07 Tracer,Tracer 700" },
+    { "key": "sh", "brand": "Honda", "model": "SH 125", "variant": "125", "market": "Châu Âu", "aliases": "SH 125" },
+    { "key": "pcx", "brand": "Honda", "model": "PCX 125", "variant": "PCX 125", "market": "Châu Âu", "aliases": "PCX,PCX 125" }
+  ],
+  "products": [
+    {"category":"Phụ kiện tiện ích","brand":"GIVI","code":"ARS05-N","name":"Bộ đồ mưa GIVI ARS05-N Acquaride Piuma","source":"rain","kind":1,"tags":"áo mưa,quần áo mưa","use":"đi mưa","stock":0},
+    {"category":"Phụ kiện tiện ích","brand":"GIVI","code":"ARN04","name":"Bộ đồ mưa GIVI ARN04 Acquaride Neon","source":"rain","kind":1,"tags":"áo mưa,quần áo mưa","use":"đi mưa"},
+    {"category":"Phụ kiện tiện ích","brand":"GIVI","code":"ARN03","name":"Bộ đồ mưa GIVI ARN03 Acquaride Neon","source":"rain","kind":1,"tags":"áo mưa,quần áo mưa","use":"đi mưa"},
+    {"category":"Phụ kiện tiện ích","brand":"GIVI","code":"ARS4T","name":"Quần mưa GIVI ARS4T Acquaride","source":"rainpants","kind":1,"tags":"quần mưa,đồ đi mưa","use":"đi mưa"},
+    {"category":"Phụ kiện tiện ích","brand":"GIVI","code":"RRS08","name":"Bộ đồ mưa GIVI RRS08 Rider Tech","source":"rain","kind":1,"tags":"áo mưa,quần áo mưa","use":"đi mưa"},
+    {"category":"Phụ kiện tiện ích","brand":"GIVI","code":"GLC1181A","name":"Tấm phủ chân GIVI GLC1181A cho SH","source":"sh","kind":2,"vehicle":"sh","from":2020,"to":2025,"tags":"che chân,chắn gió","use":"đi mưa"},
+    {"category":"Phụ kiện tiện ích","brand":"GIVI","code":"ES1111","name":"Đế mở rộng chân chống GIVI ES1111","source":"cb500x","kind":2,"vehicle":"cb500x","from":2019,"to":2023,"tags":"đế chân chống,chân chống","use":"đi xa"},
+    {"category":"Phụ kiện tiện ích","brand":"GIVI","code":"ES2130","name":"Đế mở rộng chân chống GIVI ES2130","source":"tracer","kind":2,"vehicle":"tracer","from":2016,"to":2019,"tags":"đế chân chống,chân chống","use":"đi xa"},
+
+    {"category":"Tay lái & Gương","brand":"GIVI","code":"D1166ST","name":"Kính chắn gió GIVI D1166ST Forza","source":"forza","kind":2,"vehicle":"forza","from":2019,"to":2020,"tags":"kính chắn gió,chắn gió","use":"đi xa"},
+    {"category":"Tay lái & Gương","brand":"GIVI","code":"DF1166","name":"Chắn gió tay lái GIVI DF1166 Forza","source":"forza","kind":2,"vehicle":"forza","from":2019,"to":2020,"tags":"chắn tay,chắn gió,tay lái","use":"đi xa"},
+    {"category":"Tay lái & Gương","brand":"GIVI","code":"D1171ST","name":"Kính chắn gió GIVI D1171ST CB500X","source":"cb500x","kind":2,"vehicle":"cb500x","from":2019,"to":2023,"tags":"kính chắn gió,chắn gió","use":"đi xa"},
+    {"category":"Tay lái & Gương","brand":"GIVI","code":"D1171S","name":"Kính chắn gió GIVI D1171S CB500X","source":"cb500x","kind":2,"vehicle":"cb500x","from":2019,"to":2023,"tags":"kính chắn gió,chắn gió","use":"đi xa"},
+    {"category":"Tay lái & Gương","brand":"GIVI","code":"D2130S","name":"Kính chắn gió GIVI D2130S Tracer","source":"tracer","kind":2,"vehicle":"tracer","from":2016,"to":2019,"tags":"kính chắn gió,chắn gió","use":"đi xa"},
+    {"category":"Tay lái & Gương","brand":"GIVI","code":"D1190ST","name":"Kính chắn gió GIVI D1190ST PCX","source":"pcx","kind":2,"vehicle":"pcx","from":2021,"to":2024,"tags":"kính chắn gió,chắn gió","use":"đi xa"},
+
+    {"category":"Bảo vệ xe","brand":"GIVI","code":"TN1171","name":"Khung bảo vệ động cơ GIVI TN1171","source":"cb500x","kind":2,"vehicle":"cb500x","from":2019,"to":2023,"tags":"khung chống đổ,bảo vệ động cơ","use":"bảo vệ xe"},
+    {"category":"Bảo vệ xe","brand":"GIVI","code":"TNH1171","name":"Khung bảo vệ động cơ GIVI TNH1171","source":"cb500x","kind":2,"vehicle":"cb500x","from":2019,"to":2023,"tags":"khung chống đổ,bảo vệ động cơ","use":"bảo vệ xe"},
+    {"category":"Bảo vệ xe","brand":"GIVI","code":"PR1121","name":"Tấm bảo vệ két nước GIVI PR1121","source":"cb500x","kind":2,"vehicle":"cb500x","from":2019,"to":2021,"tags":"bảo vệ két nước,két nước","use":"bảo vệ xe"},
+    {"category":"Bảo vệ xe","brand":"GIVI","code":"PR1171","name":"Tấm bảo vệ két nước GIVI PR1171","source":"cb500x","kind":2,"vehicle":"cb500x","from":2019,"to":2023,"tags":"bảo vệ két nước,két nước","use":"bảo vệ xe"},
+    {"category":"Bảo vệ xe","brand":"GIVI","code":"PR1208","name":"Tấm bảo vệ két nước GIVI PR1208","source":"cb650r","kind":2,"vehicle":"cb650r","from":2024,"to":2026,"tags":"bảo vệ két nước,két nước","use":"bảo vệ xe"},
+    {"category":"Bảo vệ xe","brand":"GIVI","code":"TN2130","name":"Khung bảo vệ động cơ GIVI TN2130","source":"tracer","kind":2,"vehicle":"tracer","from":2016,"to":2019,"tags":"khung chống đổ,bảo vệ động cơ","use":"bảo vệ xe"},
+
+    {"category":"Điện & chiếu sáng","brand":"Philips","code":"12258","name":"Bóng đèn Philips H1 12258","source":"philips","kind":0,"tags":"đèn pha,bóng đèn,H1","use":"chiếu sáng","stock":0},
+    {"category":"Điện & chiếu sáng","brand":"Philips","code":"12336","name":"Bóng đèn Philips H3 12336","source":"philips","kind":0,"tags":"đèn pha,bóng đèn,H3","use":"chiếu sáng"},
+    {"category":"Điện & chiếu sáng","brand":"Philips","code":"12342","name":"Bóng đèn Philips H4 12342","source":"philips","kind":0,"tags":"đèn pha,bóng đèn,H4","use":"chiếu sáng"},
+    {"category":"Điện & chiếu sáng","brand":"Philips","code":"12972","name":"Bóng đèn Philips H7 12972","source":"philips","kind":0,"tags":"đèn pha,bóng đèn,H7","use":"chiếu sáng"},
+    {"category":"Điện & chiếu sáng","brand":"Philips","code":"12636","name":"Bóng đèn Philips HS1 12636","source":"philips","kind":0,"tags":"đèn pha,bóng đèn,HS1","use":"chiếu sáng"},
+    {"category":"Điện & chiếu sáng","brand":"Philips","code":"12728","name":"Bóng đèn Philips S2 12728","source":"philips","kind":0,"tags":"đèn pha,bóng đèn,S2","use":"chiếu sáng"},
+
+    {"category":"Chăm sóc & bảo dưỡng","brand":"Motul","code":"C1","name":"Dung dịch vệ sinh sên Motul MC Care C1","source":"motul","kind":1,"tags":"vệ sinh sên,xích","use":"bảo dưỡng","stock":0},
+    {"category":"Chăm sóc & bảo dưỡng","brand":"Motul","code":"C2","name":"Dưỡng sên Motul MC Care C2 Chain Lube Road","source":"motul","kind":1,"tags":"dưỡng sên,xích","use":"bảo dưỡng"},
+    {"category":"Chăm sóc & bảo dưỡng","brand":"Motul","code":"C3","name":"Dưỡng sên Motul MC Care C3 Off Road","source":"motul","kind":1,"tags":"dưỡng sên,xích","use":"bảo dưỡng"},
+    {"category":"Chăm sóc & bảo dưỡng","brand":"Motul","code":"E2","name":"Dung dịch rửa xe Motul MC Care E2 Moto Wash","source":"motul","kind":1,"tags":"rửa xe,vệ sinh xe","use":"bảo dưỡng"},
+    {"category":"Chăm sóc & bảo dưỡng","brand":"Motul","code":"M1","name":"Vệ sinh mũ Motul MC Care M1 Helmet & Visor Clean","source":"motul","kind":1,"tags":"vệ sinh mũ,kính mũ","use":"vệ sinh mũ"},
+    {"category":"Chăm sóc & bảo dưỡng","brand":"Motul","code":"M2","name":"Vệ sinh lót mũ Motul MC Care M2 Helmet Interior Clean","source":"motul","kind":1,"tags":"vệ sinh mũ,lót mũ","use":"vệ sinh mũ"},
+
+    {"category":"Đồ bảo hộ","brand":"GIVI","code":"HX36 CARBON","name":"Mũ bảo hiểm GIVI HX36 Carbon","source":"helmets","kind":1,"tags":"mũ bảo hiểm,lật hàm","use":"bảo hộ","stock":0},
+    {"category":"Đồ bảo hộ","brand":"GIVI","code":"M35.1 SCUDO II","name":"Mũ bảo hiểm GIVI M35.1 Scudo II","source":"helmets","kind":1,"tags":"mũ bảo hiểm,ba phần tư","use":"bảo hộ"},
+    {"category":"Đồ bảo hộ","brand":"GIVI","code":"V33","name":"Mũ bảo hiểm GIVI V33","source":"helmets","kind":1,"tags":"mũ bảo hiểm,ba phần tư","use":"bảo hộ"},
+    {"category":"Đồ bảo hộ","brand":"GIVI","code":"HX36F VERTIGO","name":"Mũ bảo hiểm GIVI HX36F Vertigo","source":"helmets","kind":1,"tags":"mũ bảo hiểm,lật hàm","use":"bảo hộ"},
+    {"category":"Đồ bảo hộ","brand":"GIVI","code":"D-VISOR M30.3 LCR","name":"Mũ bảo hiểm GIVI D-Visor M30.3 LCR","source":"helmets","kind":1,"tags":"mũ bảo hiểm,ba phần tư","use":"bảo hộ"},
+    {"category":"Đồ bảo hộ","brand":"GIVI","code":"STRADA 2 V20.2","name":"Mũ bảo hiểm GIVI Strada 2 V20.2","source":"helmets","kind":1,"tags":"mũ bảo hiểm,ba phần tư","use":"bảo hộ"},
+    {"category":"Đồ bảo hộ","brand":"GIVI","code":"D-VISOR M30.3","name":"Mũ bảo hiểm GIVI D-Visor M30.3","source":"helmets","kind":1,"tags":"mũ bảo hiểm,ba phần tư","use":"bảo hộ"},
+    {"category":"Đồ bảo hộ","brand":"GIVI","code":"M10.2 VISTA","name":"Mũ bảo hiểm GIVI M10.2 Vista","source":"helmets","kind":1,"tags":"mũ bảo hiểm,ba phần tư","use":"bảo hộ"}
+  ]
+}

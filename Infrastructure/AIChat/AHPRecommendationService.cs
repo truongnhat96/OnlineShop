@@ -11,6 +11,7 @@ namespace Infrastructure.AIChat
         Task<List<AHPProductScore>> GetPersonalizedRecommendationsAsync(string userQuery, string userSessionId);
         Task<string> ExtractCriteriaFromQueryAsync(string userQuery);
         Task<List<AHPComparisonMatrix>> GenerateComparisonMatrixFromQueryAsync(string userQuery, string userSessionId);
+        bool IsPendingFollowUp(string query) => false;
     }
 
     public class AHPRecommendationService : IAHPRecommendationService

@@ -1,0 +1,16 @@
+@{ ViewData["Title"] = "Gợi ý phụ kiện"; }
+<div class="page-heading"><div><span class="eyebrow">MotoShop / Tư vấn</span><h1>Gợi ý phụ kiện xe máy</h1><p>Chọn nhu cầu và thông tin xe để tìm sản phẩm phù hợp.</p></div></div>
+<section class="panel"><form id="recommendation-form" class="form-grid">
+<div class="field full-span"><label for="rec-query">Bạn đang tìm gì?</label><input id="rec-query" class="form-control" maxlength="1000" placeholder="Ví dụ: mũ bảo hiểm đi phố" /></div>
+<div class="field"><label for="rec-category">Danh mục</label><select id="rec-category" class="form-select"><option value="">Tất cả</option></select></div>
+<div class="field"><label for="rec-use">Nhu cầu</label><select id="rec-use" class="form-select"><option value="">Tất cả</option></select></div>
+<div class="field"><label for="rec-brand">Thương hiệu sản phẩm</label><select id="rec-brand" class="form-select"><option value="">Tất cả</option></select></div>
+<div class="field"><label for="rec-vehicle">Dòng xe</label><select id="rec-vehicle" class="form-select"><option value="">Chưa chọn</option></select></div>
+<div class="field"><label for="rec-year">Đời xe</label><input id="rec-year" class="form-control" type="number" min="1900" max="2100" placeholder="Ví dụ: 2022" /></div>
+<div class="field"><label for="rec-min">Giá tối thiểu (₫)</label><input id="rec-min" class="form-control" type="number" min="0" /></div>
+<div class="field"><label for="rec-max">Ngân sách tối đa (₫)</label><input id="rec-max" class="form-control" type="number" min="0" /></div>
+<div class="field"><label><input id="rec-cheap" type="checkbox" /> Ưu tiên giá thấp</label></div>
+<div class="full-span"><button class="btn btn-primary" type="submit">Tìm gợi ý</button></div>
+</form></section>
+<section class="panel"><h2>Sản phẩm gợi ý</h2><p id="rec-status" role="status" aria-live="polite"></p><div id="rec-results" class="product-grid"></div></section>
+@section Scripts { <script src="~/js/recommendations.js" asp-append-version="true"></script> }

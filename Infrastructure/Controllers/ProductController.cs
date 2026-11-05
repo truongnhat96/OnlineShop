@@ -127,6 +127,7 @@ namespace Infrastructure.Controllers
                 ReviewerName = reviewerName,
                 oldPrice = product.OldPrice,
                 CategoryName = (await _productManager.GetAllCategoriesAsync()).FirstOrDefault(c => c.Id == product.CategoryId)?.Name ?? string.Empty
+                , IsSampleData = product.IsSampleData
             };
             return View(model);
         }
@@ -143,7 +144,7 @@ namespace Infrastructure.Controllers
             var cate = await _productManager.GetAllCategoriesAsync();
             var model = new CategoryModel
             {
-                CategoryList = cate.SkipLast(1).ToList()
+                CategoryList = cate.ToList()
             };
             return View(model);
         }
@@ -171,12 +172,12 @@ namespace Infrastructure.Controllers
             {
                 ModelState.AddModelError(nameof(model.Description), exception.Message);
                 ViewData["ProductForm"] = model;
-                return View("Manage", new CategoryModel { CategoryList = (await _productManager.GetAllCategoriesAsync()).SkipLast(1).ToList() });
+                return View("Manage", new CategoryModel { CategoryList = (await _productManager.GetAllCategoriesAsync()).ToList() });
             }
             if (!ModelState.IsValid)
             {
                 ViewData["ProductForm"] = model;
-                return View("Manage", new CategoryModel { CategoryList = (await _productManager.GetAllCategoriesAsync()).SkipLast(1).ToList() });
+                return View("Manage", new CategoryModel { CategoryList = (await _productManager.GetAllCategoriesAsync()).ToList() });
             }
             try
             {
@@ -191,6 +192,9 @@ namespace Infrastructure.Controllers
                     Description = model.Description,
                     Quantity = model.Quantity,
                     ImageUrl = string.Empty,
+                    ManufacturerCode = model.ManufacturerCode, ReferenceUrl = model.ReferenceUrl,
+                    RecommendationTags = model.RecommendationTags, RecommendationUseCases = model.RecommendationUseCases,
+                    FitmentKind = model.FitmentKind, IsSampleData = model.IsSampleData,
                 };
 
                 if (model.ImageUrl != null && model.ImageUrl.Length > 0)
@@ -266,7 +270,10 @@ namespace Infrastructure.Controllers
                 Date_Import = product.Date_Import,
                 Description = EditorContentService.ProductEditorHtml(product.Description),
                 Quantity = product.Quantity,
-                CategoryList = (await _productManager.GetAllCategoriesAsync()).SkipLast(1).ToList(),
+                CategoryList = (await _productManager.GetAllCategoriesAsync()).ToList(),
+                ManufacturerCode = product.ManufacturerCode, ReferenceUrl = product.ReferenceUrl,
+                RecommendationTags = product.RecommendationTags, RecommendationUseCases = product.RecommendationUseCases,
+                FitmentKind = product.FitmentKind, IsSampleData = product.IsSampleData,
                 Image = product.ImageUrl ?? string.Empty
             };
             var discount = await _productManager.GetCouponAsync(id);
@@ -307,6 +314,9 @@ namespace Infrastructure.Controllers
                     Date_Import = model.Date_Import,
                     Description = description,
                     Quantity = model.Quantity,
+                    ManufacturerCode = model.ManufacturerCode, ReferenceUrl = model.ReferenceUrl,
+                    RecommendationTags = model.RecommendationTags, RecommendationUseCases = model.RecommendationUseCases,
+                    FitmentKind = model.FitmentKind, IsSampleData = model.IsSampleData,
                 };
 
                 // Check if the price is lower than the previous price

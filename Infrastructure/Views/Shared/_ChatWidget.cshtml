@@ -31,6 +31,7 @@
             <a href="https://zalo.me/0358223929" target="_blank" rel="noopener noreferrer">Liên hệ Zalo ↗</a>
         </div>
         <form class="shop-chat-form" id="live-chat-form" autocomplete="off">
+            @Html.AntiForgeryToken()
             <label class="visually-hidden" for="live-chat-input">Tin nhắn tư vấn</label>
             <textarea id="live-chat-input" rows="1" maxlength="1000" placeholder="Bạn cần tư vấn gì?" aria-describedby="shop-chat-input-hint" required></textarea>
             <button class="shop-chat-send" type="submit" aria-label="Gửi tin nhắn" disabled><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 3-7 18-4-7-7-4 18-7ZM10 14 21 3"/></svg></button>

@@ -28,5 +28,11 @@ namespace Infrastructure.Models
         public int totalProduct { get; set; }
         public List<string> ReviewerName { get; set; } = [];
         public List<Review> Reviews { get; set; } = [];
+        [System.ComponentModel.DataAnnotations.StringLength(100)] public string? ManufacturerCode { get; set; }
+        [System.ComponentModel.DataAnnotations.StringLength(2048), System.ComponentModel.DataAnnotations.Url] public string? ReferenceUrl { get; set; }
+        [System.ComponentModel.DataAnnotations.StringLength(2000)] public string? RecommendationTags { get; set; }
+        [System.ComponentModel.DataAnnotations.StringLength(500)] public string? RecommendationUseCases { get; set; }
+        public bool IsSampleData { get; set; }
+        [System.ComponentModel.DataAnnotations.Range(0, 2)] public int FitmentKind { get; set; }
     }
 }

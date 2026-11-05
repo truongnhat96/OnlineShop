@@ -9,6 +9,10 @@ using UseCase.Business_Logic;
 using UseCase.Caching;
 using UseCase.Repository;
 using UseCase.UnitOfWork;
+using UseCase.Recommendations;
+using Infrastructure.AIChat;
+using Infrastructure.AIChat.CacheSupport;
+using Infrastructure.SqlServer.Seed;
 
 // TEST ONLY. Real application services/repositories over isolated SQLite, never SQL Server.
 internal static class AdminPersistence
@@ -25,7 +29,18 @@ internal static class AdminPersistence
         services.AddScoped<ICategoryManage>(provider => new CachableCategoryManage(provider.GetRequiredService<IProductUnitOfWork>(), provider.GetRequiredService<Microsoft.Extensions.Caching.Distributed.IDistributedCache>(), new(), provider.GetRequiredService<ILogger<CachableCategoryManage>>()));
     }
 
-    public static async Task Seed(IServiceProvider provider)
+    public static void RegisterRecommendations(IServiceCollection services)
+    {
+        services.AddHttpContextAccessor();
+        services.AddHttpClient();
+        services.AddSingleton(new CacheProductOption());
+        services.AddScoped<IRecommendationCatalog, RecommendationCatalog>();
+        services.AddScoped<IProductRecommendationService, ProductRecommendationService>();
+        services.AddScoped<IAHPRecommendationService, RecommendationChatAdapter>();
+        services.AddScoped<IAIChat, GeminiChat>();
+    }
+
+    public static async Task Seed(IServiceProvider provider, bool recommendations, string root)
     {
         using var scope = provider.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<ShopContext>();
@@ -39,6 +54,13 @@ internal static class AdminPersistence
             db.Posts.Add(new Post { Id = Guid.NewGuid(), Title = $"Test article {i:00}", Content = "<p>Original article</p>", ImageUrl = "existing-cover.png", UserId = 1, CategoryId = 10, CreatedAt = DateTime.Today.AddDays(-i) });
         }
         await db.SaveChangesAsync();
+        if (recommendations)
+        {
+            var manifest = await RecommendationSeed.ReadAsync(Path.Combine(root, "Infrastructure.SqlServer", "Seed", "recommendations.json"));
+            foreach (var name in manifest.Products.Select(p => p.Category).Distinct()) db.Categories.Add(new Category { Name = name });
+            await db.SaveChangesAsync();
+            await RecommendationSeed.ApplyAsync(db, manifest);
+        }
     }
 
     public static void MapState(WebApplication app) => app.MapGet("/_fixture/admin-state", async (ShopContext db) => Results.Json(new {

@@ -30,7 +30,7 @@ namespace Infrastructure.SqlServer
         {
             var productDb = await _context.Products.FindAsync(id) ?? throw new ArgumentNullException("Sản phẩm không tồn tại");
 
-            if (!string.IsNullOrEmpty(productDb.ImageUrl) && uploadsPath != null)
+            if (!string.IsNullOrEmpty(productDb.ImageUrl) && productDb.ImageUrl != "motoshop-seed-illustration.svg" && uploadsPath != null)
             {
                 var fullPath = Path.Combine(uploadsPath, productDb.ImageUrl);
 
@@ -126,6 +126,12 @@ namespace Infrastructure.SqlServer
             productDb.CategoryId = product.CategoryId;
             productDb.Description = product.Description;
             productDb.OldPrice = product.OldPrice;
+            productDb.ManufacturerCode = product.ManufacturerCode;
+            productDb.ReferenceUrl = product.ReferenceUrl;
+            productDb.RecommendationTags = product.RecommendationTags;
+            productDb.RecommendationUseCases = product.RecommendationUseCases;
+            productDb.IsSampleData = product.IsSampleData;
+            productDb.FitmentKind = product.FitmentKind;
             if (!string.IsNullOrEmpty(product.ImageUrl))
             {
                 productDb.ImageUrl = product.ImageUrl;

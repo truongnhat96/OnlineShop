@@ -17,6 +17,7 @@ using UseCase.Business_Logic;
 using UseCase.Caching;
 using UseCase.Repository;
 using UseCase.UnitOfWork;
+using UseCase.Recommendations;
 
 namespace Infrastructure
 {
@@ -29,9 +30,11 @@ namespace Infrastructure
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddAntiforgery(options => options.HeaderName = "RequestVerificationToken");
             builder.Services.AddEditorImages(builder.Configuration, builder.Environment.ContentRootPath);
+            builder.Services.AddScoped<IRecommendationCatalog, RecommendationCatalog>();
+            builder.Services.AddScoped<IProductRecommendationService, ProductRecommendationService>();
 
-            System.Console.WriteLine("Database connection string: " + builder.Configuration.GetConnectionString("DefaultConnection"));
 
             builder.Services.AddSession(config =>
                     config.IdleTimeout = TimeSpan.FromHours(10));
@@ -68,7 +71,8 @@ namespace Infrastructure
 
             builder.Services.AddChatbot(builder.Configuration, builder.Environment.ContentRootPath);
             builder.Services.AddTransient<IAHPService, AHPService>();
-            builder.Services.AddTransient<IAHPRecommendationService, AHPRecommendationService>();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddTransient<IAHPRecommendationService, RecommendationChatAdapter>();
 
             //  builder.Configuration.AddUserSecrets<Program>(true, true);
 
@@ -97,6 +101,7 @@ namespace Infrastructure
 		}
 
             // 2. Khởi tạo dữ liệu mẫu, chỉ chạy một lần khi ứng dụng khởi động
+            if (builder.Configuration.GetValue("Seed:Enabled", true))
             using (var scope = app.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<ShopContext>();

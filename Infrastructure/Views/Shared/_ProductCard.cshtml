@@ -7,6 +7,7 @@
 <h3>
 <a href="/Product/@Model.Id">@Model.Name</a>
 </h3>
+@if (Model.IsSampleData) { <p class="muted">Giá và tồn kho phục vụ kiểm thử; ảnh minh họa.</p> }
 <div class="product-card-bottom">
 <span class="price">@Model.Price.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")) ₫</span>
 <a class="product-card-arrow" href="/Product/@Model.Id" aria-label="Xem @Model.Name">↗</a>

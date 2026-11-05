@@ -46,7 +46,8 @@ if (!args.Contains("--ui-fixtures"))
 var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../"));
 var webRoot = Path.Combine(root, "Infrastructure/wwwroot");
 var persistence = args.Contains("--admin-persistence");
-var builder = WebApplication.CreateBuilder(new WebApplicationOptions { Args = args.Where(argument => argument != "--ui-fixtures" && argument != "--admin-persistence").ToArray(), ContentRootPath = Path.Combine(root, "Infrastructure"), WebRootPath = webRoot, EnvironmentName = "Development" });
+var recommendations = args.Contains("--recommendations");
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions { Args = args.Where(argument => argument != "--ui-fixtures" && argument != "--admin-persistence" && argument != "--recommendations").ToArray(), ContentRootPath = Path.Combine(root, "Infrastructure"), WebRootPath = webRoot, EnvironmentName = "Development" });
 builder.WebHost.UseUrls(persistence ? "http://127.0.0.1:15188" : "http://127.0.0.1:15187");
 Console.WriteLine(persistence ? "ADMIN TESTS ONLY: real services/repositories, isolated SQLite and fixture auth at http://127.0.0.1:15188. No business DB." : "UI FIXTURES ONLY: mocked data/auth at http://127.0.0.1:15187. Real app: http://localhost:5085.");
 builder.Logging.ClearProviders();
@@ -68,6 +69,7 @@ builder.Services.AddSingleton<IImageHostResolver, FixtureImageHostResolver>();
 builder.Services.AddControllersWithViews().AddApplicationPart(typeof(HomeController).Assembly).AddApplicationPart(typeof(FixtureViewsController).Assembly);
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
+builder.Services.AddAntiforgery(options => options.HeaderName = "RequestVerificationToken");
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options => {
     options.LoginPath = "/Login"; options.AccessDeniedPath = "/Forbidden";
     options.Events.OnRedirectToLogin = context => EditorImageRegistration.RedirectOrError(context.HttpContext, context.RedirectUri, 401);
@@ -153,8 +155,9 @@ chat.Setup(c => c.AskAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).R
 });
 builder.Services.AddSingleton(chat.Object);
 if (persistence) AdminPersistence.Register(builder.Services);
+if (recommendations && persistence) AdminPersistence.RegisterRecommendations(builder.Services);
 var app = builder.Build();
-if (persistence) await AdminPersistence.Seed(app.Services);
+if (persistence) await AdminPersistence.Seed(app.Services, recommendations, root);
 var fixtureRoot = Path.Combine(root, persistence ? "tests/MotoShop.UiHarness/.fixture-persistence-wwwroot" : "tests/MotoShop.UiHarness/.fixture-wwwroot");
 Directory.CreateDirectory(fixtureRoot);
 Directory.CreateDirectory(Path.Combine(fixtureRoot, "images"));

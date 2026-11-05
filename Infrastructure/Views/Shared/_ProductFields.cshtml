@@ -1,7 +1,7 @@
 @model ProductModel
 @inject IProductManage ProductManage
 @{
-    var categories = Model.CategoryList.Count > 0 ? Model.CategoryList : (await CategoryManage.GetAllCategoriesAsync()).SkipLast(1).ToList();
+    var categories = Model.CategoryList.Count > 0 ? Model.CategoryList : (await CategoryManage.GetAllCategoriesAsync()).ToList();
     var image = Model.Image;
     if (string.IsNullOrEmpty(image) && Model.Id > 0)
         image = (await ProductManage.GetProductDetail(Model.Id))?.ImageUrl ?? "";
@@ -92,6 +92,17 @@
 <small>Sử dụng một ảnh thể hiện rõ sản phẩm.</small>
 <img id="product-image-preview" class="image-preview" src="@(string.IsNullOrEmpty(image) ? "/images/motoshop-placeholder.svg" : "/uploads/products/" + image)" data-fallback-image alt="Xem trước ảnh sản phẩm" />
 </div>
+</div>
+</section>
+<section class="form-section">
+<h2>Dữ liệu gợi ý</h2>
+<div class="form-grid">
+<div class="field"><label asp-for="ManufacturerCode">Mã sản phẩm hãng</label><input asp-for="ManufacturerCode" class="form-control" maxlength="100" /></div>
+<div class="field"><label asp-for="ReferenceUrl">Nguồn tham khảo</label><input asp-for="ReferenceUrl" type="url" class="form-control" maxlength="2048" /></div>
+<div class="field"><label asp-for="RecommendationTags">Từ khóa</label><input asp-for="RecommendationTags" class="form-control" maxlength="2000" /></div>
+<div class="field"><label asp-for="RecommendationUseCases">Nhu cầu (cách nhau bằng dấu phẩy)</label><input asp-for="RecommendationUseCases" class="form-control" maxlength="500" /></div>
+<div class="field"><label asp-for="FitmentKind">Tương thích</label><select asp-for="FitmentKind" class="form-select"><option value="0">Chưa xác minh / có điều kiện</option><option value="1">Không phụ thuộc dòng xe</option><option value="2">Theo danh sách xe đã xác minh</option></select></div>
+<div class="field"><label><input asp-for="IsSampleData" /> Dữ liệu giá và tồn kho kiểm thử</label></div>
 </div>
 </section>
 <input asp-for="Id" type="hidden" />

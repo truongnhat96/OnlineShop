@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 440" role="img" aria-labelledby="title">
+  <title id="title">Hình minh họa phụ kiện xe máy</title>
+  <rect width="640" height="440" rx="24" fill="#f1f5f9"/>
+  <circle cx="205" cy="290" r="53" fill="none" stroke="#171717" stroke-width="14"/>
+  <circle cx="445" cy="290" r="53" fill="none" stroke="#171717" stroke-width="14"/>
+  <path d="M205 290l80-104h61l63 104H205l54-64h112m-86-40-21-27h-34m175 131-42-125h42" fill="none" stroke="#c2410c" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="320" y="390" fill="#475569" text-anchor="middle" font-family="sans-serif" font-size="24">HÌNH MINH HỌA</text>
+</svg>

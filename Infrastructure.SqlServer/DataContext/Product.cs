@@ -20,6 +20,14 @@ namespace Infrastructure.SqlServer.DataContext
         public required string Description { get; set; }
         [Url]
         public required string ImageUrl { get; set; }
+        [StringLength(100)] public string? ManufacturerCode { get; set; }
+        [StringLength(2048)] public string? ReferenceUrl { get; set; }
+        [StringLength(2000)] public string? RecommendationTags { get; set; }
+        [StringLength(500)] public string? RecommendationUseCases { get; set; }
+        [StringLength(120)] public string? RecommendationSeedKey { get; set; }
+        public bool IsSampleData { get; set; }
+        public int FitmentKind { get; set; }
+        public virtual ICollection<ProductFitment> Fitments { get; set; } = [];
         public virtual Discount? Discount { get; set; }
         public virtual Category? Category { get; set; }
         public virtual ICollection<ItemInfor> ItemInfor { get; set; } = [];

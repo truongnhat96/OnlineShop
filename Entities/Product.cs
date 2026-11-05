@@ -19,5 +19,12 @@ namespace Entities
         public required string Description { get; set; }
         public string? ImageUrl { get; set; }
         public double OldPrice {  get; set; }
+        public string? ManufacturerCode { get; set; }
+        public string? ReferenceUrl { get; set; }
+        public string? RecommendationTags { get; set; }
+        public string? RecommendationUseCases { get; set; }
+        public string? RecommendationSeedKey { get; set; }
+        public bool IsSampleData { get; set; }
+        public int FitmentKind { get; set; }
     }
 }

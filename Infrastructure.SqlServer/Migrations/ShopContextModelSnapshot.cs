@@ -198,9 +198,19 @@ namespace Infrastructure.SqlServer.Migrations
                         .HasMaxLength(10000000)
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("FitmentKind")
+                        .HasColumnType("int");
+
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsSampleData")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ManufacturerCode")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -216,6 +226,22 @@ namespace Infrastructure.SqlServer.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<string>("RecommendationSeedKey")
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<string>("RecommendationTags")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("RecommendationUseCases")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ReferenceUrl")
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
+
                     b.Property<int>("Sold")
                         .HasColumnType("int");
 
@@ -225,7 +251,50 @@ namespace Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("Name");
 
+                    b.HasIndex("RecommendationSeedKey")
+                        .IsUnique()
+                        .HasFilter("[RecommendationSeedKey] IS NOT NULL");
+
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("Infrastructure.SqlServer.DataContext.ProductFitment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("EvidenceUrl")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VehicleModelId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("YearFrom")
+                        .HasColumnType("int");
+
+                    b.Property<int>("YearTo")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VehicleModelId");
+
+                    b.HasIndex("ProductId", "VehicleModelId", "YearFrom", "YearTo")
+                        .IsUnique();
+
+                    b.ToTable("ProductFitments");
                 });
 
             modelBuilder.Entity("Infrastructure.SqlServer.DataContext.Review", b =>
@@ -315,6 +384,44 @@ namespace Infrastructure.SqlServer.Migrations
                     b.HasIndex("Username");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Infrastructure.SqlServer.DataContext.VehicleModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Aliases")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Brand")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Market")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Model")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Variant")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VehicleModels");
                 });
 
             modelBuilder.Entity("Infrastructure.SqlServer.DataContext.CartItem", b =>
@@ -407,6 +514,25 @@ namespace Infrastructure.SqlServer.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("Infrastructure.SqlServer.DataContext.ProductFitment", b =>
+                {
+                    b.HasOne("Infrastructure.SqlServer.DataContext.Product", "Product")
+                        .WithMany("Fitments")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Infrastructure.SqlServer.DataContext.VehicleModel", "VehicleModel")
+                        .WithMany("Fitments")
+                        .HasForeignKey("VehicleModelId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("VehicleModel");
+                });
+
             modelBuilder.Entity("Infrastructure.SqlServer.DataContext.Review", b =>
                 {
                     b.HasOne("Infrastructure.SqlServer.DataContext.Product", "Product")
@@ -455,6 +581,8 @@ namespace Infrastructure.SqlServer.Migrations
 
                     b.Navigation("Discount");
 
+                    b.Navigation("Fitments");
+
                     b.Navigation("ItemInfor");
 
                     b.Navigation("Reviews");
@@ -474,6 +602,11 @@ namespace Infrastructure.SqlServer.Migrations
                     b.Navigation("Posts");
 
                     b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("Infrastructure.SqlServer.DataContext.VehicleModel", b =>
+                {
+                    b.Navigation("Fitments");
                 });
 #pragma warning restore 612, 618
         }

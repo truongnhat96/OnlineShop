@@ -198,8 +198,13 @@
     resizeInput();
     form.requestSubmit();
   }));
-  reset.addEventListener('click', () => {
+  reset.addEventListener('click', async () => {
     if (pending) return;
+    try {
+      const token = form.querySelector('[name="__RequestVerificationToken"]')?.value;
+      const response = await fetch('/api/recommendations/context/reset', { method: 'POST', credentials: 'same-origin', headers: { 'RequestVerificationToken': token || '' } });
+      if (!response.ok) throw new Error('reset');
+    } catch { errorText.textContent = failureMessage; errorBox.hidden = false; return; }
     history = [];
     failedPrompt = null;
     log.querySelectorAll('.shop-chat-message:not(.shop-chat-greeting)').forEach(message => message.remove());

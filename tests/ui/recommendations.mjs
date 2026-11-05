@@ -1,0 +1,80 @@
+import { chromium } from 'playwright';
+import { mkdir } from 'node:fs/promises';
+import assert from 'node:assert/strict';
+
+const base = process.env.REC_BASE || 'http://127.0.0.1:15188';
+const real = process.env.REC_REAL === '1';
+const artifacts = '../../docs/ui-review/recommendations';
+await mkdir(artifacts, { recursive: true });
+const browser = await chromium.launch({ headless: true, channel: 'msedge' });
+try {
+  for (const width of [360, 390, 768, 1024, 1440]) {
+    const page = await browser.newPage({ viewport: { width, height: 900 } });
+    await page.goto(base + '/Recommendations');
+    await page.locator('#rec-vehicle option').nth(1).waitFor({ state: 'attached' });
+    await page.locator('#rec-query').fill('mu bao hiem');
+    await page.locator('#recommendation-form button[type=submit]').click();
+    await page.locator('#rec-results .product-card').first().waitFor();
+    assert.ok((await page.locator('#rec-results').innerText()).includes('Mũ bảo hiểm'));
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true, `horizontal overflow at ${width}`);
+    assert.equal(await page.locator('#rec-results img').first().evaluate(img => img.complete && img.naturalWidth > 0), true);
+    await page.screenshot({ path: `${artifacts}/${real ? 'real' : 'fixture'}-${width}.png`, fullPage: true });
+    const link = page.locator('#rec-results a').first();
+    assert.match(await link.getAttribute('href'), /^\/Product\/\d+$/);
+    await link.click();
+    assert.match(new URL(page.url()).pathname, /^\/Product\/\d+$/);
+    assert.notEqual((await page.locator('body').innerText()).includes('An unhandled exception'), true);
+    await page.goBack();
+    await page.locator('#rec-vehicle option').nth(1).waitFor({ state: 'attached' });
+    await page.locator('#rec-query').fill('kính chắn gió');
+    await page.locator('#recommendation-form button[type=submit]').click();
+    await page.getByText('Vui lòng cho biết dòng và đời xe để kiểm tra tương thích.').waitFor();
+    await page.close();
+  }
+  const page = await browser.newPage();
+  await page.goto(base + '/Recommendations');
+  await page.locator('#live-chat-toggle').click();
+  const send = async text => { await page.locator('#live-chat-input').fill(text); await page.locator('#live-chat-form button[type=submit]').click(); await page.locator('#shop-chat-status').filter({ hasText: 'đang trả lời' }).waitFor({ state: 'hidden' }); };
+  await send('Tư vấn kính chắn gió Honda CB500X');
+  await page.locator('#live-chat-body').getByText(/thị trường Châu Âu/).waitFor();
+  await send('Châu Âu');
+  await page.locator('#live-chat-body').getByText(/dòng và đời xe/).waitFor();
+  await send('2022, dưới 500 nghìn');
+  await page.locator('#live-chat-body a[href^="/Product/"]').first().waitFor();
+  await page.locator('#shop-chat-reset').click();
+  await page.waitForFunction(() => !document.querySelector('#live-chat-body .shop-chat-message:not(.shop-chat-greeting)'));
+  if (!real) {
+    const noToken = await page.request.post(base + '/api/recommendations/context/reset');
+    assert.equal(noToken.status(), 400);
+    await page.goto(base + '/_fixture/identity/member');
+    await page.goto(base + '/Recommendations');
+    await page.locator('#rec-vehicle option').nth(1).waitFor({ state: 'attached' });
+    await page.goto(base + '/_fixture/identity/admin');
+    await page.goto(base + '/admin/products/27/fitments');
+    assert.equal(await page.locator('body').innerText().then(t => t.includes('tương thích')), true);
+    await page.goto(base + '/Edit/28');
+    await page.locator('#Price').fill('77777');
+    await page.locator('#Quantity').fill('0');
+    await page.locator('#RecommendationTags').fill('áo mưa,quần áo mưa,thử cập nhật');
+    await page.locator('form[action="/Edit/28"] button[type=submit]').click();
+    await page.waitForTimeout(1000);
+    const state = await (await page.request.get(base + '/_fixture/admin-state')).json();
+    const edited = state.products.find(p => p.id === 28);
+    assert.equal(edited.price, 77777);
+    assert.equal(edited.quantity, 0);
+    assert.match(edited.recommendationTags, /thử cập nhật/);
+    const response = await page.request.post(base + '/api/recommendations', { data: { query: 'áo mưa', limit: 6 } });
+    assert.ok(!(await response.json()).items.some(p => p.id === 28));
+    const options = await (await page.request.get(base + '/api/recommendations/options')).json();
+    const forza = options.vehicles.find(v => v.model === 'Forza 125' && v.market === 'Châu Âu');
+    const compatible = async () => (await (await page.request.post(base + '/api/recommendations', { data: { query:'kính chắn gió', vehicleModelId:forza.id, year:2020, limit:6 } })).json()).items;
+    assert.ok((await compatible()).some(p => p.id === 35));
+    await page.goto(base + '/admin/products/35/fitments');
+    const fitment = page.locator('form[action="/admin/products/35/fitments"]').first();
+    await fitment.locator('[name="yearTo"]').fill('2019');
+    await fitment.getByRole('button', {name:'Lưu', exact:true}).click();
+    assert.ok(!(await compatible()).some(p => p.id === 35));
+  }
+  await page.close();
+  console.log(`PASS: ${real ? 'real app' : 'isolated SQLite fixture'}: desktop/mobile recommendation, product detail, fitment clarification, chat follow-up/reset${real ? '' : ', admin fitment page'}.`);
+} finally { await browser.close(); }

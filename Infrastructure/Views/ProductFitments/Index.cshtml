@@ -1,0 +1,17 @@
+@using Infrastructure.SqlServer.DataContext
+@model List<ProductFitment>
+@{ Layout = "_AdminLayout"; ViewData["Title"] = "Tương thích xe"; ViewData["Admin"] = true; var productId = (int)ViewData["ProductId"]!; var vehicles = (List<VehicleModel>)ViewData["Vehicles"]!; }
+<div class="page-heading"><div><h1>Tương thích xe</h1><p>@ViewData["ProductName"]</p></div><a class="btn btn-outline" href="/Edit/@productId">Về sản phẩm</a></div>
+<section class="panel"><h2>Dòng xe đã xác minh</h2><p>Chỉ thêm khoảng đời có nguồn xác nhận đúng phiên bản và thị trường.</p>
+@foreach (var row in Model) {
+<form method="post" action="/admin/products/@productId/fitments" class="form-grid">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@row.Id" />
+<label>Xe<select name="vehicleModelId" class="form-select" required>@foreach(var vehicle in vehicles) { <option value="@vehicle.Id" selected="@(vehicle.Id == row.VehicleModelId)">@vehicle.Brand @vehicle.Model @vehicle.Variant (@vehicle.Market)</option> }</select></label>
+<label>Từ năm<input type="number" name="yearFrom" min="1900" max="2100" value="@row.YearFrom" class="form-control" required /></label><label>Đến năm<input type="number" name="yearTo" min="1900" max="2100" value="@row.YearTo" class="form-control" required /></label>
+<label class="full-span">Nguồn HTTPS<input type="url" name="evidenceUrl" value="@row.EvidenceUrl" class="form-control" required /></label><label class="full-span">Điều kiện<input name="notes" value="@row.Notes" class="form-control" /></label>
+<div class="full-span"><button type="submit" class="btn btn-primary">Lưu</button><button type="submit" formaction="/admin/products/@productId/fitments/@row.Id/delete" formnovalidate class="btn btn-outline">Xóa</button></div></form><hr /> }
+<h3>Thêm tương thích</h3><form method="post" action="/admin/products/@productId/fitments" class="form-grid">@Html.AntiForgeryToken()
+<label>Xe<select name="vehicleModelId" class="form-select" required><option value="">Chọn xe</option>@foreach(var vehicle in vehicles) { <option value="@vehicle.Id">@vehicle.Brand @vehicle.Model @vehicle.Variant (@vehicle.Market)</option> }</select></label>
+<label>Từ năm<input type="number" name="yearFrom" min="1900" max="2100" class="form-control" required /></label><label>Đến năm<input type="number" name="yearTo" min="1900" max="2100" class="form-control" required /></label>
+<label class="full-span">Nguồn HTTPS<input type="url" name="evidenceUrl" class="form-control" required /></label><label class="full-span">Điều kiện lắp đặt<input name="notes" class="form-control" /></label><button type="submit" class="btn btn-primary">Thêm tương thích</button></form></section>
+<section class="panel"><h2>Thêm dòng xe</h2><form method="post" action="/admin/products/@productId/vehicles" class="form-grid">@Html.AntiForgeryToken()
+<label>Hãng<input name="brand" class="form-control" maxlength="50" required /></label><label>Dòng xe<input name="model" class="form-control" maxlength="100" required /></label><label>Phiên bản<input name="variant" class="form-control" maxlength="100" /></label><label>Thị trường<input name="market" value="VN" class="form-control" maxlength="20" required /></label><label class="full-span">Tên gọi khác, cách nhau bằng dấu phẩy<input name="aliases" class="form-control" maxlength="500" /></label><button type="submit" class="btn btn-outline">Thêm dòng xe</button></form></section>
