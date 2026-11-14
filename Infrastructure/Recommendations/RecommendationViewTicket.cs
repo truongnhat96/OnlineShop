@@ -23,7 +23,7 @@ public static class RecommendationViewTicket
             var parts = provider.CreateProtector(Purpose).Unprotect(ticket).Split('|');
             if (parts.Length != 3 || !int.TryParse(parts[0], out var id) || id <= 0 || !long.TryParse(parts[1], out var issued) || parts[2] != Subject(context)) return null;
             var age = DateTimeOffset.UtcNow.ToUnixTimeSeconds() - issued;
-            return age is >= 8 and <= 1200 ? id : null;
+            return age is >= 7 and <= 1200 ? id : null;
         }
         catch (Exception error) when (error is System.Security.Cryptography.CryptographicException or FormatException or InvalidOperationException) { return null; }
     }

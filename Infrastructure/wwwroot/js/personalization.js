@@ -57,5 +57,6 @@
       });
     });
     loadControls(); home();
+    window.addEventListener('pageshow', event => { if (event.persisted) { loadControls(); home(); } });
   });
 })();

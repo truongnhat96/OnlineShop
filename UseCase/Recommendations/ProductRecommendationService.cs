@@ -72,10 +72,12 @@ public sealed class ProductRecommendationService(IRecommendationCatalog catalog,
             return result;
         }
         if (vehicleId.HasValue)
-            candidates = candidates.Where(p => p.Fitment == FitmentKind.VehicleIndependent || (p.Fitment == FitmentKind.Verified && year.HasValue &&
+            candidates = candidates.Where(p => p.Fitment == FitmentKind.VehicleIndependent ||
+                (p.Fitment == FitmentKind.Unknown && !products.Any(c => c.CategoryId == p.CategoryId && c.Fitment == FitmentKind.Verified)) ||
+                (p.Fitment == FitmentKind.Verified && year.HasValue &&
                 p.Fitments.Any(f => f.VehicleModelId == vehicleId && Uri.TryCreate(f.EvidenceUrl, UriKind.Absolute, out var evidence) && evidence.Scheme == Uri.UriSchemeHttps && string.IsNullOrEmpty(evidence.UserInfo) && string.IsNullOrWhiteSpace(f.Notes) && f.YearFrom <= year && f.YearTo >= year))).ToList();
         else
-            candidates = candidates.Where(p => p.Fitment == FitmentKind.VehicleIndependent).ToList();
+            candidates = candidates.Where(p => p.Fitment is FitmentKind.VehicleIndependent or FitmentKind.Unknown || (profile.Enabled && profile.Events.Any(e => e.ProductId == p.Id))).ToList();
 
         var documents = products.ToDictionary(p => p.Id, p => Terms(string.Join(' ', p.Name, p.Name, p.Name, p.Category, p.Category, p.Brand, p.Tags, p.UseCases, ContentDescription(p))));
         var df = documents.Values.SelectMany(terms => terms.Distinct()).GroupBy(term => term).ToDictionary(g => g.Key, g => g.Count());
@@ -137,18 +139,15 @@ public sealed class ProductRecommendationService(IRecommendationCatalog catalog,
         {
             var relevant = ranked.Where(x => x.Score > 0).ToList();
             if (relevant.Count > 0) ranked = relevant;
-            else result.Mode = "Explore";
         }
-        if (hasHistory && !ranked.Take(request.Limit).Any(x => x.PersonalScore > 0))
-            result.Mode = qnorm > 0 || !string.IsNullOrWhiteSpace(request.UseCase) ? "Contextual" : "Explore";
         if (result.Mode == "Explore" && !request.PreferLowPrice && !request.CategoryId.HasValue && string.IsNullOrWhiteSpace(request.Brand))
             ranked = ranked.GroupBy(x => x.Product.CategoryId).OrderBy(g => g.Key).SelectMany(g => g.Select((item, index) => (item, index)))
                 .OrderBy(x => x.index).ThenBy(x => x.item.Product.CategoryId).Select(x => x.item).ToList();
         result.Items = ranked.Take(request.Limit).Select(x => new RecommendationItem {
             Id = x.Product.Id, Name = x.Product.Name, Brand = x.Product.Brand, Price = x.Product.Price, Image = x.Product.Image,
             IsSample = x.Product.IsSample, Quantity = x.Product.Quantity, Score = x.Score,
-            Compatibility = x.Product.Fitment == FitmentKind.VehicleIndependent ? "Không phụ thuộc dòng xe" : "Tương thích theo dữ liệu đã xác minh",
-            Reasons = new List<string> { x.UseMatch ? "Phù hợp nhu cầu đã chọn" : qnorm > 0 && x.Similarity > 0 ? "Liên quan đến nhu cầu bạn nhập" : x.PersonalScore > 0 && result.Mode == "Personalized" ? "Liên quan đến sở thích từ hoạt động của bạn" : request.CategoryId.HasValue ? "Cùng danh mục bạn chọn" : "Khám phá sản phẩm trong danh mục" }
+            Compatibility = x.Product.Fitment == FitmentKind.VehicleIndependent ? "Không phụ thuộc dòng xe" : x.Product.Fitment == FitmentKind.Unknown ? "Kiểm tra thông số trước khi lắp" : "Tương thích theo dữ liệu đã xác minh",
+            Reasons = new List<string> { x.UseMatch ? "Phù hợp nhu cầu đã chọn" : qnorm > 0 && x.Similarity > 0 ? "Liên quan đến nhu cầu bạn nhập" : x.PersonalScore > 0 && result.Mode == "Personalized" ? "Liên quan đến sở thích từ hoạt động của bạn" : result.Mode == "Personalized" ? "Gợi ý dựa trên hoạt động của bạn" : request.CategoryId.HasValue ? "Cùng danh mục bạn chọn" : "Khám phá sản phẩm trong danh mục" }
         }).ToList();
         if (result.Items.Count == 0)
         {
